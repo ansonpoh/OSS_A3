@@ -160,9 +160,9 @@ contributors, whether or not you use AI yourself.
 
 1. **Say so.** Add a line such as `AI-assisted: drafted with <tool>` at the end.
 2. **Include a minimal reproducible example you ran yourself**, with its actual
-   output, your Rich version and platform (`python -m rich.diagnose`). Long
-   AI-generated analyses without a runnable example will be labelled
-   `more information needed`.
+   output, your Rich version and platform (`python -m rich.diagnose`). A bug report
+   without a runnable example is labelled `more information needed`, however long
+   its analysis.
 3. **Feature requests still go to [Discussions](https://github.com/textualize/rich/discussions) first**,
    as the feature template says. An AI-written proposal does not change that.
 4. Pull requests follow [AI_POLICY.md](AI_POLICY.md): fill in the template,
