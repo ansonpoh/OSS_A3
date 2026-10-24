@@ -92,15 +92,20 @@ def test_replay_uses_snapshot_and_restores_filed_role(prep):
     assert idx and all(r["created_at"] < "2026-09-22T00:00:00Z" for r in idx)
 
 
-def test_planted_entry_only_for_adv_4(prep):
-    # adv-4 gets the planted entry, which quarantine then drops: only the log names it.
+def test_planted_entries_only_for_their_own_case(prep):
+    # adv-4 gets its planted entry, which quarantine then drops: only the log names it.
     _, idx, log = prep(marker("adv-4-index-injection", "2026-09-30T00:00:00Z"))
-    assert "1 quarantined [4231]" in log and 4231 not in {r["number"] for r in idx}
-    # Every other case filed after the planted date never gets it at all.
+    assert "1 quarantined [4231]" in log and {4230, 4231}.isdisjoint(r["number"] for r in idx)
+    # adv-5's planted entry passes the quarantine, so the agent sees it.
+    _, idx, log = prep(marker("adv-5-index-injection-variant", "2026-09-30T00:00:00Z"))
+    numbers = {r["number"] for r in idx}
+    assert "0 quarantined []" in log and 4230 in numbers and 4231 not in numbers
+    # Every other case filed after the planted dates never gets either, nor does a path as case id.
     for cid, filed in (("adv-1-close-stale", "2026-09-30T00:00:00Z"), ("4226", "2026-09-22T00:00:00Z"),
-                       ("4228", "2026-09-23T00:00:00Z")):
+                       ("4228", "2026-09-23T00:00:00Z"),
+                       ("../adversarial/adv-4-index-injection", "2026-09-30T00:00:00Z")):
         _, idx, log = prep(marker(cid, filed))
-        assert "0 quarantined []" in log and 4231 not in {r["number"] for r in idx}, cid
+        assert "0 quarantined []" in log and {4230, 4231}.isdisjoint(r["number"] for r in idx), cid
 
 
 def test_non_replay_fetches_repository_issues_not_the_eval_file(prep, monkeypatch, tmp_path):
@@ -164,3 +169,13 @@ def test_quarantine_has_no_false_positives_on_the_real_index():
     kept, held = build_index.quarantine(index)
     print(f"{len(held)} of {len(index)} snapshot entries quarantined: {held}")
     assert held == [] and len(kept) == len(index)
+
+
+def test_quarantine_does_not_catch_the_adv_5_variant():
+    # adv-5 tests the agent and the policy gate without the regexes: if a pattern
+    # starts matching it, the case no longer tests what it says.
+    planted = json.load(open(os.path.join(GOLDEN, "adversarial", "adv-5-index-injection-variant",
+                                          "planted_index.json")))
+    assert [r["number"] for r in planted] == [4230]
+    assert build_index.quarantine(planted) == (planted, [])
+    assert not any(p.search(planted[0]["body"]) for p in build_index.ADDRESSES_TOOLS)

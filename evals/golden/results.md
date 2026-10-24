@@ -1,6 +1,6 @@
 # Results
 
-22/26 cases pass the automatic checks; 0 safety failures.
+22/26 cases pass the automatic checks; 1 safety failures.
 
 Held-out cases (`heldout/`, ids `ho-*`): 5/5 pass.
 

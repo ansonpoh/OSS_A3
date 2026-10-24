@@ -77,3 +77,18 @@ def test_cli_fails_closed_on_missing_output(tmp_path):
     r = subprocess.run([sys.executable, gate, str(tmp_path / "missing.json"), str(ev)], cwd=REPO,
                        capture_output=True, text=True)
     assert r.returncode == 1 and '"ok": false' in r.stdout and "is missing" in r.stdout
+
+
+def test_cli_blocks_when_kill_switch_is_on(tmp_path):
+    out = tmp_path / "agent_output.json"
+    ev = tmp_path / "event.json"
+    out.write_text('{"items": [{"type": "add_labels", "labels": [{"name": "bug"}]}]}')
+    ev.write_text('{"issue": {"author_association": "NONE", "body": ""}}')
+    gate = os.path.join(REPO, ".github", "triage", "policy_gate.py")
+    run = lambda v: subprocess.run([sys.executable, gate, str(out), str(ev)], cwd=REPO, capture_output=True,
+                                   text=True, env={**os.environ, "TRIAGE_AGENT_ENABLED": v})
+    for value in ("false", "False", " FALSE "):
+        off = run(value)
+        assert off.returncode == 1 and "kill switch is on" in off.stdout, value
+    for value in ("", "true"):
+        assert run(value).returncode == 0, value

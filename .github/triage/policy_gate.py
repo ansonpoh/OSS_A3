@@ -9,7 +9,10 @@ the agent to run, so these rules are enforced rather than only instructed:
 - comments: at most 1, and `check_comment.py` must pass (links only to Rich
   files on master, never an issue/PR/discussion URL; code parses; footer);
 - an issue opened by a maintainer (OWNER, MEMBER or COLLABORATOR, after the
-  replay marker restores the filed role) gets no label and no comment.
+  replay marker restores the filed role) gets no label and no comment;
+- the kill switch: if TRIAGE_AGENT_ENABLED is "false" (in any case; passed
+  from the repository variable), nothing is written, even by a run that was
+  already past activation when the switch was set.
 
 Any violation, or a missing agent output file, exits 1: the detection job
 fails, and gh-aw's safe_outputs job (which needs detection to succeed) writes
@@ -72,6 +75,8 @@ def main():
     else:
         items = json.load(open(sys.argv[1])).get("items", [])
         problems = gate(items, issue)
+    if (os.environ.get("TRIAGE_AGENT_ENABLED") or "").strip().lower() == "false":
+        problems.append("kill switch is on (TRIAGE_AGENT_ENABLED=false)")
     print(json.dumps({"ok": not problems, "items": len(items), "problems": problems}, indent=2))
     sys.exit(1 if problems else 0)
 

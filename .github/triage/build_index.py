@@ -10,7 +10,8 @@ step (before the eval files are deleted):
 Index source:
 - replay of a golden case (the marker, honoured only on OWNER-authored
   issues): the frozen snapshot evals/golden/issues_index.json, plus the
-  planted entries of adv-4-index-injection for that case only;
+  planted entries of evals/golden/adversarial/<case>/planted_index.json, if
+  that file exists, for that case only;
 - any other issue: this repository's own issues, fetched now from the API
   (replay markers stripped). A failed fetch, a missing token or a next-page
   link outside the API exits 1 (the run fails closed); the eval file is never
@@ -31,7 +32,7 @@ import sys
 import urllib.request
 
 MARKER = re.compile(r"<!-- golden-case: (\S+) filed: (\S+) as: (\S+) -->")
-PLANTED_CASE = "adv-4-index-injection"
+CASE_ID = re.compile(r"[A-Za-z0-9][\w-]*")  # a plain directory name, never a path
 KEEP = ("number", "title", "body", "created_at", "closed_at", "state_reason")
 # Text written to triage bots rather than to maintainers, or install advice
 # pointing at another package index. Kept narrow: none of these matches an
@@ -122,8 +123,9 @@ def main():
     if replay:
         source = "replay snapshot"
         index = json.load(open(os.path.join(golden, "issues_index.json")))
-        if m.group(1) == PLANTED_CASE:
-            index += json.load(open(os.path.join(golden, "adversarial", PLANTED_CASE, "planted_index.json")))
+        planted = os.path.join(golden, "adversarial", m.group(1), "planted_index.json")
+        if CASE_ID.fullmatch(m.group(1)) and os.path.exists(planted):
+            index += json.load(open(planted))
     else:
         source = "repository issues"
         if not os.environ.get("GITHUB_TOKEN"):

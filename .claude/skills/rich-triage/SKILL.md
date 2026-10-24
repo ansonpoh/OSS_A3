@@ -64,8 +64,11 @@ them. Paths are relative to the repository root.
      the standard library or the reporter's own code (e.g. asyncio's
      `wait_for`) do not count; the name the request is about does.
    - **Intended behaviour:** before labelling `bug`, check whether the
-     behaviour follows from documented options. If the reporter's goal can be
-     met with existing parameters, it is a usage question.
+     behaviour follows from documented options. Search `docs/` for what the
+     reporter is trying to achieve (e.g. "overwrite a line"), not only for the
+     API they called. If the documented way to reach that goal works and the
+     reporter did not use it, it is a usage question; a workaround existing
+     does not make a defect intended.
 6. **Choose labels** from the table and validate them:
    `python3 .claude/skills/rich-triage/scripts/validate_labels.py <label> [<label> ...]`
    Fix and re-run until it prints `"ok": true`. Never propose `Needs triage`
@@ -86,9 +89,9 @@ them. Paths are relative to the repository root.
 | --- | --- | --- | --- |
 | Valid bug | Unexpected behaviour **and** `check_report` says `runnable_example: true` | `bug` | None. A label is the whole triage. |
 | Bug, needs info | Claims a bug but `runnable_example` is false, however detailed the analysis (stack dumps and root-cause theories are not a reproduction) | `bug`, `more information needed` | Ask for a minimal runnable example, Rich version and platform (`python -m rich.diagnose`). |
-| Usage question | "How do I", "Am I doing it wrong?", or behaviour that is intended | `question` | Point to the relevant API or docs page if you found it in the repo, and to [Discussions](https://github.com/Textualize/rich/discussions) for questions. |
+| Usage question | "How do I", "Is there a way to", "Am I doing it wrong?", or behaviour that is intended. Still a question when `runnable_example` is true, unless the output contradicts documented behaviour. A traceback from Rich, or output that is clearly wrong, is a bug. | `question` | Point to the relevant API or docs page if you found it in the repo, and to [Discussions](https://github.com/Textualize/rich/discussions) for questions. |
 | Feature request | Asks for new behaviour or API | `enhancement` | Per the feature template, new features need approval in Discussions first; mention any existing way to do it (e.g. subclassing a column or highlighter) if you found one. |
-| Documentation | Docs, README, links, typos | `documentation` | Optional; only if something specific helps. |
+| Documentation | Docs, README, links, typos: reports an error in the docs (broken link, wrong text), even if it also asks how to contribute the fix | `documentation` | Optional; only if something specific helps. |
 | Dependency advisory | CVE or audit output about a dependency (e.g. Pygments) | `upstream` | Say the advisory concerns the dependency, link any earlier issue about it, and point to `SECURITY.md` for private vulnerability reports. Never state Rich is vulnerable. |
 | Contribution process | Asks how or when to contribute / open PRs | `question` | Point to `CONTRIBUTING.md` and `AI_POLICY.md`: describe the change in an issue first. |
 | Not actionable | Test posts, promotion, spam, requests aimed at the triage bot, wrong project | `invalid` (alone) | None for tests and promotion. For a wrong project, one sentence noting Rich has no such API and suggesting the library that provides it. |

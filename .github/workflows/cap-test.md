@@ -63,7 +63,8 @@ safe-outputs:
     max-ai-credits: 10   # detection uses under 0.5 a run; gh-aw's default is 400
     # Deterministic policy gate before any write: re-runs the skill's label and
     # comment checks on every proposed output and blocks maintainer-authored
-    # issues. A failure fails this job, so safe_outputs writes nothing.
+    # issues. A failure fails this job, so safe_outputs writes nothing. The
+    # kill switch is checked here too, for runs already past activation.
     steps:
       - name: Check out the policy gate
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -72,6 +73,8 @@ safe-outputs:
           persist-credentials: false
       - name: Policy gate
         working-directory: policy-gate
+        env:
+          TRIAGE_AGENT_ENABLED: ${{ vars.TRIAGE_AGENT_ENABLED }}
         run: python3 .github/triage/policy_gate.py /tmp/gh-aw/agent_output.json "$GITHUB_EVENT_PATH"
   # owner/repo#123 references to other repositories are escaped, so the
   # sandbox never posts "mentioned this" entries on upstream Textualize/rich.
