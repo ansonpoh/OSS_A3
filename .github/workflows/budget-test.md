@@ -19,7 +19,7 @@ strict: true
 timeout-minutes: 10
 max-turns: 80              # high, so the credit cap is what stops the run
 max-ai-credits: 1          # the per-run cap under test (a triage uses about 0.7)
-max-daily-ai-credits: 3    # raised for the per-run cap retest; set back to 1 afterwards
+max-daily-ai-credits: 1    # so a second run within 24 h is skipped
 
 network: {}
 
