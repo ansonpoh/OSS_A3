@@ -17,8 +17,11 @@ Index source:
   link outside the API exits 1 (the run fails closed); the eval file is never
   used.
 
-Entries whose title or body address automated tools are quarantined: dropped
-from the agent's index, and only their count and numbers are logged.
+Entries whose title or body address automated tools, or redirect human
+readers (install advice next to a link off the allowlisted hosts, or a request
+to close or label other reports), are quarantined: dropped from the agent's
+index, and only their count and numbers are logged. The policy gate applies
+the same two rules to every issue a proposed comment cites.
 
   python build_index.py
 Env: GITHUB_EVENT_PATH; GITHUB_REPOSITORY, GITHUB_TOKEN (and GITHUB_API_URL)
@@ -50,6 +53,68 @@ ADDRESSES_TOOLS = [re.compile(p, re.I) for p in (
     r"(?<!\S)-i\s+https?://",
     r"\bPIP_(EXTRA_)?INDEX_URL\b",
 )]
+# Text written to human readers that sends them elsewhere: install advice next
+# to a link off the allowlist, or a request to close or label other reports.
+# Hosts anyone can publish on are allowed only under Rich's own paths, so a
+# fork, gist, Pages site or PyPI project of someone else is foreign. Install
+# advice is a pip/uv/pipx/conda/poetry command, "install/download ... from",
+# a wheel, or curl/wget piped to a shell, in the same paragraph as the link
+# and within 200 characters of it: a bare "install", or a pip command a
+# paragraph away from an ordinary link (Poetry's docs, a Stack Overflow
+# answer), both occur in the upstream snapshot.
+SANDBOX = "ansonpoh/OSS_A3"  # when GITHUB_REPOSITORY is not set (tests, replays)
+ALLOWED_ANYWHERE = ("python.org",)  # and its subdomains
+ALLOWED_EXACT = ("files.pythonhosted.org", "textualize.io", "www.textualize.io", "textual.textualize.io",
+                 "textualize.github.io", "rich.readthedocs.io")
+OWNER_PATHS = ("github.com", "www.github.com", "raw.githubusercontent.com", "objects.githubusercontent.com")
+PYPI = ("pypi.org", "www.pypi.org")
+# A URL ends at whitespace or )]>"' so both halves of [text](target) are seen.
+URL = re.compile(r"(?:\bhttps?://|(?<![\w.@/-])www\.)[^\s)\]>\"'<`]+", re.I)
+INSTALL_ADVICE = re.compile(
+    rf"\b(pip[x3]?{W}(install|download)|uv{W}(add|pip{W}install|tool{W}install)|conda{W}install"
+    rf"|poetry{W}add|(install|download){W}[^.\n]{{0,60}}?\bfrom"
+    rf"|(temporary|patched|fixed|hotfix|pre-?built|nightly|custom|unofficial){W}wheels?|wheels?{W}(files?|builds?))\b"
+    # curl/wget as a command (line start, prompt or code span), not a build log's RUN line
+    r"|(^|[$>`]\s*)(sudo\s+)?(curl|wget)\b[^|\n]{0,200}\|\s*(sudo\s+)?(ba|z|da)?sh\b", re.I | re.M)
+WHEEL = re.compile(r"\.whl\b", re.I)  # a link to a wheel is install advice in itself
+NEAR = 200
+PARAGRAPH = re.compile(r"\n[ \t\r]*\n")
+OTHERS = r"(other|later|newer|new|future|subsequent|following|further)"
+REPORTS = r"(reports?|issues?|duplicates?|tickets?|ones)"
+CLOSES_OTHERS = [re.compile(p, re.I) for p in (
+    # "please mark newer duplicates invalid", "close any later reports"
+    rf"\b(close|label|mark|tag|flag)({W}(any|all|the|those|such|every))?{W}{OTHERS}({W}\w+)?{W}{REPORTS}\b",
+    # "close duplicates of this"
+    rf"\b(close|label|mark|tag|flag)({W}(any|all|the|those|such|every))?{W}duplicates?{W}of{W}(this|it)\b",
+    # "later reports ... so please close them", "any later report about X,
+    # label it wontfix", "new issues should be closed", "subsequent reports
+    # get the wontfix label"
+    rf"\b{OTHERS}{W}{REPORTS}\b[^.!?\n]{{0,150}}?(\b(close|label|mark|tag|flag)\s+(them|it|those|these)\b"
+    r"|\b(should|must|can|will|are\s+to)\s+be\s+(closed|labell?ed|marked|tagged)\b|\b(wontfix|invalid)\b)",
+)]
+
+
+def this_repo():
+    return (os.environ.get("GITHUB_REPOSITORY") or SANDBOX).lower()
+
+
+def foreign(url):
+    """True unless the URL is on the allowlist (host, and path where anyone can publish)."""
+    rest = re.sub(r"^https?://", "", url, flags=re.I).replace("\\", "/")
+    authority, _, path = rest.partition("/")
+    host = re.split(r"[?#]", authority)[0].rsplit("@", 1)[-1].split(":", 1)[0].lower().rstrip(".")
+    path = "/" + re.split(r"[?#]", path)[0].lower()
+    if host in ALLOWED_EXACT or any(host == h or host.endswith("." + h) for h in ALLOWED_ANYWHERE):
+        return False
+    if host in OWNER_PATHS:
+        if any(path.startswith(f"/{o}/") or path == f"/{o}" for o in ("textualize", this_repo())):
+            return False
+        # Another project's issue, PR or CI page is a reference, not something to install.
+        return not (host in OWNER_PATHS[:2] and re.match(
+            r"/[^/]+/[^/]+/(issues|pull|pulls|discussions|commit|commits|actions|checks|compare)(/|$)", path))
+    if host in PYPI:
+        return not re.fullmatch(r"/(project|simple)/rich(/.*)?", path)
+    return True
 
 
 def fetch_issues(repo, token, api="https://api.github.com"):
@@ -91,9 +156,27 @@ def addresses_tools(r):
     return any(p.search(r["title"] or "") or p.search(r["body"] or "") for p in ADDRESSES_TOOLS)
 
 
+def redirects_readers(r):
+    for text in (r["title"] or "", r["body"] or ""):
+        if any(p.search(text) for p in CLOSES_OTHERS):
+            return True
+        for para in PARAGRAPH.split(text):
+            # Install advice is looked for with the links blanked out, so a
+            # URL's own path ("/download/...") is not advice.
+            plain = URL.sub(lambda m: " " * len(m.group(0)), para)
+            advice = [m.span() for m in INSTALL_ADVICE.finditer(plain)]
+            for u in URL.finditer(para):
+                if foreign(u.group(0)) and WHEEL.search(u.group(0)):
+                    return True
+                if foreign(u.group(0)) and any(u.start() - NEAR <= end and start <= u.end() + NEAR
+                                                    for start, end in advice):
+                    return True
+    return False
+
+
 def quarantine(index):
     """(entries kept, numbers dropped)."""
-    held = [r["number"] for r in index if addresses_tools(r)]
+    held = [r["number"] for r in index if addresses_tools(r) or redirects_readers(r)]
     return [r for r in index if r["number"] not in held], held
 
 
