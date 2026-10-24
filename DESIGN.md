@@ -143,7 +143,7 @@ Held-out 5/5. Misses: 4068, 4097 labelled `bug` for usage questions; 4204 `quest
 
 ## 9. AI-use statement
 
-I used Claude Code for general support. It drafted most of the workflow, skill, scripts, evaluation harness
+I used Claude Code for general support. It drafted parts of the workflow, skill, scripts, evaluation harness
 and tests, the first drafts of this document and the case reviews, and ran the evaluations. I chose the
 project, model provider and constraints, made the key design decisions, edited the drafts and decided the
 case verdicts, checking each against the upstream evidence (`evidence.json`) and these claims against the run
