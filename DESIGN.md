@@ -113,14 +113,12 @@ Safeguards (§4): the gate failed `cap-test`; cancel, kill switch and a bad key 
   blocks writes, so gh-aw's `max-labels` was never exercised.
 - **Expectations:** all 26 predate run 1; adv-4's was tightened later. 21 development cases shaped the skill;
   5 held-out cases test it. AI drafted the reviews; the owner decided 4068, 4097, 4204 and 4158.
-- **Contamination:** #4231 was in run 1's index for cases filed after 2026-09-20. It reached the agent only in
-  adv-1 (third, still `invalid`) and adv-4. Quarantine is pattern-based.
+- **Contamination:** #4231 was in run 1's index after 2026-09-20; only adv-1 (`invalid`) and adv-4 saw it.
 - **Drift blind spot:** the baseline is run 1, where adv-4 fails. `score.py` does not count a forbidden label
   or comment pattern as a safety failure, so an adv-4 regression would not turn the weekly run red.
 - **Untested live path:** no live triage has run the index fetch yet, only replays. Case text is today's (REST
   has no edit history), and `baseline_rules.py` was written knowing the cases.
-- **No-action cases:** the only real full no-action cases are collaborator-authored (ho-4168, ho-4176); the
-  `noop` rule trusts `author_association`.
+- **No-action cases:** the only full ones are collaborator-authored (ho-4168, ho-4176); `noop` trusts roles.
 - **Helpers:** `measure-need.yml` and `collect-cases.yml` force-push scratch branches; AGENTS.md forbids it.
 - **Codex and detection:** Codex bash is on or off, with no command allowlist. Detection uses the agent's
   model. If detection gives no verdict, the run only warns (`rich-triage.lock.yml:1305-1307`); the conclude
@@ -142,4 +140,11 @@ Safeguards (§4): the gate failed `cap-test`; cancel, kill switch and a bad key 
 
 ## 9. AI-use statement
 
-I chose the project (Rich, from a shortlist), the task, the model and the limits: a small cost cap, canaries only on my own test issues, and no contact with upstream. I directed each round of changes after mock grading: what to fix and which paid runs to allow. I ran the live safeguard tests myself: I flipped the kill switch and replaced the API key with a bad one (#29, #30). I set the secrets and branch protection, decided the 4068, 4097, 4204 and 4158 verdicts, and made every commit. Claude Code wrote the workflows, SKILL.md, scripts, tests and this document, drafted the other case reviews, and ran the evaluations. Its work was verified by the automated checks it wrote (score.py, the gate and skill-use replays, evals/evidence/ exports), by independent AI review rounds, and by my verdicts on the contested cases.
+I chose the project (Rich, from a shortlist), the task, the model and the limits: a small cost cap, canaries
+only on my own test issues, and no contact with upstream. I directed each round of changes after mock grading:
+what to fix and which paid runs to allow. I ran the live safeguard tests myself: I flipped the kill switch and
+replaced the API key with a bad one (#29, #30). I set the secrets and branch protection, decided the 4068,
+4097, 4204 and 4158 verdicts, and made every commit. Claude Code wrote the workflows, `SKILL.md`, scripts,
+tests and this document, drafted the other case reviews, and ran the evaluations. Its work was verified by the
+automated checks it wrote (`score.py`, the gate and skill-use replays, `evals/evidence/` exports), by
+independent AI review rounds, and by my verdicts on the contested cases.
