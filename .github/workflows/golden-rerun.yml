@@ -30,11 +30,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Keep the accepted baseline
-        run: cp evals/golden/results.md "$RUNNER_TEMP/baseline.md" 2>/dev/null || : > "$RUNNER_TEMP/baseline.md"  # none before the first accepted run
+        run: |
+          # No accepted baseline exists before the first reviewed run.
+          cp evals/golden/results.md "$RUNNER_TEMP/baseline.md" 2>/dev/null || touch "$RUNNER_TEMP/baseline.md"
       - name: Replay golden cases
         env:
           GH_TOKEN: ${{ secrets.GOLDEN_REPLAY_TOKEN }}
         run: |
+          python3 evals/setup_sandbox.py "$GITHUB_REPOSITORY"   # Rich's labels (idempotent)
           rm -f evals/golden/replay_map.json
           python3 evals/replay.py "$GITHUB_REPOSITORY"
       - name: Wait for triage runs
