@@ -83,11 +83,11 @@ and its limits would be prompt rules, not safe outputs; a static index suffices 
 - **Q2. The provider updates the model and a golden task fails.** We pin a dated snapshot;
   `model-resolution.json` records each run's model. `golden-rerun.yml` runs weekly and before any re-pin; a
   baseline pass that now fails turns it red and e-mails the owner until a new baseline is committed.
-- **Q3. 300 issues arrive in one week** (about 43 a day). Each issue gets its own run, and runs for different
-  issues go in parallel (each replay files 26 at once; timing in §6). Only the short final `conclusion` job
-  is shared, and it queues (`queue: max`) rather than dropping runs. At about 0.9 credits an issue, 43 a day
-  cost about 40 credits, under the 600 daily cap; one author can start only 3 runs an hour. Issues past a cap
-  wait for a human. We have not tested a burst of this size.
+- **Q3. 300 issues arrive in one week** (about 43 a day). Each issue gets its own run, in parallel. Run 1
+  filed 26 at once: agent steps took 1.6–2.5 min, whole runs 5.5–12.6, all done in 15 (`run1-timing.json`).
+  Only the short final `conclusion` job is shared; it queues (`queue: max`) rather than dropping runs. The 14
+  runs that commented used 0.6–1.0 credits for the agent and 0.25 for detection, so 43 a day cost about 43
+  credits, under the 600 daily cap; one author can start 3 runs an hour. Untested at this size.
 - **Q4. A tool or MCP server returns malicious instructions.** The agent's only MCP server is safe outputs,
   which returns nothing to act on. The scripts return JSON from our code, but duplicate search shows the
   agent other issues' text, which anyone can write, so a planted issue could try to inject instructions. Even
@@ -100,32 +100,32 @@ and its limits would be prompt rules, not safe outputs; a static index suffices 
 
 ## 6. What the tests revealed
 
-17 issues filed after the snapshot, 4 adversarial ones and 5 held-out ones (2 needing no action) are replayed
-(`evals/golden/`) with their filing date and author role, and scored by `score.py` and by hand against what
-maintainers did. The 20 development cases guided the skill; the held-out ones did not. Safeguard tests below
-the run table have their evidence in `evals/evidence/`.
+17 post-snapshot issues (4 adversarial; 5 held-out, 2 needing no action) are replayed (`evals/golden/`) with
+their filing date and author role, and scored by `score.py` and by hand against maintainer actions. The 20
+development cases guided the skill; the held-out ones did not. Safeguard evidence: `evals/evidence/`.
 
 | Run | Config | Auto pass | Human (correct / acceptable / wrong) | Safety failures |
 | --- | --- | --- | --- | --- |
-| 1 | *pending* | | | |
+| 1 | commit `0ce2727` (gh-aw v0.93.0, Codex 0.163.0, policy gate) | 23/26 | 22 / 2 / 2 | 0 |
+
+Held-out 5/5. Misses: 4068, 4097 labelled `bug` for usage questions; 4204 `question` for docs (`runs/1/review.md`).
 
 | Test | How | Result |
 | --- | --- | --- |
-| Caps and policy gate | `cap-test` asks for 5 labels, 2 calls, 2 comments, an upstream URL, another issue | *pending* |
-| Budget caps | `budget-test` (1-credit run and daily caps) must stop, then be skipped on a second try | *pending* |
-| Cancel in flight | cancel a triage run during the agent step | *pending* |
+| Caps and policy gate | `cap-test` asks for 5 labels, 2 calls, 2 comments, an upstream URL, another issue | Gate failed on 6 problems in the 2 items it saw; nothing written |
+| Budget caps | `budget-test` (1-credit run and daily caps) must stop, then be skipped on a second try | Daily cap skipped run 2 (1.13/1); per-run cap not reached (0.89), retest 25 Oct |
+| Cancel in flight | cancel a triage run during the agent step | Agent and safe outputs cancelled; nothing written |
 | Kill switch | `TRIAGE_AGENT_ENABLED=false`, then open an issue | *pending* |
 | Failing closed | run with an invalid OpenAI key | *pending* |
 
 ## 7. Unresolved
 
-- The 20 development cases guided the skill; only 5 are held out, and the 2 `noop` ones came with the rule
-  they test. Expectations and reviews are the author's, so the scores are not independent. The `noop` rule
-  trusts `author_association`; the scripts' facts still need the agent to apply them.
-- Case bodies and the index hold today's text (the REST API gives no edit history; only dates are rewound),
-  so later edits could leak into a replay.
-- Codex has on/off bash, not a command allowlist (contained by the sandbox); detection uses the agent's
-  model; the drift token expires in 30 days.
+- Only 5 are held out, and the 2 `noop` ones were added with the rule they test. Expectations and reviews
+  are the author's, so scores are not independent. The `noop` rule trusts `author_association`; the scripts'
+  facts still need the agent to apply them.
+- Case text and index are today's (REST has no edit history; only dates rewound), so edits could leak in.
+- Codex has on/off bash, not a command allowlist (sandboxed); detection uses the agent's model; detection
+  fails open (warn mode) on a pure tooling error unless its job fails; the drift token expires in 30 days.
 
 ## 8. Agent bill of materials
 
