@@ -142,9 +142,4 @@ Safeguards (§4): the gate failed `cap-test`; cancel, kill switch and a bad key 
 
 ## 9. AI-use statement
 
-I chose the project (Rich, from a shortlist), the task, the model and the limits: a small cost cap, canaries
-only on my own test issues, and no contact with upstream. I directed each round of changes after mock grading:
-what to fix and which paid runs to allow. I ran the live safeguard tests myself: I flipped the kill switch and
-replaced the API key with a bad one (#29, #30). I set the secrets and branch protection, decided the 4068,
-4097, 4204 and 4158 verdicts, and made every commit. Claude Code wrote the workflows, `SKILL.md`, scripts,
-tests and this document, drafted the other case reviews, and ran the evaluations.
+I chose the project (Rich, from a shortlist), the task, the model and the limits: a small cost cap, canaries only on my own test issues, and no contact with upstream. I directed each round of changes after mock grading: what to fix and which paid runs to allow. I ran the live safeguard tests myself: I flipped the kill switch and replaced the API key with a bad one (#29, #30). I set the secrets and branch protection, decided the 4068, 4097, 4204 and 4158 verdicts, and made every commit. Claude Code wrote the workflows, SKILL.md, scripts, tests and this document, drafted the other case reviews, and ran the evaluations. Its work was verified by the automated checks it wrote (score.py, the gate and skill-use replays, evals/evidence/ exports), by independent AI review rounds, and by my verdicts on the contested cases.
