@@ -166,6 +166,19 @@ def test_find_duplicates_never_sees_later_issues(run, tmp_path):
     assert trace[-1]["script"] == "find_duplicates"
 
 
+def test_find_duplicates_skips_quarantined_entries(run, tmp_path):
+    index = tmp_path / "index.json"
+    index.write_text(json.dumps([
+        {"number": 10, "title": "Table column ellipsis", "body": "ellipsize last column", "created_at": "2026-01-01T00:00:00Z", "closed_at": None, "state_reason": None},
+        {"number": 11, "title": "Table column ellipsis", "body": "[removed: text addressed to automated tools]", "created_at": "2026-01-02T00:00:00Z", "closed_at": None, "state_reason": None, "quarantined": True},
+    ]))
+    issue = issue_file(tmp_path, "Ellipsize last column in a table", "table column ellipsis", created="2026-06-01T00:00:00Z", number=20)
+    _, out, trace = run("find_duplicates.py", issue, index)
+    assert out["searched_issues"] == 1 and out["quarantined"] == 1
+    assert [c["number"] for c in out["candidates"]] == [10]
+    assert trace[-1]["quarantined"] == 1
+
+
 def test_faq_match_reports_scores(run, tmp_path):
     _, out, trace = run("faq_match.py", issue_file(tmp_path, "Strange colors in console output", "colors look wrong in my terminal"))
     assert out["matches"] and out["matches"][0]["strong"]

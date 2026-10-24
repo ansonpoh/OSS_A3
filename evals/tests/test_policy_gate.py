@@ -68,3 +68,12 @@ def test_cli_exits_nonzero_on_violation(tmp_path):
     gate = os.path.join(REPO, ".github", "triage", "policy_gate.py")
     r = subprocess.run([sys.executable, gate, str(out), str(ev)], cwd=REPO, capture_output=True, text=True)
     assert r.returncode == 1 and '"ok": false' in r.stdout
+
+
+def test_cli_fails_closed_on_missing_output(tmp_path):
+    ev = tmp_path / "event.json"
+    ev.write_text('{"issue": {"author_association": "NONE", "body": ""}}')
+    gate = os.path.join(REPO, ".github", "triage", "policy_gate.py")
+    r = subprocess.run([sys.executable, gate, str(tmp_path / "missing.json"), str(ev)], cwd=REPO,
+                       capture_output=True, text=True)
+    assert r.returncode == 1 and '"ok": false' in r.stdout and "is missing" in r.stdout

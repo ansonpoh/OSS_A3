@@ -13,10 +13,13 @@ on:
 # and queued runs (evaluated when each run starts). See DESIGN.md.
 if: ${{ vars.TRIAGE_AGENT_ENABLED != 'false' }}
 
-# Least privilege: the agent job can only read repository contents. Writes
-# happen only in the separate safe-outputs job, limited to the entries below.
+# Least privilege: the agent job can only read repository contents and issues
+# (the prep step builds the duplicate index from them; the agent gets no
+# token). Writes happen only in the separate safe-outputs job, limited to the
+# entries below.
 permissions:
   contents: read
+  issues: read
 
 engine:
   id: codex
@@ -26,7 +29,7 @@ engine:
 strict: true
 timeout-minutes: 10
 max-turns: 25
-max-ai-credits: 50          # per-run budget (about US$0.50)
+max-ai-credits: 5           # per-run budget (about US$0.05)
 max-daily-ai-credits: 600   # rolling 24h budget for this workflow (about US$6)
 user-rate-limit:
   max-runs-per-window: 3    # per issue author per hour
@@ -103,47 +106,20 @@ skills:
 steps:
   - name: Prepare triage inputs
     env:
-      INDEX: evals/golden/issues_index.json
+      # Reads this repository's issues for duplicate search (replays use the
+      # frozen snapshot instead); the agent itself never gets the token.
+      GITHUB_TOKEN: ${{ github.token }}
     run: |
       set -euo pipefail
-      mkdir -p /tmp/gh-aw/agent
       # The issue comes from the event payload, never from the issue text itself.
-      python3 - <<'PY'
-      import json, os, re
-      ev = json.load(open(os.environ["GITHUB_EVENT_PATH"]))["issue"]
-      body = ev.get("body") or ""
-      created = ev["created_at"]
-      # Replay of a historical case: the repository owner's harness records
-      # the original filing time so duplicate search cannot see later issues.
-      # Only honoured for OWNER-authored issues.
-      # The replay posts as the owner, so the original author role is
-      # restored too; the agent never sees that a case is a replay.
-      assoc = ev.get("author_association")
-      m = re.search(r"<!-- golden-case: (\S+) filed: (\S+) as: (\S+) -->", body)
-      if m and assoc == "OWNER":
-          created, assoc = m.group(2), m.group(3)
-          body = body.replace(m.group(0), "").rstrip()
-      issue = {"number": ev["number"], "title": ev["title"], "body": body,
-               "author_association": assoc,
-               "created_at": created, "labels": [l["name"] for l in ev.get("labels", [])]}
-      json.dump(issue, open("/tmp/gh-aw/agent/issue.json", "w"), indent=2)
-      # Duplicate index as it stood when the issue was filed: only earlier
-      # issues, and any later close is hidden.
-      idx = []
-      for r in json.load(open(os.environ["INDEX"])):
-          if r["created_at"] >= created:
-              continue
-          if r.get("closed_at") and r["closed_at"] >= created:
-              r = {**r, "closed_at": None, "state_reason": None}
-          idx.append(r)
-      json.dump(idx, open("/tmp/gh-aw/agent/issues_index.json", "w"))
-      print(f"issue #{issue['number']} as of {created}; {len(idx)} earlier issues indexed")
-      PY
+      python3 .github/triage/build_index.py
       # Expected answers must never be visible to the agent: delete them and
       # the write-ups that discuss them (DESIGN.md, README.md), and replace the
       # checkout's git history (which still holds them) with an empty
       # repository that keeps the origin remote gh-aw's later steps use.
-      rm -rf evals scripts/metrics DESIGN.md README.md .git
+      # build_index.py goes too, so the agent never sees the quarantine patterns
+      # (the policy gate runs from its own checkout in the detection job).
+      rm -rf evals scripts/metrics DESIGN.md README.md .git .github/triage/build_index.py
       # The canary workflows' prompts deliberately ask for forbidden outputs.
       rm -f .github/workflows/cap-test.* .github/workflows/budget-test.*
       git init -q

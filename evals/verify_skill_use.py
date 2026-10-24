@@ -10,6 +10,10 @@ engine's transcript (agent-session.jsonl, written by Codex, not the agent):
     script, and every script the transcript ran appears in the trace
   - forged: no transcript command mentions skill-trace (the agent never wrote
     to or edited the trace itself)
+  - complete: the run ran every script of SKILL.md steps 1-4, plus
+    validate_labels if it added labels and check_comment if it posted a
+    comment; the only exception is a maintainer-authored case (input.json)
+    that ended in noop (step 0)
 
   python evals/verify_skill_use.py [RUN_DIR ...]   # default: every runs/*/
 Writes evals/golden/skill_use.md; exit 1 if any run fails a check.
@@ -22,6 +26,17 @@ import sys
 
 ROOT = os.path.join(os.path.dirname(__file__), "golden")
 SCRIPT = re.compile(r"rich-triage/scripts/(\w+)\.py")
+REQUIRED = {"check_report", "faq_match", "find_duplicates", "check_api"}
+FOR_OUTPUT = {"add_labels": "validate_labels", "add_comment": "check_comment"}
+MAINTAINERS = {"OWNER", "MEMBER", "COLLABORATOR"}
+
+
+def author_role(cid):
+    for sub in ("cases", "adversarial", "heldout"):
+        p = os.path.join(ROOT, sub, cid, "input.json")
+        if os.path.exists(p):
+            return json.load(open(p, encoding="utf-8")).get("author_association")
+    return None
 
 
 def commands(session):
@@ -51,6 +66,13 @@ def check(case_dir):
         problems.append(f"trace {traced} != transcript {ran}")
     if any("skill-trace" in c for c, _ in cmds):
         problems.append("agent command touched skill-trace")
+    out_path = os.path.join(case_dir, "safeoutputs.jsonl")
+    outputs = [json.loads(l)["type"] for l in open(out_path, encoding="utf-8") if l.strip()] if os.path.exists(out_path) else []
+    maintainer_noop = author_role(os.path.basename(case_dir)) in MAINTAINERS and set(outputs) <= {"noop"}
+    required = REQUIRED | {FOR_OUTPUT[o] for o in outputs if o in FOR_OUTPUT}
+    missing = sorted(required - set(ran))
+    if missing and not maintainer_noop:
+        problems.append(f"mandatory scripts not run: {missing}")
     return len(cmds), ran, problems
 
 

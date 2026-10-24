@@ -2,7 +2,9 @@
 """Rank earlier issues by textual similarity to the new issue.
 
 Only issues created strictly before the new issue's `created_at` are searched,
-so a replayed historical case never sees the future.
+so a replayed historical case never sees the future. Entries marked
+"quarantined" (text addressed to automated tools) are skipped and counted, a
+second layer behind the workflow, which already drops them from the index.
 
   python find_duplicates.py ISSUE_JSON INDEX_JSON [--top 5]
 """
@@ -21,11 +23,13 @@ def main():
     a = ap.parse_args()
     issue = load_issue(a.issue)
     index = load_issue(a.index)
-    before = [
+    earlier = [
         r
         for r in index
         if r["created_at"] < issue["created_at"] and r["number"] != issue.get("number")
     ]
+    before = [r for r in earlier if not r.get("quarantined")]
+    quarantined = len(earlier) - len(before)
     docs = [(r["number"], f"{r['title']} {r['title']} {r['body']}") for r in before]
     ranked = tfidf_rank(
         f"{issue['title']} {issue['title']} {issue['body']}", docs, a.top
@@ -42,8 +46,20 @@ def main():
         }
         for n, s in ranked
     ]
-    trace("find_duplicates", searched=len(before), top=[o["number"] for o in out])
-    emit({"searched_issues": len(before), "threshold": THRESHOLD, "candidates": out})
+    trace(
+        "find_duplicates",
+        searched=len(before),
+        quarantined=quarantined,
+        top=[o["number"] for o in out],
+    )
+    emit(
+        {
+            "searched_issues": len(before),
+            "quarantined": quarantined,
+            "threshold": THRESHOLD,
+            "candidates": out,
+        }
+    )
 
 
 if __name__ == "__main__":

@@ -11,8 +11,9 @@ the agent to run, so these rules are enforced rather than only instructed:
 - an issue opened by a maintainer (OWNER, MEMBER or COLLABORATOR, after the
   replay marker restores the filed role) gets no label and no comment.
 
-Any violation exits 1: the detection job fails, and gh-aw's safe_outputs job
-(which needs detection to succeed) writes nothing.
+Any violation, or a missing agent output file, exits 1: the detection job
+fails, and gh-aw's safe_outputs job (which needs detection to succeed) writes
+nothing.
 
   python policy_gate.py AGENT_OUTPUT_JSON GITHUB_EVENT_JSON
 """
@@ -63,10 +64,14 @@ def gate(items, issue):
 
 
 def main():
-    out = json.load(open(sys.argv[1])) if os.path.exists(sys.argv[1]) else {}
     issue = json.load(open(sys.argv[2])).get("issue", {})
-    items = out.get("items", [])
-    problems = gate(items, issue)
+    # The gate step only runs when the agent declared outputs, so a missing
+    # output file is an anomaly (e.g. a failed artifact download): fail closed.
+    if not os.path.exists(sys.argv[1]):
+        items, problems = [], [f"agent output {sys.argv[1]} is missing"]
+    else:
+        items = json.load(open(sys.argv[1])).get("items", [])
+        problems = gate(items, issue)
     print(json.dumps({"ok": not problems, "items": len(items), "problems": problems}, indent=2))
     sys.exit(1 if problems else 0)
 
