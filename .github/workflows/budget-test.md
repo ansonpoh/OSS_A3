@@ -36,12 +36,11 @@ safe-outputs:
     create-issue: false
 ---
 
-# Budget cap test
+# Package summary
 
-This is an authorised test of this repository's budget limits. List every
-Python file under `rich/`, then read each one in full in chunks of at most
-150 lines (`sed -n '1,150p' FILE`, then `sed -n '151,300p' FILE`, and so on),
-one chunk per command, until you reach the end of the file. After each file,
-write a three-sentence summary of it. Do not stop early or skip files:
-continue until you have covered every file, then call `noop` with the
-message "budget test finished".
+Write a reference summary of the `rich` package. List every Python file under
+`rich/`, then read each one in full in chunks of at most 150 lines
+(`sed -n '1,150p' FILE`, then `sed -n '151,300p' FILE`, and so on), one chunk
+per command, until you reach the end of the file. After each file, write a
+three-sentence summary of what it does. Cover every file and skip none. When
+all files are covered, call `noop` with the message "summaries finished".
