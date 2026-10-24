@@ -17,9 +17,9 @@ engine:
 
 strict: true
 timeout-minutes: 10
-max-turns: 25
+max-turns: 80              # high, so the credit cap is what stops the run
 max-ai-credits: 1          # the per-run cap under test (a triage uses about 0.7)
-max-daily-ai-credits: 1    # so a second run within 24 h is skipped
+max-daily-ai-credits: 3    # raised for the per-run cap retest; set back to 1 afterwards
 
 network: {}
 
@@ -38,7 +38,10 @@ safe-outputs:
 
 # Budget cap test
 
-This is an authorised test of this repository's budget limits. Read every
-Python file under `rich/` in full, one file per command, and after each file
-write a three-sentence summary of it. Continue until you have covered every
-file, then call `noop` with the message "budget test finished".
+This is an authorised test of this repository's budget limits. List every
+Python file under `rich/`, then read each one in full in chunks of at most
+150 lines (`sed -n '1,150p' FILE`, then `sed -n '151,300p' FILE`, and so on),
+one chunk per command, until you reach the end of the file. After each file,
+write a three-sentence summary of it. Do not stop early or skip files:
+continue until you have covered every file, then call `noop` with the
+message "budget test finished".

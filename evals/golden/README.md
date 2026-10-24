@@ -20,7 +20,7 @@ cases below are not. Each case folder holds:
   verdict. Earlier kept runs are in `runs/`.
 
 Scored runs add `results.md` (automatic scores of the latest run, which is also
-the accepted drift baseline), `review.md` (index of the human reviews of every
+the accepted drift baseline), `review.md` (index of the reviews of every
 output, one per run in `runs/<n>/review.md`, with case details in
 `review_packet.md`, built by `evals/review_packet.py`) and `runs/<label>/` (each kept run's results and
 per-case outputs, saved by `evals/snapshot.py`, with test logs under `logs/`).
@@ -29,7 +29,7 @@ reviewed runs are also committed here, under `runs/<n>/logs/`.
 
 The automatic `comment_mentions_any` check is a case-insensitive substring
 match, so it can pass on a passing mention: "Discussions" also matches "the
-width allocation discussion in #2890". The human review catches this;
+width allocation discussion in #2890". The review catches this;
 expectations are not changed after a run.
 
 `issues_index.json` is a snapshot of every upstream issue (title, dates, first

@@ -1,6 +1,6 @@
 # Safeguard evidence
 
-These are exports of the Actions run and job JSON, plus the state of test issue #27, for the safeguard canaries in DESIGN §6.
+These are exports of the Actions run and job JSON, plus the state of test issues #27, #29 and #30, for the safeguard canaries in DESIGN §6.
 
 | File | What it shows |
 | --- | --- |
@@ -9,3 +9,5 @@ These are exports of the Actions run and job JSON, plus the state of test issue 
 | `budget-test-run-40070704485.json` | Agent used 0.89 of its 1-credit run cap and stopped by itself after a truncated read, so the per-run cap was not reached; this run's 1.13 credits (agent plus detection) used up the daily cap. |
 | `budget-test-run-40071177020.json` | Same label re-added 7 minutes later; the daily guardrail measured 1.13/1 and skipped agent, detection and safe_outputs. |
 | `run1-timing.json` | Wall-clock of each of run 1's 26 triage runs and their agent jobs, from the Actions API. |
+| `kill-switch-run-40073460982.json` | TRIAGE_AGENT_ENABLED=false; the triage run on issue #29 was skipped with every job skipped; #29 has no labels, and its only comment is the FAQ bot's welcome (github-actions[bot], 07:16:19). |
+| `fail-closed-run-40073585671.json` | OPENAI_API_KEY replaced with an invalid value; on #30 the agent failed at "Execute Codex CLI", safe_outputs succeeded but wrote nothing, and the run concluded failure; #30 has no labels, and its only comment is the FAQ bot's. |

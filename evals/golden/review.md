@@ -1,6 +1,6 @@
 # Reviews
 
-Human review of every output, one file per run.
+Review of every output, one file per run (drafted with AI help; the owner decided the contested cases).
 
 | Run | Config | Auto score | Review | Correct / acceptable / wrong |
 | --- | --- | --- | --- | --- |
