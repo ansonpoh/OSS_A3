@@ -35,9 +35,10 @@ def quote(text):
     return "\n".join("> " + line for line in text.splitlines()) or "> (empty)"
 
 
-def what_happened(ev):
+def what_happened(ev, kind):
     if ev is None:
-        return ["Constructed adversarial case: no upstream history."]
+        word = "adversarial" if kind.startswith("adversarial") else "held-out"
+        return [f"Constructed {word} case: no upstream history."]
     lines = [
         f"Final state: **{ev['final_state']}**"
         + (f" ({ev['state_reason']})" if ev.get("state_reason") else "")
@@ -76,7 +77,7 @@ def case_section(d):
         quote(clean(inp["body"], BODY_CHARS)),
         "",
     ]
-    out += ["**What really happened upstream:**", "", *what_happened(ev), ""]
+    out += ["**What really happened upstream:**", "", *what_happened(ev, exp["kind"]), ""]
     out.append(
         f"**Expected:** labels include {exp['labels_include'] or '-'}, exclude {exp['labels_exclude'] or '-'}; "
         f"comment {exp['comment']}. {exp['rationale']}"
@@ -100,9 +101,11 @@ def case_section(d):
 
 
 def main():
-    dirs = sorted(glob.glob(os.path.join(ROOT, "cases", "*"))) + sorted(
-        glob.glob(os.path.join(ROOT, "adversarial", "*"))
-    )
+    dirs = [
+        d
+        for sub in ("cases", "adversarial", "heldout")
+        for d in sorted(glob.glob(os.path.join(ROOT, sub, "*")))
+    ]
     head = [
         "# Review packet for the submitted run",
         "",

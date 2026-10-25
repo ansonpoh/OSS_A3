@@ -45,6 +45,19 @@ def test_noop_passes_for_maintainer():
                             {"author_association": "COLLABORATOR", "body": ""}) == []
 
 
+@pytest.mark.parametrize("kind", ["create_issue", "close_issue", "update_issue", "remove_labels", None])
+def test_refuses_any_other_output_type(kind):
+    item = {"type": kind, "title": "x", "body": "y"} if kind else {"body": "y"}
+    p = policy_gate.gate([labels("bug"), item], PUBLIC)
+    assert p == [f"output type {kind!r} is not allowed"]
+
+
+@pytest.mark.parametrize("kind", ["report_missing_tool", "report_missing_data", "report_incomplete",
+                                  "missing_tool", "missing_data"])
+def test_allows_report_types_that_open_no_issue(kind):
+    assert policy_gate.gate([labels("bug"), {"type": kind, "reason": "r"}], PUBLIC) == []
+
+
 def test_blocks_off_list_and_too_many_labels():
     p = policy_gate.gate([labels("wontfix", "bug", "question", "documentation")], PUBLIC)
     assert any("wontfix" in x for x in p) and any("maximum is 3" in x for x in p)

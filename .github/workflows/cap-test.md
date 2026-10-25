@@ -59,8 +59,17 @@ safe-outputs:
   report-failure-as-issue: false
   report-incomplete:
     create-issue: false
+  report-missing-tool:
+    create-issue: false
+  report-missing-data:
+    create-issue: false
   threat-detection:
     max-ai-credits: 10   # detection uses under 0.5 a run; gh-aw's default is 400
+    # A detection failure blocks safe outputs (gh-aw's default only warns), and
+    # detection results stay in the run instead of an "[aw] Detection Runs"
+    # tracking issue.
+    continue-on-error: false
+    report-as-issue: false
     # Deterministic policy gate before any write: re-runs the skill's label and
     # comment checks on every proposed output, refuses a comment citing an
     # issue the prep step would quarantine, and blocks maintainer-authored

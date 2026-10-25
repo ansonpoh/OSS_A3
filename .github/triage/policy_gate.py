@@ -18,6 +18,10 @@ the agent to run, so these rules are enforced rather than only instructed:
   reference to another repository's issue or one written as an HTML entity;
 - an issue opened by a maintainer (OWNER, MEMBER or COLLABORATOR, after the
   replay marker restores the filed role) gets no label and no comment;
+- output types: only add_labels, add_comment, noop and the report types that
+  can no longer open issues (report_missing_tool, report_missing_data,
+  report_incomplete, and gh-aw's older names missing_tool and missing_data)
+  pass; any other type is refused, even if gh-aw would accept it;
 - the kill switch: if TRIAGE_AGENT_ENABLED is "false" (in any case; passed
   from the repository variable), nothing is written, even by a run that was
   already past activation when the switch was set.
@@ -59,6 +63,10 @@ GH_REF = re.compile(r"(?<![\w-])GH-(?!0)(\d+)(?!\w)", re.I)
 REPO_REF = re.compile(r"(?<![\w./-])([A-Za-z0-9][\w.-]*/[\w.-]+)#(?!0)(\d+)(?!\w)")
 ENTITY_REF = re.compile(r"&(#0*35|#x0*23|num);\s*\d", re.I)
 GOLDEN = os.path.join("evals", "golden")
+# The safe-output types this workflow may emit (rich-triage.lock.yml's
+# safe-outputs config), plus gh-aw's legacy aliases for the two report types.
+ALLOWED_TYPES = {"add_labels", "add_comment", "noop", "report_missing_tool", "report_missing_data",
+                 "report_incomplete", "missing_tool", "missing_data"}
 
 
 def replay_marker(issue):
@@ -166,7 +174,8 @@ def cited_problems(comments, issue):
 
 
 def gate(items, issue):
-    problems = []
+    problems = [f"output type {i.get('type')!r} is not allowed" for i in items
+                if i.get("type") not in ALLOWED_TYPES]
     labels = [l["name"] if isinstance(l, dict) else l
               for i in items if i.get("type") == "add_labels" for l in i.get("labels", [])]
     comments = [i.get("body") or "" for i in items if i.get("type") == "add_comment"]

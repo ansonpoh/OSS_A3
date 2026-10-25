@@ -29,11 +29,26 @@ tools:
   github: false
 
 safe-outputs:
+  # The canary only calls noop. Without a non-builtin output gh-aw would
+  # auto-inject create-issue, so allow at most one comment on the test issue.
+  add-comment:
+    max: 1
+    target: triggering
+    pull-requests: false
+    discussions: false
   noop:
     report-as-issue: false
   report-failure-as-issue: false
   report-incomplete:
     create-issue: false
+  report-missing-tool:
+    create-issue: false
+  report-missing-data:
+    create-issue: false
+  # Same detection settings as rich-triage.md: no "[aw] Detection Runs" issue.
+  threat-detection:
+    continue-on-error: false
+    report-as-issue: false
 ---
 
 # Package summary
