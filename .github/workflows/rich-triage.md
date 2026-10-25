@@ -49,6 +49,10 @@ tools:
   github: false
 
 safe-outputs:
+  # Identity: writes always use the workflow token (github-actions[bot]). No
+  # fallback to GH_AW_GITHUB_TOKEN, so setting a personal token cannot make
+  # the bot write as a person.
+  github-token: ${{ secrets.GITHUB_TOKEN }}
   add-labels:
     allowed: [bug, enhancement, question, documentation, duplicate, invalid, upstream, "more information needed"]
     blocked: [wontfix, accepted, "good first issue", "help wanted", "Needs triage", done, blocked, task]
@@ -161,7 +165,7 @@ post-steps:
       fi
   - name: Upload skill trace
     if: always()
-    uses: actions/upload-artifact@v4
+    uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
     with:
       name: skill-trace
       path: /tmp/gh-aw/agent/skill-trace.jsonl

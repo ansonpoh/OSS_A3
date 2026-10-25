@@ -30,6 +30,10 @@ tools:
 
 # Must stay identical to rich-triage.md (checked by evals/tests/test_canaries.py).
 safe-outputs:
+  # Identity: writes always use the workflow token (github-actions[bot]). No
+  # fallback to GH_AW_GITHUB_TOKEN, so setting a personal token cannot make
+  # the bot write as a person.
+  github-token: ${{ secrets.GITHUB_TOKEN }}
   add-labels:
     allowed: [bug, enhancement, question, documentation, duplicate, invalid, upstream, "more information needed"]
     blocked: [wontfix, accepted, "good first issue", "help wanted", "Needs triage", done, blocked, task]

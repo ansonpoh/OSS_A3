@@ -21,6 +21,16 @@ def test_policy_gate_is_in_threat_detection():
     assert "threat-detection:" in block and ".github/triage/policy_gate.py" in block
 
 
+def test_writes_use_only_the_workflow_token():
+    block = frontmatter_block("rich-triage.md", "safe-outputs")
+    assert re.search(r"^  github-token: \$\{\{ secrets\.GITHUB_TOKEN \}\}$", block, re.M)
+
+
+def test_lock_file_has_no_personal_token_fallback_for_writes():
+    lock = open(os.path.join(WF, "rich-triage.lock.yml"), encoding="utf-8").read()
+    assert "github-token: ${{ secrets.GH_AW_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}" not in lock
+
+
 def test_budget_test_has_a_one_credit_cap():
     text = open(os.path.join(WF, "budget-test.md"), encoding="utf-8").read()
     assert re.search(r"^max-ai-credits: 1\b", text, re.M)
