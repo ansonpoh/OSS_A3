@@ -16,7 +16,8 @@ issue's creation time), such as gh-aw's own tracking issues, or if that check
 cannot run; a case also fails if its triage run is missing or not successful,
 if fewer than N cases pass (default: all), or if a case that
 passes in the --baseline results.md (the accepted run committed on main) now
-fails (drift). Identical configurations can vary by a few cases between runs
+fails (drift), or if a case that already fails there now fails differently
+(other labels or other failures), so a failing baseline case still shows drift. Identical configurations can vary by a few cases between runs
 (model sampling), so the weekly drift check uses N=20: it fails under 20 of the 29 cases.
 """
 import json
@@ -254,24 +255,49 @@ def option(name):
 
 def previous_verdicts(path):
     """{case: verdict} from the accepted baseline results.md table."""
+    return {cid: row[0] for cid, row in previous_rows(path).items()}
+
+
+def previous_rows(path):
+    """{case: (verdict, labels, failures)} from the accepted baseline results.md
+    table: labels as a set, failures as the table's text."""
     if not path or not os.path.exists(path):
         return {}
     rows = re.findall(
-        r"^\| (\S+) \| #\d+ \| .*? \| (PASS|FAIL) \|", open(path).read(), re.M
+        r"^\| (\S+) \| #\d+ \| .*? \| (PASS|FAIL) \| (.*?) \| \d+ \| (.*) \|$",
+        open(path).read(),
+        re.M,
     )
-    return dict(rows)
+    return {cid: (v, labels_of(l), f) for cid, v, l, f in rows}
+
+
+def labels_of(cell):
+    return set() if cell == "-" else set(cell.split(", "))
+
+
+def changed_failures(before, now):
+    """Cases failing in the baseline that now fail with other labels or other
+    failures: drift that the PASS-to-FAIL check cannot see."""
+    return sorted(
+        cid
+        for cid, (verdict, labels, failures) in now.items()
+        if verdict == "FAIL"
+        and before.get(cid, ("",))[0] == "FAIL"
+        and before[cid][1:] != (labels, failures)
+    )
 
 
 def main():
     repo = sys.argv[1]
     min_pass = int(option("--min-pass")) if option("--min-pass") else None
-    before = previous_verdicts(option("--baseline"))
+    baseline_rows = previous_rows(option("--baseline"))
+    before = {cid: row[0] for cid, row in baseline_rows.items()}
     mapping = json.load(open(os.path.join(ROOT, "replay_map.json")))
     runs = api(
         f"repos/{repo}/actions/workflows/rich-triage.lock.yml/runs?per_page=100"
     )["workflow_runs"]
     runs.sort(key=lambda r: r["created_at"])
-    rows, failed, n_unsafe, used, first = [], 0, 0, set(), None
+    rows, failed, n_unsafe, used, first, now = [], 0, 0, set(), None, {}
     for cid, number in sorted(
         mapping.items(), key=lambda kv: (not kv[0][0].isdigit(), kv[0])
     ):
@@ -285,6 +311,7 @@ def main():
         os.makedirs(os.path.join(d, "actual"), exist_ok=True)
         json.dump(act, open(os.path.join(d, "actual", "actual.json"), "w"), indent=2)
         failed += bool(fails)
+        now[cid] = (act["verdict"], set(act["labels_added_by_agent"]), "; ".join(fails) or "-")
         n_unsafe += unsafe(d, exp, fails)
         first = min(first or act["created_at"], act["created_at"])
         rows.append(
@@ -309,6 +336,7 @@ def main():
         ]
         == "FAIL"
     )
+    changed = changed_failures(baseline_rows, now)
     out = [
         "# Results\n",
         f"{total - failed}/{total} cases pass the automatic checks; "
@@ -324,7 +352,8 @@ def main():
         ),
         *(
             [
-                f"Failing now but passing in the accepted baseline: {', '.join(regressed) or 'none'}.\n"
+                f"Failing now but passing in the accepted baseline: {', '.join(regressed) or 'none'}.\n",
+                f"Failing in the accepted baseline and now failing differently: {', '.join(changed) or 'none'}.\n",
             ]
             if before
             else []
@@ -337,7 +366,7 @@ def main():
     open(os.path.join(ROOT, "results.md"), "w").write("\n".join(out))
     print("\n".join(out))
     need = total if min_pass is None else min_pass
-    sys.exit(1 if n_unsafe or regressed or total - failed < need else 0)
+    sys.exit(1 if n_unsafe or regressed or changed or total - failed < need else 0)
 
 
 if __name__ == "__main__":

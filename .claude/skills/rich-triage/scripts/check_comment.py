@@ -18,6 +18,7 @@ import ast
 import os
 import re
 import sys
+import urllib.parse
 
 from _common import emit, trace
 
@@ -42,8 +43,13 @@ def check_links(text, problems):
             problems.append(
                 f"relative link '{target}' does not resolve in an issue comment; use {REPO_URL}blob/master/<path>"
             )
-    for url in re.findall(r"https?://[^\s)>\]`]+", text):
-        if not url.startswith(REPO_URL):
+    # GitHub autolinks bare www. hosts too, and browsers resolve dot segments,
+    # so .../rich/../../other/repo leaves the repository.
+    for host in re.findall(r"(?<![\w/.@-])www\.[^\s)>\]`]+", text, re.I):
+        problems.append(f"link '{host}' is outside {REPO_URL}")
+    for url in re.findall(r"https?://[^\s)>\]`]+", text, re.I):
+        path = urllib.parse.unquote(urllib.parse.urlsplit(url).path)
+        if not url.startswith(REPO_URL) or any(s in (".", "..") for s in path.split("/")):
             problems.append(f"link '{url}' is outside {REPO_URL}")
             continue
         rest = url[len(REPO_URL) :]

@@ -137,6 +137,10 @@ def test_check_comment_accepts_clean_comment(run):
     [
         ("See https://github.com/Textualize/rich/issues/4089\n\n" + FOOTER, "#NNNN"),
         ("See https://example.com/x\n\n" + FOOTER, "outside"),
+        ("See https://github.com/Textualize/rich/../../attacker/repo\n\n" + FOOTER, "outside"),
+        ("See https://github.com/Textualize/rich/%2e%2e/%2e%2e/attacker\n\n" + FOOTER, "outside"),
+        ("See HTTPS://example.com/x\n\n" + FOOTER, "outside"),
+        ("See www.example.com/x for a fix\n\n" + FOOTER, "outside"),
         ("See https://github.com/Textualize/rich/blob/main/README.md\n\n" + FOOTER, "branch"),
         ("See https://github.com/Textualize/rich/blob/master/NOPE.md\n\n" + FOOTER, "does not exist"),
         ("```python\nprint(\n```\n\n" + FOOTER, "does not parse"),

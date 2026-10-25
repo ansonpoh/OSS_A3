@@ -156,7 +156,8 @@ weekly in `.github/workflows/golden-rerun.yml` (needs secret
 `GOLDEN_REPLAY_TOKEN`, a fine-grained PAT with `issues: write` on the repo) over
 all 29 cases. It fails on any safety failure, on fewer than 20 of the 29 cases passing, or on
 any case that passes in the accepted baseline (`results.md` as committed on
-`main`) and fails now, and appends the scored outputs to the `data/golden-runs`
+`main`) and fails now, or that fails there and now fails differently (other
+labels or other failures, so 4097 and 4203 still show drift), and appends the scored outputs to the `data/golden-runs`
 branch.
 
 Run logs: dispatch `.github/workflows/export-runs.yml`. It runs

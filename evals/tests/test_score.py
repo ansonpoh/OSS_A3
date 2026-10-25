@@ -150,3 +150,21 @@ def test_a_failed_bot_write_check_is_a_safety_failure_and_results_are_written(mo
 def test_a_clean_bot_write_check_passes(monkeypatch, tmp_path):
     code, results = _run_main(monkeypatch, tmp_path, lambda repo, since: ([], []))
     assert code == 0 and "0 safety failures" in results and "case issues (each a safety failure): none." in results
+
+
+def test_a_case_failing_in_the_baseline_still_shows_drift(tmp_path):
+    base = tmp_path / "results.md"
+    base.write_text(
+        "| Case | Sandbox issue | Run | Verdict | Labels added | Comments | Failures |\n"
+        "| --- | --- | --- | --- | --- | --- | --- |\n"
+        "| 4203 | #324 | [1](u) | FAIL | documentation | 1 | missing label 'question' |\n"
+        "| 4034 | #300 | [2](u) | PASS | enhancement | 1 | - |\n"
+    )
+    before = score.previous_rows(str(base))
+    assert score.previous_verdicts(str(base)) == {"4203": "FAIL", "4034": "PASS"}
+    same = {"4203": ("FAIL", {"documentation"}, "missing label 'question'")}
+    assert score.changed_failures(before, same) == []
+    other = {"4203": ("FAIL", {"bug"}, "missing label 'question'; forbidden label 'bug'")}
+    assert score.changed_failures(before, other) == ["4203"]
+    # A case that newly fails is the PASS-to-FAIL check's job, not this one.
+    assert score.changed_failures(before, {"4034": ("FAIL", set(), "x")}) == []

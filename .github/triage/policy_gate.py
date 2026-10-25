@@ -13,7 +13,8 @@ the agent to run, so these rules are enforced rather than only instructed:
   issue's text addresses automated tools or redirects readers (build_index.py's
   quarantine rules). A replay looks in the frozen snapshot plus the case's
   planted entries as of the case's filing, relative to the working directory
-  (the gate's checkout); any other run fetches the issue from the API. A
+  (the gate's checkout); any other run fetches the issue from the API and
+  requires an issue (not a PR) opened before the one being triaged. A
   number that cannot be found or fetched refuses the comment, and so does a
   reference to another repository's issue or one written as an HTML entity;
 - an issue opened by a maintainer (OWNER, MEMBER or COLLABORATOR, after the
@@ -165,7 +166,14 @@ def cited_problems(comments, issue):
                     raise LookupError("not in the replay index as of the case's filing")
                 r = index[n]
             else:
+                # The live counterpart of the rewound replay index (and of
+                # find_duplicates.py's search space): an issue, not a pull
+                # request, opened before the issue being triaged.
                 r = fetch_issue(n)
+                if r.get("pull_request"):
+                    raise LookupError("it is a pull request, not an earlier issue")
+                if not r.get("created_at") or r["created_at"] >= (issue.get("created_at") or ""):
+                    raise LookupError("it was not opened before this issue")
             r = {"title": r.get("title"), "body": r.get("body")}
         except Exception as e:  # noqa: BLE001  any failure refuses the comment
             problems.append(f"could not check cited #{n}: {e}")
@@ -190,7 +198,7 @@ def gate(items, issue):
     for c in comments:
         problems += [f"comment: {p}" for p in check_comment.check(c)]
     problems += cited_problems(comments, issue)
-    if "duplicate" in labels and not any(re.search(r"#\d+", c) for c in comments):
+    if "duplicate" in labels and not any(references(c)[0] for c in comments):
         problems.append("duplicate label without a comment naming the earlier issue")
     if filed_role(issue) in MAINTAINERS and (labels or comments):
         problems.append("issue opened by a maintainer: no label or comment allowed")
