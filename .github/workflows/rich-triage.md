@@ -23,9 +23,9 @@ permissions:
   issues: read
 
 engine:
-  id: codex
-  version: "0.163.0"            # pinned Codex CLI
-  model: gpt-6-luna-2026-09-22  # pinned dated snapshot of GPT-6 Luna (not the moving alias)
+  id: claude
+  version: "2.1.296"            # pinned Claude Code CLI
+  model: claude-haiku-5-5       # fixed version ID (no moving alias); default effort medium
 
 strict: true
 timeout-minutes: 10
@@ -42,11 +42,14 @@ network: {}
 
 # The agent gets no GitHub tools: the issue is provided as a file, so it cannot
 # read other issues or call the API, and web-fetch/web-search are not enabled.
-# Bash is needed to run the skill's scripts (Codex supports only on/off for
-# bash, not a per-command allowlist).
+# Bash is limited to the skill's scripts (gh-aw adds read-only defaults such as
+# cat, grep and ls). Edit is on only so the agent can write its draft comment to
+# /tmp/gh-aw/agent/comment.md for check_comment.py; gh-aw cannot narrow it to
+# that path, so containment stays structural (no token, no network, and the
+# policy gate re-checks every output from its own checkout).
 tools:
-  bash: true
-  edit: false
+  bash: ["python3 .claude/skills/rich-triage/scripts/*"]
+  edit: true
   github: false
 
 safe-outputs:
@@ -143,11 +146,6 @@ steps:
       rm -f .github/workflows/cap-test.* .github/workflows/budget-test.*
       git init -q
       git remote add origin "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY.git"
-      # Codex discovers skills in .agents/skills; the canonical copy stays in
-      # .claude/skills (required by the assignment) and is mirrored here.
-      mkdir -p .agents/skills .codex/skills
-      cp -r .claude/skills/rich-triage .agents/skills/
-      cp -r .claude/skills/rich-triage .codex/skills/
       : > /tmp/gh-aw/agent/skill-trace.jsonl
 
 post-steps:

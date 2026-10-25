@@ -11,9 +11,9 @@ permissions:
   contents: read
 
 engine:
-  id: codex
-  version: "0.163.0"
-  model: gpt-6-luna-2026-09-22
+  id: claude
+  version: "2.1.296"            # pinned Claude Code CLI
+  model: claude-haiku-5-5       # fixed version ID (no moving alias); default effort medium
 
 strict: true
 timeout-minutes: 10

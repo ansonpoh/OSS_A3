@@ -3,13 +3,17 @@
 
 The skill trace (skill-trace.jsonl) is written by the skill's own scripts, so
 on its own it could be forged by the agent. This cross-checks it against the
-engine's transcript (agent-session.jsonl, written by Codex, not the agent):
+engine's transcript, written by the engine, not the agent: Codex's
+agent-session.jsonl (runs 1-6), or Claude Code's stream-json output
+(agent-session.jsonl or agent-stdio.log, from the switch to Claude Haiku 5.5):
 
-  - loaded: a completed command read .claude/skills/rich-triage/SKILL.md
+  - loaded: a finished tool call read .claude/skills/rich-triage/SKILL.md
+    (a shell command, the Read tool, or the Skill tool)
   - every trace entry matches a finished transcript command that ran that
     script, and every script the transcript ran appears in the trace
   - forged: no transcript command mentions skill-trace (the agent never wrote
     to or edited the trace itself)
+  - writes: the Write/Edit tools touched nothing but the draft comment
   - complete: the run ran every script of SKILL.md steps 1-4, plus
     validate_labels if it added labels and check_comment if it posted a
     comment; the only exception is a maintainer-authored case (input.json)
@@ -29,6 +33,9 @@ SCRIPT = re.compile(r"rich-triage/scripts/(\w+)\.py")
 REQUIRED = {"check_report", "faq_match", "find_duplicates", "check_api"}
 FOR_OUTPUT = {"add_labels": "validate_labels", "add_comment": "check_comment"}
 MAINTAINERS = {"OWNER", "MEMBER", "COLLABORATOR"}
+TRANSCRIPTS = ("agent-session.jsonl", "agent-stdio.log")
+COMMENT_DRAFT = "/tmp/gh-aw/agent/comment.md"
+WRITE_TOOLS = {"Write", "Edit", "MultiEdit", "NotebookEdit"}
 
 
 def author_role(cid):
@@ -39,33 +46,65 @@ def author_role(cid):
     return None
 
 
-def commands(session):
-    out = []
-    for line in open(session, encoding="utf-8"):
+def transcript(case_dir):
+    return next((p for p in (os.path.join(case_dir, t) for t in TRANSCRIPTS) if os.path.exists(p)), None)
+
+
+def tool_calls(path):
+    """Finished tool calls as (kind, text): kind is bash, read, skill or write."""
+    out, pending = [], {}
+    for line in open(path, encoding="utf-8"):
         try:
-            item = json.loads(line).get("item") or {}
+            event = json.loads(line)
         except ValueError:
             continue
+        if not isinstance(event, dict):
+            continue
+        # Codex: one item per finished command.
+        item = event.get("item") or {}
         if item.get("type") == "command_execution" and item.get("status") in ("completed", "failed"):
-            out.append((item["command"], item.get("exit_code")))
+            out.append(("bash", item["command"]))
+            continue
+        # Claude Code stream-json: tool_use blocks, finished by a tool_result.
+        content = (event.get("message") or {}).get("content")
+        for block in content if isinstance(content, list) else []:
+            if block.get("type") == "tool_use":
+                pending[block.get("id")] = (block.get("name"), block.get("input") or {})
+            elif block.get("type") == "tool_result" and block.get("tool_use_id") in pending:
+                name, args = pending.pop(block["tool_use_id"])
+                if name == "Bash":
+                    out.append(("bash", args.get("command", "")))
+                elif name == "Read":
+                    out.append(("read", args.get("file_path", "")))
+                elif name == "Skill":
+                    out.append(("skill", args.get("skill", "")))
+                elif name in WRITE_TOOLS:
+                    out.append(("write", args.get("file_path") or args.get("notebook_path", "")))
     return out
 
 
 def check(case_dir):
-    cmds = commands(os.path.join(case_dir, "agent-session.jsonl"))
+    calls = tool_calls(transcript(case_dir))
+    cmds = [text for kind, text in calls if kind == "bash"]
     trace_path = os.path.join(case_dir, "skill-trace.jsonl")
     trace = [json.loads(l) for l in open(trace_path, encoding="utf-8") if l.strip()] if os.path.exists(trace_path) else []
     traced = sorted(t["script"].removesuffix(".py") for t in trace)
     # A script that rejects its input (e.g. check_comment on a bad draft) exits
     # non-zero but still writes a trace entry, so every completed run counts.
-    ran = sorted(m for c, _ in cmds for m in SCRIPT.findall(c))
+    ran = sorted(m for c in cmds for m in SCRIPT.findall(c))
     problems = []
-    if not any("rich-triage/SKILL.md" in c for c, _ in cmds):
+    if not any(
+        (kind in ("bash", "read") and "rich-triage/SKILL.md" in text) or (kind == "skill" and text == "rich-triage")
+        for kind, text in calls
+    ):
         problems.append("SKILL.md never read")
     if traced != ran:
         problems.append(f"trace {traced} != transcript {ran}")
-    if any("skill-trace" in c for c, _ in cmds):
+    if any("skill-trace" in text for kind, text in calls if kind in ("bash", "write")):
         problems.append("agent command touched skill-trace")
+    stray = sorted({text for kind, text in calls if kind == "write" and text != COMMENT_DRAFT})
+    if stray:
+        problems.append(f"wrote files other than the comment draft: {stray}")
     out_path = os.path.join(case_dir, "safeoutputs.jsonl")
     outputs = [json.loads(l)["type"] for l in open(out_path, encoding="utf-8") if l.strip()] if os.path.exists(out_path) else []
     maintainer_noop = author_role(os.path.basename(case_dir)) in MAINTAINERS and set(outputs) <= {"noop"}
@@ -81,7 +120,7 @@ def main():
     rows, bad = [], 0
     for run in runs:
         for d in sorted(glob.glob(os.path.join(run, "logs", "*"))):
-            if not os.path.exists(os.path.join(d, "agent-session.jsonl")):
+            if not transcript(d):
                 continue
             n, ran, problems = check(d)
             bad += bool(problems)
