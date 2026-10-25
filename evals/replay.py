@@ -59,7 +59,11 @@ def main():
         mapping[cid] = issue["number"]
         json.dump(mapping, open(MAP, "w"), indent=2, sort_keys=True)
         print(f"{cid} -> #{issue['number']}")
-        time.sleep(5)  # spread triggers; runs queue anyway (concurrency queue: max)
+        # Spread triggers. Each triage run's daily-credit guardrail lists the
+        # artifacts of every run in the last 24 h through the workflow token, so
+        # a burst exhausts the hourly API quota and activation fails closed
+        # (golden reruns 40155954910, 40158577925, 40167334636, 40167342828).
+        time.sleep(60)
 
 
 if __name__ == "__main__":

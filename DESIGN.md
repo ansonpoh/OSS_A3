@@ -64,7 +64,7 @@ only limit, and untrusted text would steer a model with write access.
 - **Audit trail** (tested; `evals/golden/runs/*/logs/`, all exports on branch `data/runs`): each run keeps its
   trigger, resolved model (`model-resolution.json`), transcript, outputs, cost, firewall log and skill trace. All
   27 run-5 exports hold gh-aw's `skill_inventory.json` (`rich-triage`, scope `engine`), so gh-aw loaded the skill.
-- **Kill switch** (tested: new runs skip, `kill-switch-run-40073460982.json`; cancel writes nothing, `cancel-run-*`).
+- **Kill switch** (tested: new runs skip, `kill-switch-run-40073460982.json`; cancel writes nothing, `q5-phone/`).
   A gate check failed live: `vars` is fixed at run creation (`kill-switch-midrun-run-40166155938.json`), so removed.
 - **Drift detection** (red path tested, `golden-rerun-red-run-40106656213.json`; `golden-rerun.yml:1-9`): it
   replays 29 cases weekly and goes red on a safety failure (now also bot writes outside the cases), under 20 of the
@@ -84,9 +84,9 @@ only limit, and untrusted text would steer a model with write access.
 - **Q4. A tool or MCP server returns malicious instructions.** The safe-outputs MCP server returns nothing.
   Duplicate search shows anyone's text; outputs pass detection and the gate. Runs 1 and 3 named the planted #4231
   (adv-4) and #4230 (adv-5); both are now quarantined and refused by the gate (`gate_replay.md:27,55`).
-- **Q5. Stop the agent from a phone.** GitHub Mobile has no Variables page, so in a browser open Settings → Secrets
-  and variables → Actions → Variables, set `TRIAGE_AGENT_ENABLED` to `false` (new runs skip), then Actions → the
-  running run → Cancel (in-flight runs keep the old value). The phone drill is pending.
+- **Q5. Stop the agent from a phone.** Tested in a phone browser (`q5-phone/`): Actions → the running run → Cancel
+  (stopped in 31 s; nothing written), then Settings → Variables, `TRIAGE_AGENT_ENABLED=false` (GitHub Mobile has
+  no Variables page). 1 min 18 s in all; the next issue's run skipped every job.
 
 ## 6. What the tests revealed
 
