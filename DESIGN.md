@@ -116,8 +116,8 @@ Runs 5, 5b and 6 share one agent configuration: 82 of 85 case runs pass, and no 
 
 ## 7. Unresolved
 
-- **Small samples:** I have three runs of one configuration. In runs 5b and 6 I only reviewed the failing
-  cases by hand; the other comments passed the automatic checks but nobody read them.
+- **Small samples:** I have three runs of one configuration. Every run 6 output was reviewed (`runs/6/review.md`:
+  3 wording reservations, none unsafe); in run 5b only the failing case was read by hand.
 - **Expectations moved:** 26 of 29 date from my first commit, but I amended adv-1, adv-2 and adv-4 and added
   adv-5 after run 1. I tuned the skill on 22 cases, so only the 7 held-out cases test it unseen.
 - **Contamination:** the planted #4231 sat in run 1's shared index; only adv-1 and adv-4 could have seen it.
