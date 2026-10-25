@@ -1,0 +1,35 @@
+﻿2026-10-25T05:04:50.8566505Z ##[group]Run actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
+2026-10-25T05:04:50.8567621Z with:
+2026-10-25T05:04:50.8569854Z   script: const path = require('path');
+const actionsDir = path.join(process.env.RUNNER_TEMP, 'gh-aw', 'actions');
+const { setupGlobals } = require(path.join(actionsDir, 'setup_globals.cjs'));
+setupGlobals(core, github, context, exec, io, getOctokit);
+const { main } = require(path.join(actionsDir, 'compute_text.cjs'));
+await main();
+
+2026-10-25T05:04:50.8574746Z   github-token: ***
+2026-10-25T05:04:50.8575554Z   debug: false
+2026-10-25T05:04:50.8576355Z   user-agent: actions/github-script
+2026-10-25T05:04:50.8577216Z   result-encoding: json
+2026-10-25T05:04:50.8578002Z   retries: 0
+2026-10-25T05:04:50.8578833Z   retry-exempt-status-codes: 400,401,403,404,422
+2026-10-25T05:04:50.8579725Z env:
+2026-10-25T05:04:50.8580503Z   OTEL_EXPORTER_OTLP_ENDPOINT: 
+2026-10-25T05:04:50.8581378Z   OTEL_SERVICE_NAME: gh-aw.rich-triage
+2026-10-25T05:04:50.8582843Z   OTEL_RESOURCE_ATTRIBUTES: gh-aw.workflow.name=Rich%20issue%20triage,gh-aw.repository=ansonpoh/OSS_A3,gh-aw.run.id=40164188084,github.run_id=40164188084,gh-aw.engine.id=codex
+2026-10-25T05:04:50.8584582Z   OTEL_EXPORTER_OTLP_HEADERS: 
+2026-10-25T05:04:50.8585486Z   GH_AW_OTLP_ENDPOINTS: [{"url":"","headers":""}]
+2026-10-25T05:04:50.8586618Z   GH_AW_OTLP_IF_MISSING: ignore
+2026-10-25T05:04:50.8587481Z   GH_AW_MAX_DAILY_AI_CREDITS: 600
+2026-10-25T05:04:50.8588380Z   GH_AW_RUNTIME_FEATURES: 
+2026-10-25T05:04:50.8589289Z   GITHUB_AW_OTEL_TRACE_ID: a6986d9a5ac529d208102ec4db5d442f
+2026-10-25T05:04:50.8590957Z   GITHUB_AW_OTEL_PARENT_SPAN_ID: 93ebab760ae732c7
+2026-10-25T05:04:50.8592489Z   GITHUB_AW_OTEL_JOB_START_MS: 1792904681550
+2026-10-25T05:04:50.8593381Z ##[endgroup]
+2026-10-25T05:04:51.2148523Z Repository permission level: admin
+2026-10-25T05:04:51.2296802Z Redacted URL: rich.readthe...
+2026-10-25T05:04:51.2387008Z Redacted URL: rich.readthe...
+2026-10-25T05:04:51.2405888Z text: [BUG] set_cell_size returns incorrect result for negative total with narrow text\n\n- [x] I've checked [docs]((rich.readthedocs.io/redacted) and [closed issues](https://github.com/Textualize/rich/issues?q=is:issue+is:closed) for possible solutions. \n- [x] I can't find my issue in the [FAQ](https://github.com/Textualize/rich/blob/master/FAQ.md).\n\n**Describe the bug**\n\n`set_cell_size()` returns incorrectly truncated text when `total` is negative and the input consists entirely of single-cell-width characters.\n\nFor example:\n\n```python\nfrom rich.cells import set_cell_size\n\nprint(repr(set_cell_size("ab", -1)))\nprint(repr(set_cell_size("abc", -1)))\nprint(repr(set_cell_size("abcdef", -1)))\n```\n\nCurrently this produces:\n\n```\n'a'\n'ab'\n'abcde'\n```\n\nExpected:\n\n```\n''\n''\n''\n```\n\nThe issue is caused by the `total <= 0` guard being placed after the single-cell-width fast path:\n\n```python\nif _is_single_cell_widths(text):\n    size = len(text)\n    if size < total:\n        return text + " " * (total - size)\n    return text[:total]\n\nif total <= 0:\n    return ""\n```\n\nFor single-cell-width strings, negative slicing is therefore reached before the guard. Python's negative slicing causes part of the string to be returned.\n\nFor comparison, strings containing wide characters correctly return an empty string because they do not take the single-cell-width fast path.\n\nThe fix is to move the `total <= 0` check before the `_is_single_cell_widths()` fast path.\n\nI have also added regression tests covering negative `total` values.\n\n**Platform**\n\n- macOS\n- Python 3.13.6\n\nThe issue is reproducible independently of terminal software.\n\nI have already implemented the fix and added regression tests in my fork. I would be happy to submit the changes as a pull request if I can be granted contributor access, or I can follow whatever contribution process you prefer.
+2026-10-25T05:04:51.2417339Z title: [BUG] set_cell_size returns incorrect result for negative total with narrow text
+2026-10-25T05:04:51.2427358Z body: - [x] I've checked [docs]((rich.readthedocs.io/redacted) and [closed issues](https://github.com/Textualize/rich/issues?q=is:issue+is:closed) for possible solutions. \n- [x] I can't find my issue in the [FAQ](https://github.com/Textualize/rich/blob/master/FAQ.md).\n\n**Describe the bug**\n\n`set_cell_size()` returns incorrectly truncated text when `total` is negative and the input consists entirely of single-cell-width characters.\n\nFor example:\n\n```python\nfrom rich.cells import set_cell_size\n\nprint(repr(set_cell_size("ab", -1)))\nprint(repr(set_cell_size("abc", -1)))\nprint(repr(set_cell_size("abcdef", -1)))\n```\n\nCurrently this produces:\n\n```\n'a'\n'ab'\n'abcde'\n```\n\nExpected:\n\n```\n''\n''\n''\n```\n\nThe issue is caused by the `total <= 0` guard being placed after the single-cell-width fast path:\n\n```python\nif _is_single_cell_widths(text):\n    size = len(text)\n    if size < total:\n        return text + " " * (total - size)\n    return text[:total]\n\nif total <= 0:\n    return ""\n```\n\nFor single-cell-width strings, negative slicing is therefore reached before the guard. Python's negative slicing causes part of the string to be returned.\n\nFor comparison, strings containing wide characters correctly return an empty string because they do not take the single-cell-width fast path.\n\nThe fix is to move the `total <= 0` check before the `_is_single_cell_widths()` fast path.\n\nI have also added regression tests covering negative `total` values.\n\n**Platform**\n\n- macOS\n- Python 3.13.6\n\nThe issue is reproducible independently of terminal software.\n\nI have already implemented the fix and added regression tests in my fork. I would be happy to submit the changes as a pull request if I can be granted contributor access, or I can follow whatever contribution process you prefer.
+2026-10-25T05:04:51.2477936Z Redacted URL domains written to: /tmp/gh-aw/redacted-urls.log
