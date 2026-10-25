@@ -30,5 +30,5 @@ gh aw compile budget-test --action-mode action --action-tag v0.93.0
 ## Reproducing the evaluation
 
 See `evals/golden/README.md` ("Reproducing"). In short: create a repository
-from this one, add the `OPENAI_API_KEY` secret, then run
+from this one, add the `ANTHROPIC_API_KEY` secret, then run
 `evals/setup_sandbox.py`, `evals/replay.py` and `evals/score.py` against it.

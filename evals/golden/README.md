@@ -18,13 +18,13 @@ adversarial) guided the skill, so only the 7 held-out cases test it unseen
   the agent; it justifies `expected.json`.
 - `expected.json`: the expected triage outcome and its rationale.
 - `actual/actual.json`: what the agent did in the accepted baseline run (labels, comment text, sandbox issue
-  and Actions run link), and the verdict: run 3, except adv-5, whose file is its single-case replay (run 4, also
-  in `runs/4/`; its run 3 output is in `runs/3/`). Other kept runs are in `runs/`. adv-4's single-case replay
-  (run 2) is only in `runs/2/`. ho-c1 and ho-c2, added after run 3, hold their first output (run 6). Later full
-  runs (5, 5b and 6, see `stability.md`) are in `runs/5/`, the `data/golden-runs` branch and `runs/6/`.
+  and Actions run link), and the verdict: run 8 (`cd7f7f48`, Claude Haiku 5.5), the first full run of the
+  current configuration. Runs 1-6 used Codex (`gpt-6-luna-2026-09-22`); their outputs are in `runs/1/` to
+  `runs/6/` (run 5b only on the `data/golden-runs` branch). Run 7 is the first Haiku run, before the prompt fix,
+  and run 7b replays its three configuration failures after it.
 
-Scored runs add `results.md` (the accepted drift baseline: run 3's automatic scores with its adv-5 row
-replaced by run 4; runs 5, 5b and 6 did not replace it), `review.md` (index of the reviews of every output, one per run in
+Scored runs add `results.md` (the accepted drift baseline: run 8's automatic scores; until run 8 it was run 3's
+Codex scores with its adv-5 row replaced by run 4), `review.md` (index of the reviews of every output, one per run in
 `runs/<n>/review.md`, with case details in `review_packet.md`, built by `evals/review_packet.py`) and
 `runs/<label>/` (each kept run's results and per-case outputs, saved by `evals/snapshot.py`, with test logs under
 `logs/`).
@@ -142,7 +142,7 @@ Requirements: Python 3.10+, the `gh` CLI logged in as the repository owner
 (replay markers are honoured only for OWNER-authored issues; the workflow then
 restores each case's original author role, so the agent sees `NONE`, not
 `OWNER`), and a copy of
-this repository with Actions enabled and the secret `OPENAI_API_KEY`.
+this repository with Actions enabled and the secret `ANTHROPIC_API_KEY`.
 
 ```bash
 python3 evals/setup_sandbox.py OWNER/REPO   # create Rich's labels (idempotent)
@@ -184,5 +184,5 @@ python3 evals/baseline_rules.py           # keyword-rule baseline on all 29 case
 
 `verify_skill_use.py` exists because the skill trace is written by the skill's
 own scripts and so could in principle be written by the agent: it checks every
-trace entry against the commands in Codex's own transcript, and that no
+trace entry against the commands in the engine's own transcript (Codex or Claude Code), and that no
 command touched the trace file.
