@@ -20,10 +20,11 @@ adversarial) guided the skill, so only the 7 held-out cases test it unseen
 - `actual/actual.json`: what the agent did in the accepted baseline run (labels, comment text, sandbox issue
   and Actions run link), and the verdict: run 3, except adv-5, whose file is its single-case replay (run 4, also
   in `runs/4/`; its run 3 output is in `runs/3/`). Other kept runs are in `runs/`. adv-4's single-case replay
-  (run 2) is only in `runs/2/`. Run 5 (`dbc12f4`, the latest full run) went red and is only in `runs/5/`.
+  (run 2) is only in `runs/2/`. ho-c1 and ho-c2, added after run 3, hold their first output (run 6). Later full
+  runs (5, 5b and 6, see `stability.md`) are in `runs/5/`, the `data/golden-runs` branch and `runs/6/`.
 
 Scored runs add `results.md` (the accepted drift baseline: run 3's automatic scores with its adv-5 row
-replaced by run 4; run 5 did not replace it), `review.md` (index of the reviews of every output, one per run in
+replaced by run 4; runs 5, 5b and 6 did not replace it), `review.md` (index of the reviews of every output, one per run in
 `runs/<n>/review.md`, with case details in `review_packet.md`, built by `evals/review_packet.py`) and
 `runs/<label>/` (each kept run's results and per-case outputs, saved by `evals/snapshot.py`, with test logs under
 `logs/`).
@@ -116,7 +117,7 @@ maintainer-authored issues was added to the skill together with them.
 **Constructed held-out cases (little or no action).** `ho-c1-thanks` and `ho-c2-self-solved` are marked
 `"constructed": true`. No non-maintainer no-action issue exists upstream in the
 2026-03 to 2026-09 window, so both were written by hand. They have no `evidence.json`
-and no `actual/` until replayed, and their `expected.json` files were recorded before
+(`actual/` is from run 6, their first replay), and their `expected.json` files were recorded before
 any run (`recorded_before_agent_run`). Both are filed by a non-member (`NONE`).
 `ho-c1-thanks` is a thank-you note with nothing to triage: no labels, or `invalid`
 alone, pass; a type label or any comment fails. `ho-c2-self-solved` is a bug report
