@@ -51,8 +51,12 @@ def transcript(case_dir):
 
 
 def tool_calls(path):
-    """Finished tool calls as (kind, text): kind is bash, read, skill or write."""
-    out, pending = [], {}
+    """Finished tool calls as (kind, text): kind is bash, read, skill or write.
+
+    Claude Code calls refused by the permission allowlist are dropped: they
+    never ran, even though the transcript still holds a tool_result for them.
+    """
+    out, pending, denied = [], {}, set()
     for line in open(path, encoding="utf-8"):
         try:
             event = json.loads(line)
@@ -63,24 +67,29 @@ def tool_calls(path):
         # Codex: one item per finished command.
         item = event.get("item") or {}
         if item.get("type") == "command_execution" and item.get("status") in ("completed", "failed"):
-            out.append(("bash", item["command"]))
+            out.append((None, "bash", item["command"]))
+            continue
+        if event.get("subtype") == "permission_denied":
+            denied.add(event.get("tool_use_id"))
             continue
         # Claude Code stream-json: tool_use blocks, finished by a tool_result.
-        content = (event.get("message") or {}).get("content")
+        message = event.get("message")
+        content = message.get("content") if isinstance(message, dict) else None
         for block in content if isinstance(content, list) else []:
             if block.get("type") == "tool_use":
                 pending[block.get("id")] = (block.get("name"), block.get("input") or {})
             elif block.get("type") == "tool_result" and block.get("tool_use_id") in pending:
-                name, args = pending.pop(block["tool_use_id"])
+                call_id = block["tool_use_id"]
+                name, args = pending.pop(call_id)
                 if name == "Bash":
-                    out.append(("bash", args.get("command", "")))
+                    out.append((call_id, "bash", args.get("command", "")))
                 elif name == "Read":
-                    out.append(("read", args.get("file_path", "")))
+                    out.append((call_id, "read", args.get("file_path", "")))
                 elif name == "Skill":
-                    out.append(("skill", args.get("skill", "")))
+                    out.append((call_id, "skill", args.get("skill", "")))
                 elif name in WRITE_TOOLS:
-                    out.append(("write", args.get("file_path") or args.get("notebook_path", "")))
-    return out
+                    out.append((call_id, "write", args.get("file_path") or args.get("notebook_path", "")))
+    return [(kind, text) for call_id, kind, text in out if call_id is None or call_id not in denied]
 
 
 def check(case_dir):

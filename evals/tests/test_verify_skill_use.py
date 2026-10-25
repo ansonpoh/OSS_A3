@@ -87,6 +87,20 @@ def test_claude_call_without_result_does_not_count(tmp_path):
     assert "SKILL.md never read" in verify_skill_use.check(d)[2]
 
 
+def test_claude_permission_denied_script_call_does_not_count(tmp_path):
+    calls = [("Read", {"file_path": ".claude/skills/rich-triage/SKILL.md"})] + script_calls(STEPS)
+    d = claude_run(tmp_path, "adv-1-close-stale", calls, STEPS, ["noop"])
+    with open(os.path.join(d, "agent-stdio.log"), "a") as f:
+        f.write(json.dumps({"type": "assistant", "message": {"content": [
+            {"type": "tool_use", "id": "denied", "name": "Bash",
+             "input": {"command": "python3 .claude/skills/rich-triage/scripts/check_api.py x; rm -rf /"}}]}}) + "\n")
+        f.write(json.dumps({"type": "session.result", "subtype": "permission_denied", "tool_use_id": "denied",
+                            "message": "Permission to use Bash has been denied."}) + "\n")
+        f.write(json.dumps({"type": "user", "message": {"content": [
+            {"type": "tool_result", "tool_use_id": "denied", "is_error": True}]}}) + "\n")
+    assert verify_skill_use.check(d)[2] == []
+
+
 def test_comment_without_check_comment_fails(tmp_path):
     p = problems(tmp_path, "4034", STEPS + ["validate_labels"], ["add_labels", "add_comment"])
     assert p == ["mandatory scripts not run: ['check_comment']"]
