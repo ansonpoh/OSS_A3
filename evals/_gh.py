@@ -11,7 +11,7 @@ def api(path, method="GET", fields=None, paginate=False):
     if fields is not None:
         cmd += ["--input", "-"]
         inp = json.dumps(fields)
-    out = subprocess.run(cmd, input=inp, capture_output=True, text=True)
+    out = subprocess.run(cmd, input=inp, capture_output=True, text=True, encoding="utf-8")
     if out.returncode != 0:
         raise RuntimeError(
             f"gh api {method} {path} failed: {out.stderr.strip() or out.stdout.strip()}"
