@@ -185,4 +185,5 @@ contributors, whether or not you use AI yourself.
 - If the bot got it wrong, just say so in a reply. Please don't re-file the
   issue or copy the bot's comment into a new issue or pull request.
 - Maintainers can disable the bot at any time by setting the repository variable
-  `TRIAGE_AGENT_ENABLED` to `false` (see `DESIGN.md`, section 4).
+  `TRIAGE_AGENT_ENABLED` to `false`, which stops new runs, and cancelling any run
+  already in progress (see `DESIGN.md`, section 4).

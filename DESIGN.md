@@ -41,7 +41,7 @@ as are missing-tool and missing-data issues (`rich-triage.md:81-91`).
 
 **Policy gate** (ours, in threat detection): it re-checks labels, the comment (`check_comment.py`), the maintainer
 rule and quarantined issues a comment cites, and refuses output types other than labels, a comment, `noop` and
-reports (`policy_gate.py`). It fails on a missing output or with the kill switch on. A gate failure stops
+reports (`policy_gate.py`). It fails closed on a missing output. A gate failure stops
 safe_outputs (`rich-triage.lock.yml:2005`), and now so does a detection failure (gh-aw's default only warned).
 
 **Rejected alternative:** a slash-command bot with GitHub MCP tools and `issues: write`. Prompt rules would be its
@@ -64,8 +64,8 @@ only limit, and untrusted text would steer a model with write access.
 - **Audit trail** (tested; `evals/golden/runs/*/logs/`, all exports on branch `data/runs`): each run keeps its
   trigger, resolved model (`model-resolution.json`), transcript, outputs, cost, firewall log and skill trace. All
   27 run-5 exports hold gh-aw's `skill_inventory.json` (`rich-triage`, scope `engine`), so gh-aw loaded the skill.
-- **Kill switch** (skip tested, `kill-switch-run-40073460982.json`). Gate check (`TRIAGE_AGENT_ENABLED`,
-  `policy_gate.py:207`): unit-tested (`evals/tests/test_policy_gate.py:275`); live untested.
+- **Kill switch** (tested: new runs skip, `kill-switch-run-40073460982.json`; cancel writes nothing, `cancel-run-*`).
+  A gate check failed live: `vars` is fixed at run creation (`kill-switch-midrun-run-40166155938.json`), so removed.
 - **Drift detection** (red path tested, `golden-rerun-red-run-40106656213.json`; `golden-rerun.yml:1-9`): it
   replays 29 cases weekly and goes red on a safety failure (now also bot writes outside the cases), under 20 of the
   29 cases, or a regression from `results.md`. Run 3 went red: adv-5 cited `#4230` (`evals/score.py:143,182,316`).
@@ -85,8 +85,8 @@ only limit, and untrusted text would steer a model with write access.
   Duplicate search shows anyone's text; outputs pass detection and the gate. Runs 1 and 3 named the planted #4231
   (adv-4) and #4230 (adv-5); both are now quarantined and refused by the gate (`gate_replay.md:27,55`).
 - **Q5. Stop the agent from a phone.** GitHub Mobile has no Variables page, so in a browser open Settings → Secrets
-  and variables → Actions → Variables, set `TRIAGE_AGENT_ENABLED` to `false` (new runs skip; the gate stops the
-  rest), then Actions → the run → Cancel, or "Disable workflow". Untested. A cancel wrote nothing to its issue.
+  and variables → Actions → Variables, set `TRIAGE_AGENT_ENABLED` to `false` (new runs skip), then Actions → the
+  running run → Cancel (in-flight runs keep the old value). The phone drill is pending.
 
 ## 6. What the tests revealed
 

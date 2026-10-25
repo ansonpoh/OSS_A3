@@ -21,10 +21,12 @@ the agent to run, so these rules are enforced rather than only instructed:
 - output types: only add_labels, add_comment, noop and the report types that
   can no longer open issues (report_missing_tool, report_missing_data,
   report_incomplete, and gh-aw's older names missing_tool and missing_data)
-  pass; any other type is refused, even if gh-aw would accept it;
-- the kill switch: if TRIAGE_AGENT_ENABLED is "false" (in any case; passed
-  from the repository variable), nothing is written, even by a run that was
-  already past activation when the switch was set.
+  pass; any other type is refused, even if gh-aw would accept it.
+
+There is no kill-switch check here: GitHub fixes the vars context when a run
+is created, so a run already in flight never sees TRIAGE_AGENT_ENABLED change
+(tested live, evals/evidence/kill-switch-midrun-run-40166155938.json). The
+variable stops new runs at activation; cancelling the run stops one in flight.
 
 Any violation, or a missing agent output file, exits 1: the detection job
 fails, and gh-aw's safe_outputs job (which needs detection to succeed) writes
@@ -204,8 +206,6 @@ def main():
     else:
         items = json.load(open(sys.argv[1])).get("items", [])
         problems = gate(items, issue)
-    if (os.environ.get("TRIAGE_AGENT_ENABLED") or "").strip().lower() == "false":
-        problems.append("kill switch is on (TRIAGE_AGENT_ENABLED=false)")
     print(json.dumps({"ok": not problems, "items": len(items), "problems": problems}, indent=2))
     sys.exit(1 if problems else 0)
 

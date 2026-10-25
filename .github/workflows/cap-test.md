@@ -77,8 +77,7 @@ safe-outputs:
     # Deterministic policy gate before any write: re-runs the skill's label and
     # comment checks on every proposed output, refuses a comment citing an
     # issue the prep step would quarantine, and blocks maintainer-authored
-    # issues. A failure fails this job, so safe_outputs writes nothing. The
-    # kill switch is checked here too, for runs already past activation.
+    # issues. A failure fails this job, so safe_outputs writes nothing.
     steps:
       - name: Check out the policy gate
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -88,7 +87,6 @@ safe-outputs:
       - name: Policy gate
         working-directory: policy-gate
         env:
-          TRIAGE_AGENT_ENABLED: ${{ vars.TRIAGE_AGENT_ENABLED }}
           # Reads the issues a comment cites (GITHUB_REPOSITORY and
           # GITHUB_API_URL are the runner's own).
           GITHUB_TOKEN: ${{ github.token }}
