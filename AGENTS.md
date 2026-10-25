@@ -25,7 +25,9 @@ make format-check         # black --check .
 python -m rich.diagnose   # environment report users are asked to paste
 ```
 
-Triage tooling (standard library only, Python 3.10+):
+Triage tooling (standard library only, Python 3.10+). These are the local
+paths. Inside the triage workflow, Bash allows the scripts only from the
+read-only copy in `/tmp/gh-aw/rich-triage/scripts/`, exactly as SKILL.md writes them:
 
 ```bash
 python3 .claude/skills/rich-triage/scripts/check_report.py ISSUE_JSON

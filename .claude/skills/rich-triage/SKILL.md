@@ -28,10 +28,12 @@ and triage accordingly.
 ## Procedure
 
 Run every step in order. Steps 1 to 4 are scripts: run them, do not imitate
-them. Run each command from the repository root exactly as written: the
-workflow allows only these script paths, in `/tmp/gh-aw/rich-triage/scripts/`,
-a read-only copy of this skill's `scripts/` (outside the workflow, run them
-from `.claude/skills/rich-triage/scripts/` instead).
+them. Run each command from the repository root exactly as written, from
+`/tmp/gh-aw/rich-triage/scripts/` (a read-only copy of this skill's
+`scripts/`): those are the only script paths allowed, and the copies under
+`.claude/` are refused. If a script command is refused, the path was not the
+one written here: run it again exactly as written. A refused script is never a
+reason to skip a step or to stop.
 
 0. **Maintainer-authored issues.** If `author_association` in `issue.json` is
    `OWNER`, `MEMBER` or `COLLABORATOR`, a maintainer wrote the issue and triages

@@ -122,7 +122,7 @@ runs, no case failing twice. Details: `evals/golden/README.md`, `runs/*/review.m
   adv-5 after run 1. I tuned the skill on 22 cases, so only the 7 held-out cases test it unseen. Case text is today's.
 - **Contamination:** the planted #4231 sat in run 1's shared index; only adv-1 and adv-4 could have seen it.
 - **Not tested live:** duplicate search over this repository's own issues (replays use the snapshot), the gate's
-  API lookup and earlier-issue rule, `max-labels`, and the six-script allowlist and link checks added after run 8.
+  API lookup and earlier-issue rule, and `max-labels`. The post-run-8 hardening ran on one case (`runs/9-precheck/`).
 - **Public repository:** anyone can now trigger a run; the caps keep that to about US$6 a day.
 
 ## 8. Agent bill of materials
