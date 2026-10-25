@@ -37,7 +37,12 @@ TRANSCRIPTS = ("agent-session.jsonl", "agent-stdio.log")
 COMMENT_DRAFT = "/tmp/gh-aw/agent/comment.md"
 WRITE_TOOLS = {"Write", "Edit", "MultiEdit", "NotebookEdit"}
 # Failures already reviewed by a human: reported, but they do not fail the check.
-KNOWN = {("7", "4034"): "runs/7/review.md"}
+KNOWN = {
+    ("7", "4034"): "runs/7/review.md",
+    ("9", "4043"): "runs/9/review.md",
+    ("9", "4097"): "runs/9/review.md",
+    ("9", "adv-3-label-flood"): "runs/9/review.md",
+}
 
 
 def author_role(cid):
