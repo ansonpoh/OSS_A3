@@ -27,6 +27,9 @@ replaced by run 4; run 5 did not replace it), `review.md` (index of the reviews 
 `runs/<n>/review.md`, with case details in `review_packet.md`, built by `evals/review_packet.py`) and
 `runs/<label>/` (each kept run's results and per-case outputs, saved by `evals/snapshot.py`, with test logs under
 `logs/`).
+`stability.md` compares the full runs (3, 5, 5b and 6), lists the reruns lost to gh-aw's API-quota failure, and
+states the drift rule. Run 6 (`runs/6/`, `1db4461`) was scored locally because CI scoring hit HTTP 403 in the
+then-private repository; its `score-output.txt` and `replay_map.json` are kept with it.
 Full logs of every run are exported to the `data/runs` branch; the logs of the
 reviewed runs are also committed here, under `runs/<n>/logs/`.
 
