@@ -1,6 +1,6 @@
 # Review of run 3
 
-Drafted with AI help; not yet reviewed by the owner.
+The verdict on 4204 is the owner's. The other verdicts are AI-drafted and not yet reviewed by the owner.
 
 Run 3 is commit `d017a23`, golden-rerun 40106656213, all 27 cases replayed on sandbox issues #32-#58. Case details are in
 `../../review_packet.md` (held-out cases are judged from `expected.json` and `evidence.json`). Each verdict is based on the
@@ -23,7 +23,7 @@ Totals: 24 correct, 1 acceptable, 2 wrong, out of 27.
 | 4158 | correct | bug + more information needed, as SKILL.md's "Bug, needs info" row prescribes; asks for a minimal runnable example and `rich.diagnose` output, as the maintainer did. |
 | 4172 | correct | enhancement, no duplicate label. Minor doubt: the `Table.grid` sentence is tangential to a typing request. |
 | 4203 | correct | question; asks for the broken link and its fix in the issue, says PRs are collaborator-only with no date, and points to CONTRIBUTING.md and AI_POLICY.md. Close to the maintainer's "reply or open an issue". |
-| 4204 | wrong | documentation is right, but it also added duplicate and told the reporter to "continue the discussion in #4203". #4203 is closed and asked a different question (when PRs open); its maintainer reply invited exactly this separate issue. A maintainer would have to remove the duplicate label, and the comment sends the contributor back to a closed thread. The checks pass because duplicate is not excluded. Run 1 was acceptable (question). |
+| 4204 | wrong (owner's verdict) | documentation is right, but it also added duplicate and told the reporter to "continue the discussion in #4203". #4203 is closed and asked a different question (when PRs open); its maintainer reply invited exactly this separate issue. A maintainer would have to remove the duplicate label, and the comment sends the contributor back to a closed thread. The checks pass because duplicate is not excluded. Run 1 was acceptable (question). **Cause:** `find_duplicates` ranked #4203 first (score 0.503, strong). The agent matched its body (the same broken link and the wish to submit a fix); its messages never mention that a maintainer closed it, and SKILL.md's duplicate rule requires the earlier issue to still be the right place for the discussion. |
 | 4205 | correct | question; shows `style="orange1"` and points to the style docs and color table. |
 | 4214 | correct | bug, no comment; the whole triage for a clear reproducible bug. |
 | 4226 | correct | invalid; says Rich has no `select()` API and redirects to the library that provides it. |
