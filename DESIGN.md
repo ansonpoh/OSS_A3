@@ -52,12 +52,12 @@ Status: **tested** (evidence in `evals/evidence/`), **implemented** (configured,
   personal-token fallback, so every label and comment is github-actions[bot]; footers name the run and model.
 - **Least privilege** (implemented): agent job `contents: read`, `issues: read` and no token handed to the agent;
   detection `contents: read`; only `safe_outputs` and `conclusion` hold `issues: write`. All actions SHA-pinned.
-- **Safe outputs** (tested on Codex, `cap-test-run-40070408956.json`): one label call (max 3, allowlist), one
+- **Safe outputs** (tested on both engines, `cap-test-run-*.json`): one label call (max 3, allowlist), one
   comment, `noop`. The MCP refused the second calls and the other-issue target; the gate refused the rest.
 - **Human approval** (implemented, `CODEOWNERS`, `branch-protection-main.json`): the bot only adds labels and one
   comment; `Needs triage` stays for the maintainer. Others' config changes need the code owner's approval.
-- **Budgets** (tested on Codex, `budget-test-run-*.json`): 5 credits a run, 10 for detection, 600 a day, 3 runs
-  per author an hour, 25 turns, 10-minute timeouts. One run stopped at the per-run cap, one skipped at the daily cap.
+- **Budgets** (tested on both engines, `budget-test-run-*.json`): 5 credits a run, 10 for detection, 600 a day,
+  3 runs per author an hour, 25 turns, 10-minute timeouts. Both caps fired; run cap acts between requests (1.88/1).
 - **Audit trail** (tested, `evals/golden/runs/*/logs/`, branch `data/runs`): each run keeps trigger, resolved model,
   transcript, outputs, credits, firewall log, skill trace and gh-aw's `skill_inventory.json`.
 - **Kill switch** (tested): `TRIAGE_AGENT_ENABLED=false` skips new runs (`kill-switch-run-40073460982.json`);
