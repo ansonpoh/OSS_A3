@@ -7,8 +7,8 @@
 | Runs analyzed | 29 |
 | Runs with firewall data | 29 |
 | Runs without firewall data | 0 |
-| Total requests | 292 |
-| Allowed requests | 292 |
+| Total requests | 301 |
+| Allowed requests | 301 |
 | Blocked requests | 0 |
 | Overall denial rate | 0.0% |
 | Unique domains | 1 |
@@ -17,21 +17,21 @@
 
 | Metric | Total | Avg/run | Min | Max | Spikes |
 |--------|-------|---------|-----|-----|--------|
-| Token Trend | 11535128 | 397763 | 134436 | 829363 | ⚠ #40267101086, #40266935279 |
-| Turns | 391 | 13.5 | — | 23 | — |
-| Duration | — | 4.3m | 3.6m | 5.4m | — |
+| Token Trend | 11873815 | 409441 | 134577 | 748799 | — |
+| Turns | 398 | 13.7 | — | 22 | — |
+| Duration | — | 4.4m | 3.9m | 5.6m | — |
 
 ## MCP Server Health (29 runs)
 
 | Server | Connected | Error Rate | Total Calls | Errors | Status |
 |--------|-----------|------------|-------------|--------|--------|
-| `safeoutputs` | 29/29 | 0.0% | 44 | 0 | ✅ ok |
+| `safeoutputs` | 29/29 | 0.0% | 45 | 0 | ✅ ok |
 
 ## Domain Inventory
 
 | Domain | Status | Seen In | Allowed | Blocked |
 |--------|--------|---------|---------|--------|
-| `api.anthropic.com:443` | ✅ allowed | 29/29 runs | 292 | 0 |
+| `api.anthropic.com:443` | ✅ allowed | 29/29 runs | 301 | 0 |
 
 ## Agent Event Pattern Analysis
 
@@ -43,52 +43,52 @@
 
 | Severity | Kind | Title | Description |
 |----------|------|-------|-------------|
-| 🟡 low | style_skew | Dominant graders: pass | 93% of runs share graders="pass" (27/29). Low diversity may indicate homogeneous workload or classification bias. |
+| 🟡 low | style_skew | Dominant graders: pass | 90% of runs share graders="pass" (26/29). Low diversity may indicate homogeneous workload or classification bias. |
 
 ## Run Clusters
 
 | Dimension | Value | Runs | Avg Tokens | Avg Turns | Avg Duration | Success Rate |
 |-----------|-------|------|------------|-----------|--------------|-------------|
-| execution_style | adaptive | 7 | 234064 | 9.0 | 4.0m | 100% |
-| execution_style | directed | 2 | 134441 | 4.0 | 3.7m | 100% |
-| execution_style | exploratory | 20 | 481389 | 16.0 | 4.5m | 100% |
-| resource_profile | heavy | 18 | 502634 | 16.7 | 4.5m | 100% |
-| resource_profile | lean | 2 | 134441 | 4.0 | 3.7m | 100% |
-| resource_profile | moderate | 9 | 246536 | 9.2 | 4.1m | 100% |
-| graders | mixed | 2 | 134441 | 4.0 | 3.7m | 100% |
-| graders | pass | 27 | 417268 | 14.2 | 4.4m | 100% |
+| execution_style | adaptive | 7 | 240643 | 8.7 | 4.2m | 100% |
+| execution_style | directed | 2 | 134678 | 4.0 | 4.2m | 100% |
+| execution_style | exploratory | 20 | 495997 | 16.5 | 4.5m | 100% |
+| resource_profile | heavy | 19 | 507228 | 16.8 | 4.5m | 100% |
+| resource_profile | lean | 2 | 134678 | 4.0 | 4.2m | 100% |
+| resource_profile | moderate | 8 | 245890 | 8.9 | 4.2m | 100% |
+| graders | mixed | 3 | 288096 | 8.7 | 4.3m | 100% |
+| graders | pass | 26 | 423443 | 14.3 | 4.4m | 100% |
 
 ## Per-Run Breakdown
 
 | Run ID | Workflow | Conclusion | Duration | Firewall | Tokens | Turns | MCP Err | Errors |
 |--------|----------|------------|----------|----------|--------|-------|---------|--------|
-| 40268691299 | Rich issue triage | success | 4.4m | 9/0 | 343.5K | 14 | 0 | 0 |
-| 40268604271 | Rich issue triage | success | 3.6m | 7/0 | 234.2K | 9 | 0 | 0 |
-| 40268512013 | Rich issue triage | success | 4.2m | 8/0 | 290.7K | 10 | 0 | 0 |
-| 40268423728 | Rich issue triage | success | 4.3m | 14/0 | 590.1K | 18 | 0 | 0 |
-| 40268332858 | Rich issue triage | success | 4.0m | 9/0 | 338.8K | 12 | 0 | 0 |
-| 40268243688 | Rich issue triage | success | 3.7m | 5/0 | 134.4K | 4 | 0 | 0 |
-| 40268155900 | Rich issue triage | success | 3.7m | 5/0 | 134.4K | 4 | 0 | 0 |
-| 40268060688 | Rich issue triage | success | 4.4m | 11/0 | 445.8K | 15 | 0 | 0 |
-| 40267974705 | Rich issue triage | success | 4.4m | 12/0 | 508.2K | 17 | 0 | 0 |
-| 40267887333 | Rich issue triage | success | 4.0m | 7/0 | 233.3K | 9 | 0 | 0 |
-| 40267798686 | Rich issue triage | success | 4.0m | 7/0 | 237.0K | 9 | 0 | 0 |
-| 40267710755 | Rich issue triage | success | 4.0m | 7/0 | 234.1K | 9 | 0 | 0 |
-| 40267618421 | Rich issue triage | success | 4.5m | 11/0 | 451.2K | 17 | 0 | 0 |
-| 40267531791 | Rich issue triage | success | 4.2m | 8/0 | 288.9K | 13 | 0 | 0 |
-| 40267446242 | Rich issue triage | success | 4.4m | 8/0 | 289.6K | 10 | 0 | 0 |
-| 40267360031 | Rich issue triage | success | 4.5m | 13/0 | 570.3K | 19 | 0 | 0 |
-| 40267274453 | Rich issue triage | success | 4.5m | 10/0 | 401.2K | 14 | 0 | 0 |
-| 40267187690 | Rich issue triage | success | 4.7m | 13/0 | 545.1K | 18 | 0 | 0 |
-| 40267101086 | Rich issue triage | success | 5.4m | 19/0 | 813.0K ⚠ | 23 | 0 | 0 |
-| 40267016666 | Rich issue triage | success | 4.4m | 16/0 | 685.8K | 20 | 0 | 0 |
-| 40266935279 | Rich issue triage | success | 4.5m | 17/0 | 829.4K ⚠ | 19 | 0 | 0 |
-| 40266847991 | Rich issue triage | success | 5.1m | 15/0 | 643.8K | 18 | 0 | 0 |
-| 40266757681 | Rich issue triage | success | 4.8m | 10/0 | 399.9K | 16 | 0 | 0 |
-| 40266680353 | Rich issue triage | success | 4.3m | 7/0 | 233.8K | 9 | 0 | 0 |
-| 40266600937 | Rich issue triage | success | 4.6m | 9/0 | 338.6K | 15 | 0 | 0 |
-| 40266520015 | Rich issue triage | success | 4.6m | 9/0 | 339.9K | 13 | 0 | 0 |
-| 40266436945 | Rich issue triage | success | 4.2m | 7/0 | 232.4K | 9 | 0 | 0 |
-| 40266351619 | Rich issue triage | success | 3.9m | 7/0 | 233.8K | 9 | 0 | 0 |
-| 40266270699 | Rich issue triage | success | 4.4m | 12/0 | 514.0K | 19 | 0 | 0 |
+| 40272528165 | Rich issue triage | success | 4.1m | 14/0 | 598.9K | 17 | 0 | 0 |
+| 40272444653 | Rich issue triage | success | 4.1m | 7/0 | 233.7K | 9 | 0 | 0 |
+| 40272356628 | Rich issue triage | success | 4.3m | 10/0 | 398.0K | 13 | 0 | 0 |
+| 40272268969 | Rich issue triage | success | 5.0m | 19/0 | 748.8K | 22 | 0 | 0 |
+| 40272181231 | Rich issue triage | success | 4.2m | 7/0 | 233.0K | 9 | 0 | 0 |
+| 40272096151 | Rich issue triage | success | 3.9m | 5/0 | 134.6K | 4 | 0 | 0 |
+| 40272011169 | Rich issue triage | success | 4.4m | 5/0 | 134.8K | 4 | 0 | 0 |
+| 40271908811 | Rich issue triage | success | 4.9m | 15/0 | 657.4K | 20 | 0 | 0 |
+| 40271823600 | Rich issue triage | success | 4.6m | 11/0 | 454.6K | 17 | 0 | 0 |
+| 40271741258 | Rich issue triage | success | 4.4m | 7/0 | 233.3K | 9 | 0 | 0 |
+| 40271658174 | Rich issue triage | success | 4.7m | 10/0 | 397.3K | 13 | 0 | 0 |
+| 40271571741 | Rich issue triage | success | 4.2m | 7/0 | 235.4K | 9 | 0 | 0 |
+| 40271485171 | Rich issue triage | success | 4.5m | 10/0 | 392.0K | 14 | 0 | 0 |
+| 40271400150 | Rich issue triage | success | 4.3m | 9/0 | 338.5K | 13 | 0 | 0 |
+| 40271315096 | Rich issue triage | success | 4.1m | 7/0 | 239.3K | 9 | 0 | 0 |
+| 40271231206 | Rich issue triage | success | 4.3m | 13/0 | 554.8K | 20 | 0 | 0 |
+| 40271149616 | Rich issue triage | success | 3.9m | 11/0 | 447.5K | 14 | 0 | 0 |
+| 40271061144 | Rich issue triage | success | 4.2m | 11/0 | 451.4K | 17 | 0 | 0 |
+| 40270979304 | Rich issue triage | success | 5.6m | 10/0 | 413.8K | 15 | 0 | 0 |
+| 40270898956 | Rich issue triage | success | 4.5m | 14/0 | 639.6K | 20 | 0 | 0 |
+| 40270815483 | Rich issue triage | success | 4.9m | 13/0 | 582.3K | 20 | 0 | 0 |
+| 40270730786 | Rich issue triage | success | 4.6m | 15/0 | 594.9K | 18 | 0 | 0 |
+| 40270636010 | Rich issue triage | success | 4.9m | 13/0 | 498.8K | 17 | 0 | 0 |
+| 40270548650 | Rich issue triage | success | 3.9m | 8/0 | 275.8K | 7 | 0 | 0 |
+| 40270463848 | Rich issue triage | success | 4.7m | 12/0 | 507.4K | 18 | 0 | 0 |
+| 40270377975 | Rich issue triage | success | 4.0m | 11/0 | 447.3K | 15 | 0 | 0 |
+| 40270296990 | Rich issue triage | success | 4.2m | 8/0 | 282.6K | 10 | 0 | 0 |
+| 40270211048 | Rich issue triage | success | 4.2m | 7/0 | 234.1K | 9 | 0 | 0 |
+| 40270128996 | Rich issue triage | success | 4.2m | 12/0 | 514.0K | 16 | 0 | 0 |
 
