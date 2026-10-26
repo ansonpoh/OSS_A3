@@ -1,0 +1,36 @@
+﻿2026-10-26T11:55:28.7156211Z ##[group]Run actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
+2026-10-26T11:55:28.7156749Z with:
+2026-10-26T11:55:28.7158330Z   script: const path = require('path');
+const actionsDir = path.join(process.env.RUNNER_TEMP, 'gh-aw', 'actions');
+const { setupGlobals } = require(path.join(actionsDir, 'setup_globals.cjs'));
+setupGlobals(core, github, context, exec, io, getOctokit);
+const { main } = require(path.join(actionsDir, 'compute_text.cjs'));
+await main();
+
+2026-10-26T11:55:28.7162471Z   github-token: ***
+2026-10-26T11:55:28.7162783Z   debug: false
+2026-10-26T11:55:28.7163087Z   user-agent: actions/github-script
+2026-10-26T11:55:28.7163432Z   result-encoding: json
+2026-10-26T11:55:28.7163729Z   retries: 0
+2026-10-26T11:55:28.7164049Z   retry-exempt-status-codes: 400,401,403,404,422
+2026-10-26T11:55:28.7164414Z env:
+2026-10-26T11:55:28.7164680Z   PYTHONNOUSERSITE: 1
+2026-10-26T11:55:28.7164997Z   OTEL_EXPORTER_OTLP_ENDPOINT: 
+2026-10-26T11:55:28.7165340Z   OTEL_SERVICE_NAME: gh-aw.rich-triage
+2026-10-26T11:55:28.7166191Z   OTEL_RESOURCE_ATTRIBUTES: gh-aw.workflow.name=Rich%20issue%20triage,gh-aw.repository=ansonpoh/OSS_A3,gh-aw.run.id=40318557243,github.run_id=40318557243,gh-aw.engine.id=claude
+2026-10-26T11:55:28.7166976Z   OTEL_EXPORTER_OTLP_HEADERS: 
+2026-10-26T11:55:28.7167333Z   GH_AW_OTLP_ENDPOINTS: [{"url":"","headers":""}]
+2026-10-26T11:55:28.7167710Z   GH_AW_OTLP_IF_MISSING: ignore
+2026-10-26T11:55:28.7179165Z   GH_AW_MAX_DAILY_AI_CREDITS: 600
+2026-10-26T11:55:28.7179599Z   GH_AW_RUNTIME_FEATURES: 
+2026-10-26T11:55:28.7179989Z   GITHUB_AW_OTEL_TRACE_ID: 6429ae20c59107bc13b75413d0e351c8
+2026-10-26T11:55:28.7180433Z   GITHUB_AW_OTEL_PARENT_SPAN_ID: 09fbbf0c88ab1287
+2026-10-26T11:55:28.7180822Z   GITHUB_AW_OTEL_JOB_START_MS: 1793015713592
+2026-10-26T11:55:28.7181155Z ##[endgroup]
+2026-10-26T11:55:29.2502142Z Repository permission level: admin
+2026-10-26T11:55:29.2715210Z Redacted URL: rich.readthe...
+2026-10-26T11:55:29.2853832Z Redacted URL: rich.readthe...
+2026-10-26T11:55:29.2905486Z text: [BUG] rich.print does not overwrite previous line with \r like built-in print\n\n- [x] I've checked the documentation: (rich.readthedocs.io/redacted)\n- [x] I can't find my issue in the FAQ: https://github.com/Textualize/rich/blob/master/FAQ.md\n\n## Describe the bug\n\nI'm trying to overwrite the previous line in stdout using `rich.print()`, in the same way this is commonly done with the built-in `print()` function using `\r` (carriage return) and flushing the output.\n\nBelow is a minimal example that demonstrates the behavior I'm seeing.\n\n```python\nimport sys\nfrom time import sleep\nfrom rich import print as rprint\n\n\nfor i in range(10):\n    rprint(f"\rNumber: {i}", end="")\n    sleep(0.5)\n\nprint()\n\nfor i in range(10):\n    print(f"\rNumber: {i}", end="", flush=True)\n    sys.stdout.flush()\n    sleep(0.5)\n```\n\nIn the second loop (using print()), the output behaves as expected: the same line is continuously overwritten with the updated value of Number.\nHowever, in the first loop (using rich.print()), the output does not overwrite the previous line and instead prints successive output differently.\nWhat I find confusing is that the documentation for rich.print() states that Rich always flushes output. Based on that, I would expect the two loops to behave the same way, but they clearly don't.\nI'm trying to understand:\n\nWhy \r does not produce the same overwrite behavior when using rich.print()\nWhether this is expected behavior due to how Rich handles rendering and cursor control\nOr whether I'm misunderstanding the documentation around flushing.\n\nAlso if there is any other way to achieve the same behavior do let me know!\n\nThank you!
+2026-10-26T11:55:29.2998922Z title: [BUG] rich.print does not overwrite previous line with \r like built-in print
+2026-10-26T11:55:29.3006523Z body: - [x] I've checked the documentation: (rich.readthedocs.io/redacted)\n- [x] I can't find my issue in the FAQ: https://github.com/Textualize/rich/blob/master/FAQ.md\n\n## Describe the bug\n\nI'm trying to overwrite the previous line in stdout using `rich.print()`, in the same way this is commonly done with the built-in `print()` function using `\r` (carriage return) and flushing the output.\n\nBelow is a minimal example that demonstrates the behavior I'm seeing.\n\n```python\nimport sys\nfrom time import sleep\nfrom rich import print as rprint\n\n\nfor i in range(10):\n    rprint(f"\rNumber: {i}", end="")\n    sleep(0.5)\n\nprint()\n\nfor i in range(10):\n    print(f"\rNumber: {i}", end="", flush=True)\n    sys.stdout.flush()\n    sleep(0.5)\n```\n\nIn the second loop (using print()), the output behaves as expected: the same line is continuously overwritten with the updated value of Number.\nHowever, in the first loop (using rich.print()), the output does not overwrite the previous line and instead prints successive output differently.\nWhat I find confusing is that the documentation for rich.print() states that Rich always flushes output. Based on that, I would expect the two loops to behave the same way, but they clearly don't.\nI'm trying to understand:\n\nWhy \r does not produce the same overwrite behavior when using rich.print()\nWhether this is expected behavior due to how Rich handles rendering and cursor control\nOr whether I'm misunderstanding the documentation around flushing.\n\nAlso if there is any other way to achieve the same behavior do let me know!\n\nThank you!
+2026-10-26T11:55:29.3024745Z Redacted URL domains written to: /tmp/gh-aw/redacted-urls.log

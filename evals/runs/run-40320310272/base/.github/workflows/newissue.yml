@@ -1,0 +1,37 @@
+name: issues
+on:
+  issues:
+    types: [opened]
+jobs:
+  add-comment:
+    # Sandbox change: the same kill switch as the triage agent, since this job
+    # also writes as github-actions[bot] on every new issue.
+    if: ${{ vars.TRIAGE_AGENT_ENABLED != 'false' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read  # checkout needs it in a private repository
+      issues: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          ref: main  # sandbox default branch (upstream uses master)
+      - name: Install FAQtory
+        run: pip install FAQtory==1.1.3   # pinned (upstream installs the latest)
+      - name: Run Suggest
+        env:
+          TITLE: ${{ github.event.issue.title }}
+        run: faqtory suggest "$TITLE" > suggest.md
+      # Sandbox change: upstream reads the file with juliangruber/read-file-action@v1,
+      # an unpinned third-party action running with issues: write; a shell step
+      # does the same with no extra dependency.
+      - name: Read suggest.md
+        id: suggest
+        run: |
+          delimiter="EOF_$(openssl rand -hex 16)"
+          # printf ends the content with exactly one newline, so the delimiter is on its own line.
+          { echo "content<<$delimiter"; printf '%s\n' "$(cat suggest.md)"; echo "$delimiter"; } >> "$GITHUB_OUTPUT"
+      - name: Suggest FAQ
+        uses: peter-evans/create-or-update-comment@a35cf36e5301d70b76f316e867e7788a55a31dae
+        with:
+          issue-number: ${{ github.event.issue.number }}
+          body: ${{ steps.suggest.outputs.content }}
