@@ -18,7 +18,7 @@ if fewer than N cases pass (default: all), or if a case that
 passes in the --baseline results.md (the accepted run committed on main) now
 fails (drift), or if a case that already fails there now fails differently
 (other labels or other failures), so a failing baseline case still shows drift. Identical configurations can vary by a few cases between runs
-(model sampling), so the weekly drift check uses N=20: it fails under 20 of the 29 cases.
+(model sampling), so the weekly drift check uses N=20: it fails under 20 of the 30 cases.
 """
 import datetime
 import json

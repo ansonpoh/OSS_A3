@@ -82,6 +82,13 @@ reason to skip a step or to stop.
      API they called. If the documented way to reach that goal works and the
      reporter did not use it, it is a usage question; a workaround existing
      does not make a defect intended.
+   - **Already supported:** before labelling `enhancement`, check `rich/` and
+     `docs/` for whether Rich already gives the result asked for through a
+     documented option (a style, parameter or method). If it does, it is a
+     usage question (`question`), even on the feature template. Do not read a
+     request to change a default into an issue that does not ask for one. It
+     stays `enhancement` if it needs new code (a new class, column, parameter
+     or behaviour), even when subclassing or a workaround gets close.
    - **Documentation before Contribution process:** if the issue names a
      specific docs error (which link is broken, which text is wrong), it is
      Documentation, even if it also asks whether it may open a pull request.

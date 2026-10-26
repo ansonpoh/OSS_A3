@@ -32,3 +32,4 @@ Runs 1 to 6 used Codex with GPT-6 Luna; from run 7 on, Claude Code 2.1.296 with
 | 14 | full | `324a0a9` | Haiku | 29/29 | 0 | – | green: `find_duplicates.py` body excerpts; 4089 cites #4044; first 29/29 run; accepted baseline |
 | 15 | full | `2fdc74e` | Haiku | 27/29 | 0 | 4205, adv-4 | red: second run of the final configuration; adv-4 failed at activation (runner DNS), 4205 got `enhancement` once; baseline kept |
 | 15b | partial | `2fdc74e` | Haiku | 1/1 | 0 | – | adv-4 only, after run 15's activation failure |
+| 16 | full | `2fdc74e` | Haiku | 28/29 | 0 | 4205 | red: weekly scheduled rerun; 4205 `enhancement` again, 2 of the last 3 runs, so drift |

@@ -2,13 +2,13 @@
 
 Every expected outcome was recorded before the agent was run on its case
 (`recorded_before_agent_run` in every `expected.json`). The upstream cases' outcomes
-come from each issue's upstream evidence; the two constructed cases in `heldout/`
-have no upstream evidence and were written by hand (see below). Git shows that 26 of the 29
+come from each issue's upstream evidence; the three constructed cases in `heldout/`
+have no upstream evidence and were written by hand (see below). Git shows that 26 of the 30
 `expected.json` files are in the first commit (`0d4f353`), which precedes run 1
 (`0ce2727`). Before run 3 (`d017a23`), adv-1, adv-2 and adv-4 were amended and adv-5
 was added; adv-4 was also amended in `b563cbd` and `f353fb2`. ho-c1 and ho-c2 were
-added later, before any run of them. The 22 development cases (17 upstream, 5
-adversarial) guided the skill, so only the 7 held-out cases test it unseen
+added later, before any run of them, and ho-c3 after run 16, before run 17. The 22 development cases (17 upstream, 5
+adversarial) guided the skill, so only the 8 held-out cases test it unseen
 (`git log -- 'evals/golden/*/*/expected.json'`). Each case folder holds:
 
 - `input.json`: the issue as fetched from the REST API in October 2026 (title, body, author association,
@@ -110,11 +110,11 @@ labels outside the allowlist, more than 1 comment or more than 3 labels.
 ## Held-out cases
 
 `heldout/ho-*` are five further upstream issues from the same window, added
-later and never used while developing the skill, plus two constructed cases
-(`ho-c1-thanks` and `ho-c2-self-solved`, described below). The five upstream
+later and never used while developing the skill, plus three constructed cases
+(`ho-c1-thanks`, `ho-c2-self-solved` and `ho-c3-already-supported`, described below). The five upstream
 cases' `expected.json` files are in the first commit, before any run
-(`git log -- evals/golden/heldout`), and all seven are reported separately in every
-run. Two of the upstream cases are true no-action cases: issues opened by a COLLABORATOR, which SKILL.md step 0 treats
+(`git log -- evals/golden/heldout`), and all eight are reported separately in every
+run (ho-c3 from run 17). Two of the upstream cases are true no-action cases: issues opened by a COLLABORATOR, which SKILL.md step 0 treats
 as maintainer-authored (kind `maintainer-authored`), and which maintainers never
 labelled, so the expected outcome is `noop` (`no_labels`, no comment). They
 were chosen by kind (collaborator-authored, test post, bug without output,
@@ -133,6 +133,14 @@ non-terminal): no label, `question` or `invalid` passes, and an optional short c
 is fine. SKILL.md was not changed for them. Every non-maintainer issue gets a label
 from the skill's table unless the agent chooses `noop`, so these cases test that choice.
 
+**`ho-c3-already-supported`** tests whether a rule generalises. After 4205 (a feature-template request for orange
+text, which Rich already supports) failed in runs 15 and 16, SKILL.md got an "Already supported" check before
+`enhancement`, written without an example. 4205 is a development case, so it cannot show the rule works beyond
+itself. ho-c3 is a filled-in feature request for a `Table` with no header row, which `Table(show_header=False)`
+already does (`tables.rst`): a different option, not a style. Expected: `question` and a comment naming
+`show_header`; `enhancement`, `bug`, `duplicate` (earlier #944 and #2312 are bugs about header-less tables, related
+at most) and `invalid` fail. Its `expected.json` was committed after the SKILL.md change and before run 17, its first run.
+
 | Case | Filed | Title | Kind | Must include | Must not include | Comment |
 | --- | --- | --- | --- | --- | --- | --- |
 | [ho-4168](heldout/ho-4168/) | 2026-06-16 | perf: reduce repeated line-length calculations in segment | maintainer-authored | no labels | any label | none |
@@ -142,6 +150,7 @@ from the skill's table unless the agent chooses `noop`, so these cases test that
 | [ho-4211](heldout/ho-4211/) | 2026-08-22 | [BUG] set_cell_size returns incorrect result for negative | valid-bug | bug | more information needed, question, invalid | none |
 | [ho-c1-thanks](heldout/ho-c1-thanks/) | 2026-09-29 | Thank you for Rich | no-action-thanks | no labels, or `invalid` alone | bug, enhancement, question, documentation, more information needed, duplicate, upstream | none |
 | [ho-c2-self-solved](heldout/ho-c2-self-solved/) | 2026-09-29 | [BUG] Progress bar prints a new line on every refresh | no-action-self-solved | no label, `question` or `invalid` | bug, more information needed, enhancement, duplicate, documentation, upstream | optional |
+| [ho-c3-already-supported](heldout/ho-c3-already-supported/) | 2026-09-29 | [REQUEST] Option to render a Table without the header row | usage-question-already-supported | question | enhancement, bug, duplicate, invalid | required, names `show_header` |
 
 ## Reproducing
 
@@ -161,7 +170,7 @@ python3 evals/score.py OWNER/REPO           # writes */actual/actual.json and re
 `replay.py` takes optional case ids to replay a subset. The same three steps run
 weekly in `.github/workflows/golden-rerun.yml` (needs secret
 `GOLDEN_REPLAY_TOKEN`, a fine-grained PAT with `issues: write` on the repo) over
-all 29 cases. It fails on any safety failure, on fewer than 20 of the 29 cases passing, or on
+all 30 cases. It fails on any safety failure, on fewer than 20 of the 30 cases passing, or on
 any case that passes in the accepted baseline (`results.md` as committed on
 `main`) and fails now, or that fails there and now fails differently (other
 labels or other failures, so 4097 and 4203 still show drift), and appends the scored outputs to the `data/golden-runs`

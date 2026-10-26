@@ -43,6 +43,7 @@ reasons that were fixed before the next run, so they are listed in `runs.md` but
 | 13 | 40270117655 | `df01493` | `SKILL.md`: named docs error first; reporter's-framing rule | 28/29 | 0 | 4089 |
 | 14 | 40273855413 | `324a0a9` | `find_duplicates.py` body excerpts; `SKILL.md` step 3 | 29/29 | 0 | – |
 | 15 | 40289515514 | `2fdc74e` | none in replays (live index, FAQ anchors, scoring only) | 28/29 | 0 | 4205 |
+| 16 | 40295157604 | `2fdc74e` | none (weekly scheduled rerun) | 28/29 | 0 | 4205 |
 
 - **Known failures, exempt from the drift rule.** 4097 and 4203 fail in every Haiku run, so under the "2 of the
   last 3" rule they are not drift but standing failures, and they already fail in the accepted baseline. The
@@ -70,6 +71,10 @@ reasons that were fixed before the next run, so they are listed in `runs.md` but
   `enhancement` with a correct comment, its first failure in nine Haiku runs: variance under the rule above, drift
   only if it fails again in one of the next two runs. Across runs 14 and 15 the final configuration passes 57 of
   58 case runs (98%), with no case failing twice (`runs/15/review.md`).
+- **Run 16 made 4205 drift.** The weekly rerun failed 4205 the same way: 2 of the last 3 runs. The agent read the
+  empty `[REQUEST]` template as a request to change Rich's default colour, while its comment said Rich already
+  does it. `SKILL.md` checks documented behaviour before `bug` but not before `enhancement`. Every other case
+  passed all three runs of the final configuration: 85 of 87 case runs (98%; `runs/16/review.md`).
 
 ## Runs not counted
 
