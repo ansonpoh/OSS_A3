@@ -172,6 +172,8 @@ def cited_problems(comments, issue):
                 r = fetch_issue(n)
                 if r.get("pull_request"):
                     raise LookupError("it is a pull request, not an earlier issue")
+                if build_index.is_replay(r):
+                    raise LookupError("it is a golden-case replay, not an earlier issue")
                 if not r.get("created_at") or r["created_at"] >= (issue.get("created_at") or ""):
                     raise LookupError("it was not opened before this issue")
             r = {"title": r.get("title"), "body": r.get("body")}

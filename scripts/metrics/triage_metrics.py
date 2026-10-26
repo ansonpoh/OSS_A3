@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Measure issue-triage need for a GitHub repository.
 
-For every issue (not PR) opened in [--since, --until) this records:
+For every issue (not PR) opened in [--since, --until) this records (the
+summary leaves out issues opened by maintainers, who triage their own):
   - hours to first response by a maintainer (OWNER/MEMBER/COLLABORATOR,
     excluding the issue author and bots)
   - hours until "Needs triage" was removed, if it ever was
@@ -154,6 +155,10 @@ def pct(values, q):
 
 
 def summarise(rows, since, until, measured_at):
+    # Maintainers triage their own issues (the agent leaves them alone), so
+    # the need is measured on issues filed by everyone else.
+    excluded = sum(1 for r in rows if r["author_association"] in MAINTAINER_ROLES)
+    rows = [r for r in rows if r["author_association"] not in MAINTAINER_ROLES]
     n = len(rows)
     resp = [
         r["hours_to_first_maintainer_action"]
@@ -187,6 +192,7 @@ def summarise(rows, since, until, measured_at):
         "window": {"since": since, "until": until},
         "measured_at": measured_at.isoformat(),
         "issues_opened": n,
+        "maintainer_authored_excluded": excluded,
         "issues_per_week": round(
             n / max(1, (ts(until + "T00:00:00Z") - ts(since + "T00:00:00Z")).days / 7),
             2,
@@ -213,6 +219,7 @@ def summarise(rows, since, until, measured_at):
         "outcomes": reasons,
         "labels": dict(sorted(label_counts.items(), key=lambda kv: -kv[1])),
         "notes": [
+            "Issues opened by OWNER/MEMBER/COLLABORATOR authors are excluded (maintainer_authored_excluded).",
             "Responses count OWNER/MEMBER/COLLABORATOR comments, non-author human labels, or non-author closes.",
             "Issues still open have no response time and are counted as never actioned (right-censored).",
             "older_than_30d_no_action_within_30d uses a fixed 30-day horizon and is not censored.",

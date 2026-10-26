@@ -13,7 +13,7 @@ Index source:
   planted entries of evals/golden/adversarial/<case>/planted_index.json, if
   that file exists, for that case only;
 - any other issue: this repository's own issues, fetched now from the API
-  (replay markers stripped). A failed fetch, a missing token or a next-page
+  (golden-case replays left out). A failed fetch, a missing token or a next-page
   link outside the API exits 1 (the run fails closed); the eval file is never
   used.
 
@@ -132,12 +132,20 @@ def fetch_issues(repo, token, api="https://api.github.com"):
         with urllib.request.urlopen(req, timeout=30) as resp:
             page = json.load(resp)
             m = re.search(r'<([^>]+)>;\s*rel="next"', resp.headers.get("Link") or "")
-        out += [{k: i.get(k) for k in KEEP} for i in page if "pull_request" not in i]
+        out += [{k: i.get(k) for k in KEEP} for i in page
+                if "pull_request" not in i and not is_replay(i)]
         url = m.group(1) if m else None
     for i in out:
-        # A replayed case filed in this repository keeps its marker; drop it.
+        # A marker on someone else's issue is not a replay; drop the marker.
         i["body"] = MARKER.sub("", i["body"] or "").rstrip()
     return out
+
+
+def is_replay(i):
+    """A golden-case replay (the owner's issue with a marker): a copy of an
+    upstream or adversarial case, not part of this repository's history, so
+    a live issue is never matched against, or cited as, one."""
+    return i.get("author_association") == "OWNER" and bool(MARKER.search(i.get("body") or ""))
 
 
 def rewind(index, created):

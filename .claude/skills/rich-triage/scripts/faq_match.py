@@ -25,7 +25,8 @@ def parse(path):
     title = re.search(r'title:\s*"?(.*?)"?\s*$', head, re.M)
     alts = re.findall(r'^\s*-\s*"?(.*?)"?\s*$', head, re.M)
     title = title.group(1) if title else os.path.basename(path)
-    anchor = re.sub(r"[^a-z0-9 -]", "", title.lower()).replace(" ", "-")
+    # GitHub's heading slug: keeps letters, digits, "_" and "-"; spaces become "-".
+    anchor = re.sub(r"[^\w -]", "", title.lower()).replace(" ", "-")
     return title, " ".join([title] * 2 + alts + [body]), anchor
 
 

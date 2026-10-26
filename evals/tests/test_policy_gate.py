@@ -134,7 +134,9 @@ def live(monkeypatch):
                      "created_at": "2026-09-02T00:00:00Z"},
               4302: {"title": "Later", "body": "ordinary", "created_at": "2026-10-02T00:00:00Z"},
               4303: {"title": "A PR", "body": "ordinary", "created_at": "2026-09-03T00:00:00Z",
-                     "pull_request": {"url": "x"}}}
+                     "pull_request": {"url": "x"}},
+              4304: {"title": "Replay", "body": "report\n\n<!-- golden-case: 4226 filed: 2026-09-22T00:00:00Z as: NONE -->",
+                     "author_association": "OWNER", "created_at": "2026-09-04T00:00:00Z"}}
     seen = []
 
     def fake_fetch(n):
@@ -157,6 +159,11 @@ def test_live_refuses_later_issues_and_pull_requests(live):
     p = policy_gate.gate([comment("See #4302 and #4303.")], PUBLIC)
     assert p == ["could not check cited #4302: it was not opened before this issue",
                  "could not check cited #4303: it is a pull request, not an earlier issue"]
+
+
+def test_live_refuses_golden_case_replays(live):
+    p = policy_gate.gate([comment("Related: #4304.")], PUBLIC)
+    assert p == ["could not check cited #4304: it is a golden-case replay, not an earlier issue"]
 
 
 def test_live_fails_closed_on_fetch_error(live):

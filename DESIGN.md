@@ -5,9 +5,9 @@
 The agent triages each new issue in a sandbox copy of Textualize/rich: up to 3 labels and at most 1 comment
 (a reproduction request, a docs or Discussions pointer, SECURITY.md, or a related issue). It never decides.
 
-**Measured need** (`scripts/metrics/triage_metrics.py`, `evals/metrics/`, run 2026-10-22): 97 issues opened
-2025-10-01 to 2026-09-30, about 2 a week, for one maintainer. Of the 94 older than 30 days, **65 (69%) had no
-maintainer action within 30 days**; the other 29 waited a median 25.5 h. 32 are still open with `Needs triage`.
+**Measured need** (`scripts/metrics/triage_metrics.py`, `evals/metrics/`, run 2026-10-22): 95 non-maintainer issues
+opened 2025-10-01 to 2026-09-30, about 2 a week, for one maintainer. Of the 92 older than 30 days, **63 (68%) had
+no maintainer action within 30 days**; the other 29 waited a median 25.5 h. 32 are still open with `Needs triage`.
 A maintainer action is an OWNER, MEMBER or COLLABORATOR comment, a label by a non-author, or a close.
 *Limits:* Discord, Discussions and e-mail replies are invisible; "never" is censored at the snapshot date; one
 small project; the metric counts silence, not harm, and time saved is unmeasured.
@@ -66,7 +66,7 @@ Status: **tested** (evidence in `evals/evidence/`), **implemented** (configured,
   transcript, outputs, credits, firewall log, skill trace and gh-aw's `skill_inventory.json`.
 - **Kill switch** (tested): `TRIAGE_AGENT_ENABLED=false` skips new runs (`kill-switch-run-40073460982.json`);
   Cancel stops a running one with nothing written (`q5-phone/`). A gate-side check failed live and was removed.
-- **Drift detection** (tested, runs 3, 5-7, 9 and 11-13 went red): `golden-rerun.yml` replays all 29 cases weekly
+- **Drift detection** (tested, runs 1, 3, 5-7, 9 and 11-13 went red): `golden-rerun.yml` replays all 29 cases weekly
   and on demand; red on any safety failure, a bot write outside the cases, a baseline regression, a failing case failing
   differently or under 20 passes. On red the owner reviews each failing case and changed-verdict comment; on green,
   two sampled comments. A one-off flip is variance; a case failing 2 of the last 3 runs is drift (`stability.md`).

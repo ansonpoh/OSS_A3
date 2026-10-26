@@ -124,10 +124,14 @@ def test_non_replay_fetches_repository_issues_not_the_eval_file(prep, monkeypatc
                       "closed_at": None, "state_reason": None}
 
 
-def test_fetched_bodies_lose_replay_markers(prep, monkeypatch):
-    serve(monkeypatch, {FIRST: FakeResponse([entry(5, "2026-10-01T00:00:00Z", body=marker("4226", "2026-09-22T00:00:00Z"))])})
+def test_fetched_replays_are_left_out_and_other_markers_stripped(prep, monkeypatch):
+    replay = {**entry(5, "2026-10-01T00:00:00Z", body=marker("4226", "2026-09-22T00:00:00Z")),
+              "author_association": "OWNER"}
+    spoof = {**entry(6, "2026-10-01T00:00:00Z", body=marker("4226", "2026-09-22T00:00:00Z")),
+             "author_association": "NONE"}
+    serve(monkeypatch, {FIRST: FakeResponse([replay, spoof])})
     _, idx, _ = prep("a real new issue", assoc="NONE")
-    assert idx[0]["body"] == "report"
+    assert [r["number"] for r in idx] == [6] and idx[0]["body"] == "report"
 
 
 @pytest.mark.parametrize("pages", [
