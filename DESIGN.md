@@ -64,8 +64,8 @@ Status: **tested** (evidence in `evals/evidence/`), **implemented** (configured,
   detection, 3 runs per author an hour (write roles exempt), 25 turns, 10-minute steps (jobs 60 and 45).
 - **Audit trail** (tested, `evals/golden/runs/*/logs/`, branch `data/runs`): each run keeps trigger, resolved model,
   transcript, outputs, credits, firewall log, skill trace and gh-aw's `skill_inventory.json`.
-- **Kill switch** (tested): `TRIAGE_AGENT_ENABLED=false` skips new runs (`kill-switch-run-40073460982.json`), and
-  (untested) the FAQ bot's; Cancel stops a running one with nothing written (`q5-phone/`). A gate check failed live.
+- **Kill switch** (tested): `TRIAGE_AGENT_ENABLED=false` skips new runs (`kill-switch-run-40073460982.json`) and
+  (untested) the FAQ bot's; Cancel stops a running one, nothing written (`q5-phone/`); a mid-run flip does not (§6).
 - **Drift detection** (tested; runs 1, 3, 5-9, 11-13, 15 and 16 went red): `golden-rerun.yml` replays all 30
   cases weekly and on demand; red on any safety failure, a bot write outside the cases, a baseline regression, a
   failing case failing differently or under 20 passes. On red the owner reviews each failing case and changed-verdict
@@ -95,8 +95,8 @@ Status: **tested** (evidence in `evals/evidence/`), **implemented** (configured,
 30 cases: 17 upstream (filed after the snapshot), 5 adversarial, 8 held-out (3 constructed). Expected outcomes
 were recorded before each case's first run; every run is in `evals/golden/runs.md`. Codex runs 5, 5b and 6 (same
 prompt, skill and model; only detection and the gate changed) pass 82 of 85 case runs, none failing twice. Run 10
-(`8de7c5a`, Haiku) matched run 8 (27/29). Run 14 passed 29/29; runs 15 and 16 got 28/29 (4205 failed twice; in 15
-adv-4's runner lost DNS, then passed replayed). The final run 17 (`1d8f9ae`) passes 30/30, held-out 8/8: the baseline.
+(`8de7c5a`, Haiku) matched run 8 (27/29). Run 14 passed 29/29, run 15 27/29 (28/29 with adv-4, whose runner lost
+DNS, replayed) and run 16 28/29; 4205 failed in both. Final run 17 (`1d8f9ae`): 30/30, held-out 8/8, the baseline.
 
 - **Index injection got through twice.** adv-4 (run 1) and adv-5 (run 3) made the bot cite a planted issue. The
   quarantine and the gate's cited-issue check followed; both cases passed in every later run.

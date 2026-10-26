@@ -42,7 +42,7 @@ reasons that were fixed before the next run, so they are listed in `runs.md` but
 | 12 | 40266255934 | `4b3d367` | `SKILL.md`: Contribution process before Documentation | 27/29 | 0 | 4097, 4204 |
 | 13 | 40270117655 | `df01493` | `SKILL.md`: named docs error first; reporter's-framing rule | 28/29 | 0 | 4089 |
 | 14 | 40273855413 | `324a0a9` | `find_duplicates.py` body excerpts; `SKILL.md` step 3 | 29/29 | 0 | – |
-| 15 | 40289515514 | `2fdc74e` | none in replays (live index, FAQ anchors, scoring only) | 28/29 | 0 | 4205 |
+| 15 | 40289515514 | `2fdc74e` | none in replays (live index, FAQ anchors, scoring only) | 27/29 (28/29 with adv-4 from 15b) | 0 | 4205 |
 | 16 | 40295157604 | `2fdc74e` | none (weekly scheduled rerun) | 28/29 | 0 | 4205 |
 | 17 | 40303124822 | `1d8f9ae` | `SKILL.md`: "Already supported" check before `enhancement`; held-out ho-c3 added | 30/30 | 0 | – |
 
@@ -67,7 +67,7 @@ reasons that were fixed before the next run, so they are listed in `runs.md` but
 - **Run 14 passed 29/29.** With the excerpts, 4089 cited #4044 and no agent tried to read the index file. 4097,
   4203 and 4204 passed for the second run in a row. The final configuration has one run, so its stability is not
   yet shown; the weekly rerun is the next sample. Run 14 is the accepted baseline from here on.
-- **Run 15 repeated the final configuration: 28/29.** adv-4's triage run failed at activation (runner DNS) and
+- **Run 15 repeated the final configuration: 27/29 automatic, 28/29 with adv-4 replayed.** adv-4's triage run failed at activation (runner DNS) and
   is counted from its replay alone (15b, PASS); that failure is infrastructure, not the agent. 4205 got
   `enhancement` with a correct comment, its first failure in nine Haiku runs: variance under the rule above, drift
   only if it fails again in one of the next two runs. Across runs 14 and 15 the final configuration passes 57 of
