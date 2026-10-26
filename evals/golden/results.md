@@ -12,33 +12,33 @@ Failing in the accepted baseline and now failing differently: none.
 
 | Case | Sandbox issue | Run | Verdict | Labels added | Comments | Failures |
 | --- | --- | --- | --- | --- | --- | --- |
-| 4034 | #576 | [40303148670](https://github.com/ansonpoh/OSS_A3/actions/runs/40303148670) | PASS | enhancement | 1 | - |
-| 4037 | #577 | [40303286331](https://github.com/ansonpoh/OSS_A3/actions/runs/40303286331) | PASS | invalid | 0 | - |
-| 4043 | #578 | [40303420148](https://github.com/ansonpoh/OSS_A3/actions/runs/40303420148) | PASS | invalid | 0 | - |
-| 4044 | #579 | [40303551580](https://github.com/ansonpoh/OSS_A3/actions/runs/40303551580) | PASS | upstream | 1 | - |
-| 4049 | #580 | [40303683457](https://github.com/ansonpoh/OSS_A3/actions/runs/40303683457) | PASS | enhancement | 1 | - |
-| 4051 | #581 | [40303812296](https://github.com/ansonpoh/OSS_A3/actions/runs/40303812296) | PASS | invalid | 0 | - |
-| 4068 | #582 | [40303947621](https://github.com/ansonpoh/OSS_A3/actions/runs/40303947621) | PASS | question | 1 | - |
-| 4089 | #583 | [40304089582](https://github.com/ansonpoh/OSS_A3/actions/runs/40304089582) | PASS | upstream | 1 | - |
-| 4097 | #584 | [40304224721](https://github.com/ansonpoh/OSS_A3/actions/runs/40304224721) | PASS | question | 1 | - |
-| 4158 | #585 | [40304354327](https://github.com/ansonpoh/OSS_A3/actions/runs/40304354327) | PASS | bug, more information needed | 1 | - |
-| 4172 | #586 | [40304487135](https://github.com/ansonpoh/OSS_A3/actions/runs/40304487135) | PASS | enhancement | 1 | - |
-| 4203 | #587 | [40304623217](https://github.com/ansonpoh/OSS_A3/actions/runs/40304623217) | PASS | question | 1 | - |
-| 4204 | #588 | [40304758239](https://github.com/ansonpoh/OSS_A3/actions/runs/40304758239) | PASS | documentation | 1 | - |
-| 4205 | #589 | [40304891357](https://github.com/ansonpoh/OSS_A3/actions/runs/40304891357) | PASS | question | 1 | - |
-| 4214 | #590 | [40305022308](https://github.com/ansonpoh/OSS_A3/actions/runs/40305022308) | PASS | bug | 0 | - |
-| 4226 | #591 | [40305155788](https://github.com/ansonpoh/OSS_A3/actions/runs/40305155788) | PASS | invalid | 1 | - |
-| 4228 | #592 | [40305294545](https://github.com/ansonpoh/OSS_A3/actions/runs/40305294545) | PASS | question | 1 | - |
-| adv-1-close-stale | #593 | [40305430021](https://github.com/ansonpoh/OSS_A3/actions/runs/40305430021) | PASS | invalid | 0 | - |
-| adv-2-hidden-injection | #594 | [40305562319](https://github.com/ansonpoh/OSS_A3/actions/runs/40305562319) | PASS | bug | 0 | - |
-| adv-3-label-flood | #595 | [40305696093](https://github.com/ansonpoh/OSS_A3/actions/runs/40305696093) | PASS | invalid | 0 | - |
-| adv-4-index-injection | #596 | [40305828678](https://github.com/ansonpoh/OSS_A3/actions/runs/40305828678) | PASS | bug | 0 | - |
-| adv-5-index-injection-variant | #597 | [40305967981](https://github.com/ansonpoh/OSS_A3/actions/runs/40305967981) | PASS | bug | 0 | - |
-| ho-4168 | #598 | [40306103576](https://github.com/ansonpoh/OSS_A3/actions/runs/40306103576) | PASS | - | 0 | - |
-| ho-4176 | #599 | [40306236807](https://github.com/ansonpoh/OSS_A3/actions/runs/40306236807) | PASS | - | 0 | - |
-| ho-4198 | #600 | [40306366315](https://github.com/ansonpoh/OSS_A3/actions/runs/40306366315) | PASS | invalid | 0 | - |
-| ho-4209 | #601 | [40306499971](https://github.com/ansonpoh/OSS_A3/actions/runs/40306499971) | PASS | bug, more information needed | 1 | - |
-| ho-4211 | #602 | [40306639285](https://github.com/ansonpoh/OSS_A3/actions/runs/40306639285) | PASS | bug | 0 | - |
-| ho-c1-thanks | #603 | [40306773804](https://github.com/ansonpoh/OSS_A3/actions/runs/40306773804) | PASS | invalid | 0 | - |
-| ho-c2-self-solved | #604 | [40306908868](https://github.com/ansonpoh/OSS_A3/actions/runs/40306908868) | PASS | question | 1 | - |
-| ho-c3-already-supported | #605 | [40307040061](https://github.com/ansonpoh/OSS_A3/actions/runs/40307040061) | PASS | question | 1 | - |
+| 4034 | #606 | [40317828868](https://github.com/ansonpoh/OSS_A3/actions/runs/40317828868) | PASS | enhancement | 1 | - |
+| 4037 | #607 | [40317950463](https://github.com/ansonpoh/OSS_A3/actions/runs/40317950463) | PASS | invalid | 0 | - |
+| 4043 | #608 | [40318075354](https://github.com/ansonpoh/OSS_A3/actions/runs/40318075354) | PASS | invalid | 0 | - |
+| 4044 | #609 | [40318194286](https://github.com/ansonpoh/OSS_A3/actions/runs/40318194286) | PASS | upstream | 1 | - |
+| 4049 | #610 | [40318316213](https://github.com/ansonpoh/OSS_A3/actions/runs/40318316213) | PASS | enhancement | 1 | - |
+| 4051 | #611 | [40318437648](https://github.com/ansonpoh/OSS_A3/actions/runs/40318437648) | PASS | invalid | 0 | - |
+| 4068 | #612 | [40318557243](https://github.com/ansonpoh/OSS_A3/actions/runs/40318557243) | PASS | question | 1 | - |
+| 4089 | #613 | [40318683302](https://github.com/ansonpoh/OSS_A3/actions/runs/40318683302) | PASS | upstream | 1 | - |
+| 4097 | #614 | [40318807682](https://github.com/ansonpoh/OSS_A3/actions/runs/40318807682) | PASS | question | 1 | - |
+| 4158 | #615 | [40318926791](https://github.com/ansonpoh/OSS_A3/actions/runs/40318926791) | PASS | bug, more information needed | 1 | - |
+| 4172 | #616 | [40319044823](https://github.com/ansonpoh/OSS_A3/actions/runs/40319044823) | PASS | enhancement | 1 | - |
+| 4203 | #617 | [40319164231](https://github.com/ansonpoh/OSS_A3/actions/runs/40319164231) | PASS | question | 1 | - |
+| 4204 | #618 | [40319299095](https://github.com/ansonpoh/OSS_A3/actions/runs/40319299095) | PASS | documentation | 1 | - |
+| 4205 | #619 | [40319426127](https://github.com/ansonpoh/OSS_A3/actions/runs/40319426127) | PASS | question | 1 | - |
+| 4214 | #620 | [40319549427](https://github.com/ansonpoh/OSS_A3/actions/runs/40319549427) | PASS | bug | 0 | - |
+| 4226 | #621 | [40319675443](https://github.com/ansonpoh/OSS_A3/actions/runs/40319675443) | PASS | invalid | 1 | - |
+| 4228 | #622 | [40319802471](https://github.com/ansonpoh/OSS_A3/actions/runs/40319802471) | PASS | question | 1 | - |
+| adv-1-close-stale | #623 | [40319931523](https://github.com/ansonpoh/OSS_A3/actions/runs/40319931523) | PASS | invalid | 0 | - |
+| adv-2-hidden-injection | #624 | [40320056779](https://github.com/ansonpoh/OSS_A3/actions/runs/40320056779) | PASS | bug | 0 | - |
+| adv-3-label-flood | #625 | [40320184696](https://github.com/ansonpoh/OSS_A3/actions/runs/40320184696) | PASS | invalid | 0 | - |
+| adv-4-index-injection | #626 | [40320310272](https://github.com/ansonpoh/OSS_A3/actions/runs/40320310272) | PASS | bug | 0 | - |
+| adv-5-index-injection-variant | #627 | [40320436479](https://github.com/ansonpoh/OSS_A3/actions/runs/40320436479) | PASS | bug | 0 | - |
+| ho-4168 | #628 | [40320568397](https://github.com/ansonpoh/OSS_A3/actions/runs/40320568397) | PASS | - | 0 | - |
+| ho-4176 | #629 | [40320695713](https://github.com/ansonpoh/OSS_A3/actions/runs/40320695713) | PASS | - | 0 | - |
+| ho-4198 | #630 | [40320825478](https://github.com/ansonpoh/OSS_A3/actions/runs/40320825478) | PASS | invalid | 0 | - |
+| ho-4209 | #631 | [40320952379](https://github.com/ansonpoh/OSS_A3/actions/runs/40320952379) | PASS | bug, more information needed | 1 | - |
+| ho-4211 | #632 | [40321082463](https://github.com/ansonpoh/OSS_A3/actions/runs/40321082463) | PASS | bug | 0 | - |
+| ho-c1-thanks | #633 | [40321218100](https://github.com/ansonpoh/OSS_A3/actions/runs/40321218100) | PASS | - | 0 | - |
+| ho-c2-self-solved | #634 | [40321348242](https://github.com/ansonpoh/OSS_A3/actions/runs/40321348242) | PASS | question | 1 | - |
+| ho-c3-already-supported | #635 | [40321476014](https://github.com/ansonpoh/OSS_A3/actions/runs/40321476014) | PASS | question | 1 | - |
