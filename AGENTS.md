@@ -50,6 +50,7 @@ python3 evals/score.py OWNER/REPO    # score a replay (see evals/golden/README.m
 | `.github/ISSUE_TEMPLATE/` | Bug and feature templates. Both auto-apply the `Needs triage` label. |
 | `.github/workflows/newissue.yml` | Upstream FAQtory bot: suggests FAQ entries from the issue *title* only. Kept as the baseline. |
 | `.github/workflows/rich-triage.md` | The agentic triage workflow (source); `rich-triage.lock.yml` is the compiled workflow. |
+| `.github/triage/` | Workflow code outside the agent: `build_index.py` (prep step: duplicate index, quarantine of entries addressed to bots) and `policy_gate.py` (threat-detection job: re-checks every proposed label and comment before any write). |
 | `.claude/skills/rich-triage/` | Triage procedure and deterministic helper scripts. |
 | `evals/golden/` | Historical cases, expected outcomes, actual outputs and logs. |
 | `scripts/metrics/` | Need measurement and case snapshot scripts. |

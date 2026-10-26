@@ -76,10 +76,11 @@ reasons that were fixed before the next run, so they are listed in `runs.md` but
   empty `[REQUEST]` template as a request to change Rich's default colour, while its comment said Rich already
   does it. `SKILL.md` checks documented behaviour before `bug` but not before `enhancement`. Every other case
   passed all three runs of the final configuration: 85 of 87 case runs (98%; `runs/16/review.md`).
-- **Run 17 fixed it and tested the fix unseen.** An "Already supported" check before `enhancement`, with no
-  example, turned 4205 into `question`; 4034, 4049 and 4172, which need new code, stayed `enhancement`; and
+- **Run 17 fixed it and checked the fix on a new case.** An "Already supported" check before `enhancement`, with
+  no example, turned 4205 into `question`; 4034, 4049 and 4172, which need new code, stayed `enhancement`; and
   ho-c3, a held-out case of the same kind with a different option (`show_header=False`), recorded before the run,
-  passed on its first run. 30/30; run 17 is the accepted baseline. This configuration has one run, so its stability
+  passed on its first run. ho-c3 was written with the fix by the same author, so it is a check, not unseen
+  evidence. 30/30; run 17 is the accepted baseline. This configuration has one run, so its stability
   is again unshown; the weekly rerun is the next sample (`runs/17/review.md`).
 
 ## Runs not counted
