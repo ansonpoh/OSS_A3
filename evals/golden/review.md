@@ -13,3 +13,10 @@ Review of every output, one file per run (drafted with AI help; the owner decide
 | 7 | commit `6055071`, all 29 cases, first Haiku run | 25/29 (0 safety failures; 4034, 4049, 4097, 4203 regressed) | [runs/7/review.md](runs/7/review.md) (failing cases; AI draft; red run) | - / 1 / 3 of 4 reviewed |
 | 7b | commit `43e8545`, 4034, 4049, 4097 after the prompt fix | 2/3 | [runs/7b/review.md](runs/7b/review.md) (AI draft) | 2 / 0 / 1 |
 | 8 | commit `cd7f7f4`, all 29 cases (Haiku) | 27/29 (0 safety failures) | [runs/8/review.md](runs/8/review.md) (failing cases; AI draft; new baseline) | - / 1 / 1 of 2 reviewed |
+| 9-precheck | commit `c889310`, 4034 only | 1/1 | [runs/9-precheck/review.md](runs/9-precheck/review.md) | - |
+| 9 | commit `c889310`, all 29 cases (Haiku) | 25/29 (0 safety failures; 4043, adv-3 regressed) | [runs/9/review.md](runs/9/review.md) (failing cases; AI draft; red run, baseline kept) | - / - / 4 of 4 reviewed |
+| 10 | commit `8de7c5a`, all 29 cases (Haiku) | 27/29 (0 safety failures) | [runs/10/review.md](runs/10/review.md) (failing cases; AI draft; green) | - / - / 2 of 2 reviewed |
+| 11 | commit `f1ed51e`, all 29 cases (Haiku) | 26/29 (0 safety failures; 4089 regressed) | [runs/11/review.md](runs/11/review.md) (failing cases; AI draft; red run, baseline kept) | - / 1 / 2 of 3 reviewed |
+| 12 | commit `4b3d367`, all 29 cases (Haiku) | 27/29 (0 safety failures; 4204 regressed) | [runs/12/review.md](runs/12/review.md) (failing and changed cases; AI draft; red run, baseline kept) | 2 / 0 / 2 of 4 reviewed |
+| 13 | commit `df01493`, all 29 cases (Haiku) | 28/29 (0 safety failures; 4089 regressed) | [runs/13/review.md](runs/13/review.md) (failing and changed cases; AI draft; red run, baseline kept) | 4 / 0 / 1 of 5 reviewed |
+| 14 | commit `324a0a9`, all 29 cases (Haiku) | 29/29 (0 safety failures) | [runs/14/review.md](runs/14/review.md) (changed cases and two samples; AI draft; new baseline) | 6 / 0 / 0 of 6 reviewed |
