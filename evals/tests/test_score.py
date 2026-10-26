@@ -129,7 +129,7 @@ def _run_main(monkeypatch, tmp_path, bot_writes):
     monkeypatch.setattr(score, "ROOT", str(tmp_path))
     shutil.copytree(os.path.join(REAL_ROOT, "cases", "4214"), tmp_path / "cases" / "4214")
     json.dump({"4214": 80}, open(tmp_path / "replay_map.json", "w"))
-    monkeypatch.setattr(score, "api", lambda path, *a, **k: {"workflow_runs": []} if "/runs" in path else None)
+    monkeypatch.setattr(score, "api", lambda path, *a, **k: [] if "/runs" in path else None)
     monkeypatch.setattr(score, "observe", lambda *a: {**act, "created_at": SINCE})
     monkeypatch.setattr(score, "bot_writes", bot_writes)
     monkeypatch.setattr(sys, "argv", ["score.py", "o/r"])
@@ -200,3 +200,45 @@ def test_failures_compare_without_counts_or_table_escaping():
     before = {"4203": ("FAIL", set(), score.cell("comment check: comment has 130 words; pattern '(a|b)'"))}
     now = {"4203": ("FAIL", set(), "comment check: comment has 125 words; pattern '(a|b)'")}
     assert "\\|" in before["4203"][2] and score.changed_failures(before, now) == []
+
+
+def test_only_triage_workflow_comments_count_as_the_agents(monkeypatch):
+    agent = "Please add a reproduction.\n\n<!-- gh-aw-agentic-workflow: Rich issue triage, engine: claude -->"
+    faq = "Thank you for your issue. Give us a little time to review it."
+    status = "Workflow run failed: see the Actions log."
+    bot = {"type": "Bot"}
+
+    def fake_api(path, *a, **k):
+        if path.endswith("/comments?per_page=100"):
+            return [{"user": bot, "body": b} for b in (agent, faq, status)]
+        if path.endswith("/events?per_page=100"):
+            return []
+        return {"state": "open", "created_at": SINCE, "labels": [], "user": {"login": "owner"}}
+
+    monkeypatch.setattr(score, "api", fake_api)
+    act = score.observe("o/r", 1, [], [], set())
+    assert act["agent_comments"] == [agent]
+    assert act["baseline_faqtory_comments"] == [faq] and act["other_bot_comments"] == [status]
+
+
+def test_triage_runs_reads_every_page_from_since(monkeypatch):
+    seen = {}
+
+    def fake_api(path, *a, **k):
+        seen.update(path=path, **k)
+        return []
+
+    monkeypatch.setattr(score, "api", fake_api)
+    score.triage_runs("o/r", SINCE)
+    assert seen["paginate"] and seen["key"] == "workflow_runs" and f"created=%3E%3D{SINCE}" in seen["path"]
+
+
+def test_duplicate_needs_a_real_issue_reference_not_a_colour():
+    d, exp = load("4214")
+    act = json.load(open(os.path.join(score.ROOT, "runs", "5", "4214.json")))
+    footer = score.check_comment.FOOTER
+    colour = {**act, "labels_added_by_agent": ["bug", "duplicate"],
+              "agent_comments": ["Try `#808080` or #808080 as the colour.\n\n" + footer]}
+    assert "duplicate label without a comment naming the earlier issue" in score.judge(exp, colour)
+    issue = {**colour, "agent_comments": ["Same as #3502.\n\n" + footer]}
+    assert "duplicate label without a comment naming the earlier issue" not in score.judge(exp, issue)

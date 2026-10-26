@@ -3,7 +3,9 @@ import json
 import subprocess
 
 
-def api(path, method="GET", fields=None, paginate=False):
+def api(path, method="GET", fields=None, paginate=False, key=None):
+    """`key` names the list inside each page for endpoints that wrap it in an
+    object (e.g. "workflow_runs"); pages are flattened either way."""
     cmd = ["gh", "api", "-X", method, path, "-H", "Accept: application/vnd.github+json"]
     if paginate:
         cmd += ["--paginate", "--slurp"]
@@ -21,5 +23,5 @@ def api(path, method="GET", fields=None, paginate=False):
         return None
     data = json.loads(text)
     if paginate:  # --slurp wraps the pages in an outer list
-        data = [item for page in data for item in page]
+        data = [item for page in data for item in (page[key] if key else page)]
     return data

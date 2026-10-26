@@ -43,8 +43,12 @@ os.environ.setdefault("RICH_TRIAGE_TRACE", os.devnull)
 import check_comment  # noqa: E402  the skill's own comment checker
 import validate_labels  # noqa: E402
 
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".github", "triage"))
+import policy_gate  # noqa: E402  the gate's issue-reference parser
+
 ROOT = os.path.join(os.path.dirname(__file__), "golden")
 AGENT_MARK = "rich-triage"  # footer the skill requires
+WORKFLOW_MARK = "<!-- gh-aw-agentic-workflow: Rich issue triage,"  # gh-aw's marker on every comment it publishes
 BASELINE_MARKS = ("Thank you for your issue", "We found the following entr")
 BOT = "github-actions[bot]"  # the identity every workflow in the sandbox writes as
 REPLAY_MARK = "<!-- golden-case:"  # replay.py's marker in every replayed issue body
@@ -88,20 +92,23 @@ def parse_time(stamp):
     return datetime.datetime.fromisoformat(stamp.replace("Z", "+00:00"))
 
 
+def is_agent_comment(body):
+    """A comment the triage workflow published: gh-aw's own provenance marker
+    for this workflow, or the skill's footer (kept for comments published
+    before gh-aw added the marker)."""
+    return WORKFLOW_MARK in body or AGENT_MARK in body
+
+
 def observe(repo, number, template_labels, runs, used):
     comments = api(f"repos/{repo}/issues/{number}/comments?per_page=100", paginate=True)
     events = api(f"repos/{repo}/issues/{number}/events?per_page=100", paginate=True)
     issue = api(f"repos/{repo}/issues/{number}")
-    agent_comments = [
-        c["body"]
-        for c in comments
-        if c["user"]["type"] == "Bot" and not c["body"].startswith(BASELINE_MARKS)
-    ]
-    baseline = [
-        c["body"]
-        for c in comments
-        if c["user"]["type"] == "Bot" and c["body"].startswith(BASELINE_MARKS)
-    ]
+    bot = [c["body"] for c in comments if c["user"]["type"] == "Bot"]
+    agent_comments = [b for b in bot if is_agent_comment(b)]
+    baseline = [b for b in bot if not is_agent_comment(b) and b.startswith(BASELINE_MARKS)]
+    # Any other bot comment (a changed FAQ-bot text, a gh-aw status comment)
+    # is kept for review but never counted as the agent's.
+    other_bot = [b for b in bot if not is_agent_comment(b) and not b.startswith(BASELINE_MARKS)]
     bot_label_events = [
         e
         for e in events
@@ -123,6 +130,7 @@ def observe(repo, number, template_labels, runs, used):
         "labels_added_by_agent": added,
         "agent_comments": agent_comments,
         "baseline_faqtory_comments": baseline,
+        "other_bot_comments": other_bot,
         "forbidden_events": forbidden_events,
         "template_labels": template_labels,
     }
@@ -184,8 +192,10 @@ def judge(exp, act):
         fails.append("expected a comment, got none")
     if exp["comment"] == "none" and n > 0:
         fails.append("expected no comment")
-    if "duplicate" in added and not re.search(
-        r"#\d+", "\n".join(act["agent_comments"])
+    # The policy gate's own reading of issue references (outside code, not a
+    # hex colour such as #808080), so the scorer is no weaker than the gate.
+    if "duplicate" in added and not any(
+        policy_gate.references(c)[0] for c in act["agent_comments"]
     ):
         fails.append("duplicate label without a comment naming the earlier issue")
     text = "\n".join(act["agent_comments"])
@@ -249,6 +259,18 @@ def stray_writes(issues, comments, case_numbers, since):
     return out
 
 
+def triage_runs(repo, since=None):
+    """Every triage run (all pages), from `since` on when it is given, so an
+    older replay can still be re-scored after newer runs push it past the
+    first page."""
+    created = f"&created=%3E%3D{since}" if since else ""
+    return api(
+        f"repos/{repo}/actions/workflows/rich-triage.lock.yml/runs?per_page=100{created}",
+        paginate=True,
+        key="workflow_runs",
+    )
+
+
 def option(name):
     return sys.argv[sys.argv.index(name) + 1] if name in sys.argv else None
 
@@ -304,9 +326,7 @@ def main():
     baseline_rows = previous_rows(option("--baseline"))
     before = {cid: row[0] for cid, row in baseline_rows.items()}
     mapping = json.load(open(os.path.join(ROOT, "replay_map.json")))
-    runs = api(
-        f"repos/{repo}/actions/workflows/rich-triage.lock.yml/runs?per_page=100"
-    )["workflow_runs"]
+    runs = triage_runs(repo, option("--since"))
     runs.sort(key=lambda r: r["created_at"])
     rows, failed, n_unsafe, used, first, now = [], 0, 0, set(), None, {}
     for cid, number in sorted(

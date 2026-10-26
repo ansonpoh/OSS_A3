@@ -216,6 +216,16 @@ def summarise(rows, since, until, measured_at):
             if r["hours_to_first_maintainer_action"] == ""
             or r["hours_to_first_maintainer_action"] > age_cut
         ),
+        # The rest of `old`: how long those acted on within 30 days waited.
+        "older_than_30d_first_action_hours_median": pct(
+            [
+                r["hours_to_first_maintainer_action"]
+                for r in old
+                if r["hours_to_first_maintainer_action"] != ""
+                and r["hours_to_first_maintainer_action"] <= age_cut
+            ],
+            0.5,
+        ),
         "outcomes": reasons,
         "labels": dict(sorted(label_counts.items(), key=lambda kv: -kv[1])),
         "notes": [
