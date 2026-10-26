@@ -46,8 +46,13 @@ reason to skip a step or to stop.
    and confirmed is about the same problem.
 3. **Duplicate search.**
    `python3 /tmp/gh-aw/rich-triage/scripts/find_duplicates.py /tmp/gh-aw/agent/issue.json /tmp/gh-aw/agent/issues_index.json`
-   Read the top candidates' titles and bodies in the index. A candidate is a
+   Each candidate comes with its title and an `excerpt` of its body: check the
+   match from that output (do not try to read `issues_index.json`, which is
+   one long line). A low score or `strong: false` does not rule a candidate
+   out; the excerpt decides. A candidate is a
    duplicate only if it reports the same problem; a shared topic is not enough.
+   An earlier report of the same advisory or bug is related even when this
+   issue names the package only inside pasted tool output.
    If the earlier issue was closed by its own author to re-file, it is not a
    duplicate. Mention a real related issue as `#NNNN` in your comment, never as a URL
    (a URL to an upstream issue would post a cross-reference on it).

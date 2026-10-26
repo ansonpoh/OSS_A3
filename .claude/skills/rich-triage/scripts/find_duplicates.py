@@ -5,14 +5,27 @@ Only issues created strictly before the new issue's `created_at` are searched,
 so a replayed historical case never sees the future. Entries marked
 "quarantined" (text addressed to automated tools) are skipped and counted, a
 second layer behind the workflow, which already drops them from the index.
+Each candidate carries a short excerpt of its body, so the agent can check
+the match from this output without reading the index file (one long line).
 
   python find_duplicates.py ISSUE_JSON INDEX_JSON [--top 5]
 """
 import argparse
+import re
 
 from _common import emit, load_issue, tfidf_rank, trace
 
 THRESHOLD = 0.35  # below this, candidates are reported but flagged weak
+EXCERPT_CHARS = 600
+
+
+def excerpt(body):
+    """The body with HTML comments, ruler lines (----, ====) and extra
+    whitespace removed, cut to EXCERPT_CHARS."""
+    text = re.sub(r"<!--.*?-->", " ", body or "", flags=re.S)
+    text = re.sub(r"([^\w\s])\1{3,}", " ", text)
+    text = " ".join(text.split())
+    return text if len(text) <= EXCERPT_CHARS else text[:EXCERPT_CHARS] + " ..."
 
 
 def main():
@@ -43,6 +56,7 @@ def main():
             "state": "closed" if by_num[n]["closed_at"] else "open",
             "state_reason": by_num[n]["state_reason"],
             "strong": s >= THRESHOLD,
+            "excerpt": excerpt(by_num[n]["body"]),
         }
         for n, s in ranked
     ]

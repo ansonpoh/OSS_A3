@@ -40,6 +40,7 @@ reasons that were fixed before the next run, so they are listed in `runs.md` but
 | 10 | – | `8de7c5a` | six-script allowlist, read-only `/tmp` copy, one script path | 27/29 | 0 | 4097, 4203 |
 | 11 | 40261005272 | `f1ed51e` | `check_comment.py` link and word checks; prompt and `SKILL.md` unchanged | 26/29 | 0 | 4089, 4097, 4203 |
 | 12 | 40266255934 | `4b3d367` | `SKILL.md`: Contribution process before Documentation | 27/29 | 0 | 4097, 4204 |
+| 13 | 40270117655 | `df01493` | `SKILL.md`: named docs error first; reporter's-framing rule | 28/29 | 0 | 4089 |
 
 - **Known failures, exempt from the drift rule.** 4097 and 4203 fail in every Haiku run, so under the "2 of the
   last 3" rule they are not drift but standing failures, and they already fail in the accepted baseline. The
@@ -52,8 +53,13 @@ reasons that were fixed before the next run, so they are listed in `runs.md` but
   which names the broken link and asks whether it may open a PR) regressed to `question`: the rule tests PR
   permission first and the named-error exception second. 4204 is not exempt; the rule needs reordering
   (`runs/12/review.md`).
-- **4089 in run 11** failed once after passing in runs 8 and 10, and passed again in run 12: a one-off flip
-  (variance), as predicted.
+- **Run 13 fixed both.** With the named docs error checked first and a rule that the reporter's own "Am I doing it
+  wrong?" decides `question`, 4097, 4203 and 4204 all passed. The 4097 and 4203 exemption above no longer applies
+  from run 13 on; one run does not yet show the fix is stable.
+- **4089 is now drift.** It failed in runs 11 and 13 and passed in 12: 2 of the last 3. The causes differ: in run 11
+  the agent read #4044 and judged it unrelated; in run 13 it could not read #4044 at all, because the index is one
+  1.1 MB line, and the skill says to read a candidate before citing it. The fix is mechanical
+  (`find_duplicates.py` returning a body excerpt per candidate; `runs/13/review.md`).
 
 ## Runs not counted
 

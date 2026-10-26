@@ -204,6 +204,22 @@ def test_find_duplicates_skips_quarantined_entries(run, tmp_path):
     assert trace[-1]["quarantined"] == 1
 
 
+def test_find_duplicates_returns_body_excerpt(run, tmp_path):
+    body = "<!-- hidden -->Found a CVE in pygments\n\n" + "-" * 300 + "\n" + "detail " * 200
+    index = tmp_path / "index.json"
+    index.write_text(json.dumps([
+        {"number": 10, "title": "Vulnerability found", "body": body, "created_at": "2026-01-01T00:00:00Z", "closed_at": None, "state_reason": None},
+        {"number": 11, "title": "Vulnerability found", "body": None, "created_at": "2026-01-02T00:00:00Z", "closed_at": None, "state_reason": None},
+    ]))
+    issue = issue_file(tmp_path, "Vulnerability: bump pygments", "pip-audit found a vulnerability", created="2026-06-01T00:00:00Z", number=20)
+    _, out, _ = run("find_duplicates.py", issue, index)
+    excerpts = {c["number"]: c["excerpt"] for c in out["candidates"]}
+    assert excerpts[10].startswith("Found a CVE in pygments detail")
+    assert "hidden" not in excerpts[10] and "----" not in excerpts[10]
+    assert len(excerpts[10]) <= 604 and excerpts[10].endswith(" ...")
+    assert excerpts[11] == ""
+
+
 def test_faq_match_handles_empty_body(run, tmp_path):
     _, out, _ = run("faq_match.py", issue_file(tmp_path, "Strange colors in console output", None))
     assert out["matches"][0]["strong"]
