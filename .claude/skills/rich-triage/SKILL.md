@@ -77,11 +77,17 @@ reason to skip a step or to stop.
      API they called. If the documented way to reach that goal works and the
      reporter did not use it, it is a usage question; a workaround existing
      does not make a defect intended.
-   - **Contribution process before Documentation:** if the issue's main
-     question is whether or when it may open a pull request, it is
-     Contribution process (`question`), even if the change it wants to submit
-     is a docs fix. It is Documentation only when it names the docs error
-     itself (which link or which text is wrong).
+   - **Documentation before Contribution process:** if the issue names a
+     specific docs error (which link is broken, which text is wrong), it is
+     Documentation, even if it also asks whether it may open a pull request.
+     Otherwise, a question about whether or when it may open a pull request
+     is Contribution process (`question`).
+   - **Reporter asks if they are doing it wrong:** if the issue asks "Am I
+     doing it wrong?", "How do I ...?" or "Is this expected?", label
+     `question`, even if you suspect part of it is a bug. Explain the
+     documented behaviour, mention any related earlier bug report as `#NNNN`
+     in the comment, and point to Discussions. Use `bug` only for a traceback
+     from Rich or output that contradicts the docs.
 6. **Choose labels** from the table and validate them:
    `python3 /tmp/gh-aw/rich-triage/scripts/validate_labels.py <label> [<label> ...]`
    Fix and re-run until it prints `"ok": true`. Never propose `Needs triage`

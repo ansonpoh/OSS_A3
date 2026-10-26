@@ -27,3 +27,4 @@ Runs 1 to 6 used Codex with GPT-6 Luna; from run 7 on, Claude Code 2.1.296 with
 | 9 | full | `c889310` | Haiku | 25/29 | 0 | 4043, 4097, 4203, adv-3 | red: 3 agents used the `.claude/` script paths, which were refused, and stopped with `noop` |
 | 10 | full | `8de7c5a` | Haiku | 27/29 | 0 | 4097, 4203 | green: path fix; all 151 script calls by the `/tmp` path |
 | 11 | full | `f1ed51e` | Haiku | 26/29 | 0 | 4089, 4097, 4203 | red: review fixes; 4089 skipped citing #4044, 4097 added `duplicate`; both judgement, baseline kept |
+| 12 | full | `4b3d367` | Haiku | 27/29 | 0 | 4097, 4204 | red: SKILL.md contribution-before-docs rule fixed 4203 but turned 4204 into `question`; 4089 passed again; baseline kept |

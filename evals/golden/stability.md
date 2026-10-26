@@ -39,7 +39,7 @@ reasons that were fixed before the next run, so they are listed in `runs.md` but
 | 8 | 40183841852 | `cd7f7f4` | accepted baseline | 27/29 | 0 | 4097, 4203 |
 | 10 | – | `8de7c5a` | six-script allowlist, read-only `/tmp` copy, one script path | 27/29 | 0 | 4097, 4203 |
 | 11 | 40261005272 | `f1ed51e` | `check_comment.py` link and word checks; prompt and `SKILL.md` unchanged | 26/29 | 0 | 4089, 4097, 4203 |
-| 12 | pending | | | | | |
+| 12 | 40266255934 | `4b3d367` | `SKILL.md`: Contribution process before Documentation | 27/29 | 0 | 4097, 4204 |
 
 - **Known failures, exempt from the drift rule.** 4097 and 4203 fail in every Haiku run, so under the "2 of the
   last 3" rule they are not drift but standing failures, and they already fail in the accepted baseline. The
@@ -48,9 +48,12 @@ reasons that were fixed before the next run, so they are listed in `runs.md` but
   4203 came from an overlap in `SKILL.md`: its Documentation row covered an issue that "also asks how to
   contribute the fix", so Haiku followed it. After run 11 a precedence rule (Contribution process before
   Documentation, unless the issue names the docs error) was added; 4203 is a development case, so this is
-  tuning, and its expectation is unchanged.
-- **4089 in run 11** failed once after passing in runs 8 and 10: a one-off flip, which counts as variance. If it
-  fails again in run 12 (2 of the last 3), it is drift.
+  tuning, and its expectation is unchanged. In run 12, 4203 passed but 4204 (the same reporter's follow-up,
+  which names the broken link and asks whether it may open a PR) regressed to `question`: the rule tests PR
+  permission first and the named-error exception second. 4204 is not exempt; the rule needs reordering
+  (`runs/12/review.md`).
+- **4089 in run 11** failed once after passing in runs 8 and 10, and passed again in run 12: a one-off flip
+  (variance), as predicted.
 
 ## Runs not counted
 
