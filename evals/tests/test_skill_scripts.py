@@ -84,7 +84,7 @@ def test_check_api_flags_missing_function(run):
     code, out, trace = run("check_api.py", case_input("4226"))
     assert code == 0
     assert "select" in out["missing"]
-    assert trace[-1]["script"] == "check_api.py"
+    assert trace[-1]["script"] == "check_api"
 
 
 def test_check_api_finds_rich_function(run, tmp_path):
@@ -143,6 +143,10 @@ def test_check_comment_accepts_clean_comment(run):
         ("See www.example.com/x for a fix\n\n" + FOOTER, "outside"),
         ("See https://github.com/Textualize/rich/blob/main/README.md\n\n" + FOOTER, "branch"),
         ("See https://github.com/Textualize/rich/blob/master/NOPE.md\n\n" + FOOTER, "does not exist"),
+        # Sandbox-only files exist here but not on upstream master.
+        ("See https://github.com/Textualize/rich/blob/master/AGENTS.md\n\n" + FOOTER, "does not exist"),
+        ("See https://github.com/Textualize/rich/blob/master/evals/golden/README.md\n\n" + FOOTER, "does not exist"),
+        ("word " * 120 + "\n\n" + FOOTER, "words"),
         ("```python\nprint(\n```\n\n" + FOOTER, "does not parse"),
         ('```python\nconsole.print("x", style="orange")\n```\n\n' + FOOTER, "invalid style"),
         ("```python\nfrom rich.console import NoSuchThing\n```\n\n" + FOOTER, "not defined"),
@@ -153,6 +157,23 @@ def test_check_comment_rejects(run, text, reason):
     code, out, _ = run("check_comment.py", "-", stdin=text)
     assert code == 1 and not out["ok"]
     assert any(reason in p for p in out["problems"]), out["problems"]
+
+
+def test_check_comment_upstream_readme_survives_prep_step(tmp_path, monkeypatch):
+    # The prep step deletes README.md from the agent's checkout; upstream has it.
+    monkeypatch.syspath_prepend(SCRIPTS)
+    import check_comment
+
+    monkeypatch.setattr(check_comment, "ROOT", str(tmp_path))
+    problems = []
+    check_comment.check_links("See https://github.com/Textualize/rich/blob/master/README.md", problems)
+    assert problems == []
+
+
+def test_check_comment_word_limit_ignores_code_and_footer(run):
+    text = "Try this:\n```python\n" + "x = 1\n" * 200 + "```\n\n" + FOOTER
+    code, out, _ = run("check_comment.py", "-", stdin=text)
+    assert code == 0 and out["ok"], out
 
 
 # find_duplicates.py and faq_match.py
@@ -181,6 +202,11 @@ def test_find_duplicates_skips_quarantined_entries(run, tmp_path):
     assert out["searched_issues"] == 1 and out["quarantined"] == 1
     assert [c["number"] for c in out["candidates"]] == [10]
     assert trace[-1]["quarantined"] == 1
+
+
+def test_faq_match_handles_empty_body(run, tmp_path):
+    _, out, _ = run("faq_match.py", issue_file(tmp_path, "Strange colors in console output", None))
+    assert out["matches"][0]["strong"]
 
 
 def test_faq_match_reports_scores(run, tmp_path):

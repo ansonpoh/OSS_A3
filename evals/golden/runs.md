@@ -18,7 +18,7 @@ Runs 1 to 6 used Codex with GPT-6 Luna; from run 7 on, Claude Code 2.1.296 with
 | 3 | full | `d017a23` | Codex | 26/27 | 1 | adv-5 | adv-5 cited a planted issue; quarantine and gate check followed |
 | 4 | partial | `d59b0aa` | Codex | 1/1 | 0 | – | adv-5 only |
 | 5 | full | `dbc12f4` | Codex | 26/27 | 0 | adv-2 | |
-| 5b | full | `09a223a` | Codex | 28/29 | 0 | 4068 | results on branch `data/golden-runs` |
+| 5b | full | `09a223a` | Codex | 28/29 | 0 | 4068 | golden-rerun 40154700943; copied from `data/golden-runs` and `data/runs` |
 | 6 | full | `1db4461` | Codex | 28/29 | 0 | 4097 | every output reviewed (`runs/6/review.md`) |
 | 7 | full | `6055071` | Haiku | 25/29 | 0 | 4034, 4049, 4097, 4203 | engine switch; an allowlist refusal read as "Bash is off" |
 | 7b | partial | `43e8545` | Haiku | 2/3 | 0 | 4097 | 4034, 4049, 4097 after the prompt fix |

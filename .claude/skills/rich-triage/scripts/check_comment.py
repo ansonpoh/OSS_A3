@@ -2,8 +2,9 @@
 """Check a draft triage comment before the agent emits add_comment.
 
 Checks only facts that code can decide:
-- links point to github.com/Textualize/rich files that exist, on `master`,
-  and never to an issue, PR or discussion by URL (use #NNNN instead);
+- links point to github.com/Textualize/rich files that exist upstream, on
+  `master`, and never to an issue, PR or discussion by URL (use #NNNN instead);
+- the comment is under 120 words, not counting code blocks and the footer;
 - Python code blocks parse;
 - styles and colours in code (style=..., Style.parse, Color.parse, and
   markup tags such as "[bold red]") are valid in this version of Rich;
@@ -15,6 +16,7 @@ Exit 0 and print {"ok": true} when clean; exit 1 with the problems otherwise.
   python check_comment.py COMMENT_FILE      # or '-' to read stdin
 """
 import ast
+import importlib.util
 import os
 import re
 import sys
@@ -26,11 +28,46 @@ ROOT = os.getcwd()
 FOOTER = "<sub>Automated first-response triage (rich-triage skill). A maintainer will review.</sub>"
 REPO_URL = "https://github.com/Textualize/rich/"
 STYLE_CALLS = {"parse"}  # Style.parse, Color.parse
+MAX_WORDS = 119  # SKILL.md: "under 120 words", not counting code blocks or the footer
+# Links go to upstream master, so a path counts only if upstream has it. The
+# working tree is the upstream snapshot (UPSTREAM.md) plus this sandbox's own
+# files, minus files removed from the snapshot; the triage prep step also
+# deletes some (README.md, DESIGN.md), so the agent and the policy gate see
+# different trees. These two lists make both give the same answer.
+SANDBOX_ONLY = (
+    "AGENTS.md", "BRIEF.md", "DESIGN.md", "UPSTREAM.md", "evals/", "scripts/metrics/", ".claude/",
+    ".github/triage/", ".github/aw/", ".github/CODEOWNERS",
+    ".github/workflows/rich-triage.", ".github/workflows/cap-test.", ".github/workflows/budget-test.",
+    ".github/workflows/golden-rerun.yml", ".github/workflows/skill-tests.yml",
+    ".github/workflows/collect-cases.yml", ".github/workflows/export-runs.yml",
+    ".github/workflows/measure-need.yml",
+)
+NOT_IN_SNAPSHOT = {"README.md", ".github/dependabot.yml", ".github/FUNDING.yml"}
+
+
+def upstream_has(path):
+    """True if `path` (relative to the repository root) exists on upstream master."""
+    path = path.strip("/")
+    if path in NOT_IN_SNAPSHOT:
+        return True
+    if any(path == p.rstrip("/") or path.startswith(p) for p in SANDBOX_ONLY):
+        return False
+    return os.path.exists(os.path.join(ROOT, path))
 
 
 def rich_parsers():
-    """Rich's own parsers from this checkout (standard library only)."""
-    sys.path.insert(0, ROOT)
+    """Rich's own parsers from this checkout (standard library only).
+
+    The package is loaded from ROOT/rich by path, without putting the working
+    directory on sys.path, so a file written there cannot shadow a module."""
+    if "rich" not in sys.modules:
+        package = os.path.join(ROOT, "rich")
+        spec = importlib.util.spec_from_file_location(
+            "rich", os.path.join(package, "__init__.py"), submodule_search_locations=[package]
+        )
+        module = importlib.util.module_from_spec(spec)
+        sys.modules["rich"] = module
+        spec.loader.exec_module(module)
     from rich.color import Color
     from rich.style import Style
 
@@ -63,9 +100,9 @@ def check_links(text, problems):
                 problems.append(
                     f"'{url}' uses branch '{m.group(2)}'; Rich's branch is 'master'"
                 )
-            if not os.path.exists(os.path.join(ROOT, m.group(3))):
+            if not upstream_has(m.group(3)):
                 problems.append(
-                    f"'{url}' points to '{m.group(3)}', which does not exist in this repository"
+                    f"'{url}' points to '{m.group(3)}', which does not exist on Rich's master branch"
                 )
 
 
@@ -151,10 +188,18 @@ def check_code(text, problems):
                 problems.append(f"invalid style or colour '{value}': {e}")
 
 
+def check_length(text, problems):
+    prose = re.sub(r"```.*?```", " ", text.replace(FOOTER, ""), flags=re.S)
+    words = len(prose.split())
+    if words > MAX_WORDS:
+        problems.append(f"comment has {words} words outside code blocks; keep it under {MAX_WORDS + 1}")
+
+
 def check(text):
     problems = []
     check_links(text, problems)
     check_code(text, problems)
+    check_length(text, problems)
     if not text.rstrip().endswith(FOOTER):
         problems.append("comment must end with the footer line from SKILL.md")
     return problems

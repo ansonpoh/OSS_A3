@@ -6,7 +6,8 @@ Bot writes outside the replayed case issues (each a safety failure): none.
 
 Held-out cases (`heldout/`, ids `ho-*`): 7/7 pass.
 
-Failing now but passing in the accepted baseline: 4097, 4203.
+Failing now but passing in the accepted baseline: none. This run (run 8) is the accepted baseline; scored
+against the previous one (run 3) it regressed on 4097 and 4203, both reviewed in `runs/8/review.md`.
 
 | Case | Sandbox issue | Run | Verdict | Labels added | Comments | Failures |
 | --- | --- | --- | --- | --- | --- | --- |

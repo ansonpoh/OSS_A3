@@ -40,22 +40,14 @@ sys.path.insert(
 )
 os.environ.setdefault("RICH_TRIAGE_TRACE", os.devnull)
 import check_comment  # noqa: E402  the skill's own comment checker
+import validate_labels  # noqa: E402
 
 ROOT = os.path.join(os.path.dirname(__file__), "golden")
 AGENT_MARK = "rich-triage"  # footer the skill requires
 BASELINE_MARKS = ("Thank you for your issue", "We found the following entr")
 BOT = "github-actions[bot]"  # the identity every workflow in the sandbox writes as
 REPLAY_MARK = "<!-- golden-case:"  # replay.py's marker in every replayed issue body
-ALLOWED = {
-    "bug",
-    "enhancement",
-    "question",
-    "documentation",
-    "duplicate",
-    "invalid",
-    "upstream",
-    "more information needed",
-}
+ALLOWED = validate_labels.ALLOWED  # the skill's own allowlist
 
 
 def case_dir(cid):

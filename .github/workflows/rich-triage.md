@@ -46,11 +46,14 @@ network: {}
 # prep step makes (gh-aw adds read-only defaults such as cat, grep and ls).
 # Edit is on only so the agent can write its draft comment to
 # /tmp/gh-aw/agent/comment.md for check_comment.py; gh-aw cannot narrow it to
-# that path, so the scripts and the rich/ package they import are made
-# read-only (the agent runs as the runner's non-root user), and a file the
-# agent writes can never be run. Containment still does not rest on this: no
-# token, no network, and the policy gate re-checks every output from its own
-# checkout.
+# that path, so Write and Edit reach any file the runner's non-root user can
+# write. Against a written file being run by the scripts: the scripts and the
+# rich/ package they import are read-only, check_comment.py loads rich/ by path
+# without putting the working directory on sys.path, and PYTHONNOUSERSITE
+# (below) stops Python from running a planted usercustomize.py or .pth file.
+# verify_skill_use.py flags any write other than the draft. Containment still
+# does not rest on this: no token, no network, and the policy gate re-checks
+# every output from its own checkout.
 tools:
   bash:
     - "python3 /tmp/gh-aw/rich-triage/scripts/check_report.py:*"
@@ -61,6 +64,11 @@ tools:
     - "python3 /tmp/gh-aw/rich-triage/scripts/check_comment.py:*"
   edit: true
   github: false
+
+# Passed into the agent container (AWF runs it with --env-all): the skill
+# scripts never load code from the user site-packages directory.
+env:
+  PYTHONNOUSERSITE: "1"
 
 safe-outputs:
   # Identity: writes always use the workflow token (github-actions[bot]). No

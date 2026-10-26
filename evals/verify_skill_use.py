@@ -104,6 +104,7 @@ def check(case_dir):
     cmds = [text for kind, text in calls if kind == "bash"]
     trace_path = os.path.join(case_dir, "skill-trace.jsonl")
     trace = [json.loads(l) for l in open(trace_path, encoding="utf-8") if l.strip()] if os.path.exists(trace_path) else []
+    # Committed traces up to run 10 name check_api as "check_api.py".
     traced = sorted(t["script"].removesuffix(".py") for t in trace)
     # A script that rejects its input (e.g. check_comment on a bad draft) exits
     # non-zero but still writes a trace entry, so every completed run counts.

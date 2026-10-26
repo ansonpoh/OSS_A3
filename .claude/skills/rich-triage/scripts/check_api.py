@@ -56,7 +56,7 @@ def main():
         result.append({"name": name, "defined_in_rich": bool(where), "where": where})
     missing = [r["name"] for r in result if not r["defined_in_rich"]]
     out = {"names": result, "missing": missing}
-    trace("check_api.py", names=len(result), missing=missing)
+    trace("check_api", names=len(result), missing=missing)
     emit(out)
 
 

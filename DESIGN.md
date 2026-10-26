@@ -36,7 +36,9 @@ right. Spotting a usage question, a missing reproduction or an earlier report me
 | Tool output (scripts, safe-outputs MCP) | Inject instructions | Scripts are repo code; the MCP returns only acks |
 
 Bash runs only the six skill scripts, from a read-only copy, and read-only commands (ad-hoc `python3 -c` was refused
-in runs 7 and 8). Containment does not rely on it: the agent job has no GitHub token or tools, egress is off and every
+in runs 7 and 8). Write cannot be narrowed to the comment draft, so the scripts load no code from writable paths
+(`PYTHONNOUSERSITE`, `rich/` loaded by path) and `verify_skill_use.py` flags any other write (untested live).
+Containment does not rely on it: the agent job has no GitHub token or tools, egress is off and every
 write goes through safe outputs, detection and the gate. **Deliberately prevented:** closing, reopening, locking,
 editing or deleting issues; removing labels (including `Needs triage`); non-allowlisted labels such as `wontfix`;
 pushes and PRs; writes to any issue but the triggering one; cross-repository references; agent network access.

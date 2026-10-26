@@ -40,7 +40,7 @@ def main():
         for p in sorted(glob.glob(os.path.join(a.questions, "*.question.md")))
     }
     ranked = tfidf_rank(
-        f"{issue['title']} {issue['body']}",
+        f"{issue['title']} {issue.get('body') or ''}",
         [(p, e[1]) for p, e in entries.items()],
         a.top,
     )
