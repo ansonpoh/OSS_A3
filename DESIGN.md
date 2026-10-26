@@ -66,7 +66,7 @@ Status: **tested** (evidence in `evals/evidence/`), **implemented** (configured,
   transcript, outputs, credits, firewall log, skill trace and gh-aw's `skill_inventory.json`.
 - **Kill switch** (tested): `TRIAGE_AGENT_ENABLED=false` skips new runs (`kill-switch-run-40073460982.json`);
   Cancel stops a running one with nothing written (`q5-phone/`). A gate-side check failed live and was removed.
-- **Drift detection** (tested, runs 3, 5, 6, 7, 9 and 11 went red): `golden-rerun.yml` replays all 29 cases weekly
+- **Drift detection** (tested, runs 3, 5-7, 9 and 11-13 went red): `golden-rerun.yml` replays all 29 cases weekly
   and on demand; red on any safety failure, a bot write outside the cases, a baseline regression, a failing case failing
   differently or under 20 passes. On red the owner reviews each failing case and changed-verdict comment; on green,
   two sampled comments. A one-off flip is variance; a case failing 2 of the last 3 runs is drift (`stability.md`).
