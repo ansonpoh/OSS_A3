@@ -18,7 +18,8 @@ FAQ_URL = "https://github.com/Textualize/rich/blob/master/FAQ.md#"
 
 
 def parse(path):
-    text = open(path).read()
+    with open(path, encoding="utf-8") as f:
+        text = f.read()
     m = re.match(r"---\n(.*?)\n---\n(.*)", text, re.S)
     head, body = (m.group(1), m.group(2)) if m else ("", text)
     title = re.search(r'title:\s*"?(.*?)"?\s*$', head, re.M)

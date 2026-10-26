@@ -68,7 +68,7 @@ def tfidf_rank(query, docs, top=5):
 
 
 def load_issue(path):
-    with open(path) as f:
+    with open(path, encoding="utf-8") as f:
         return json.load(f)
 
 

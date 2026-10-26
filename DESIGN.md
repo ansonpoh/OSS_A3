@@ -108,8 +108,8 @@ Details: `evals/golden/README.md`, `runs/*/review.md`, `stability.md`.
   the label and comment checks (4034, 4049, 4097; `verify_skill_use.py` flagged 4034). One prompt line fixed it.
 - **The hardening broke three cases first.** In run 9 three agents ran the scripts from `.claude/`, which SKILL.md
   still named; the allowlist refused them and they stopped with `noop`. Naming one path fixed it in run 10.
-- **One persistent weakness:** usage questions sometimes get `bug` (4068, 4097) on both engines; Haiku labels 4203
-  `documentation`, as the skill's docs-error row says: skill and expectation disagree. Never unsafe; reruns watch it.
+- **One persistent weakness:** usage questions sometimes get `bug` (4068, 4097) on both engines. Haiku labelled 4203
+  `documentation` because SKILL.md's docs row overlapped its contribution row; a precedence rule now separates them.
 - **Platform side effects:** gh-aw opened and commented on tracker issue #28 until `report-as-issue: false`.
 
 ## 7. Unresolved
@@ -134,7 +134,7 @@ Details: `evals/golden/README.md`, `runs/*/review.md`, `stability.md`.
 | Permissions | Agent and detection read-only; `safe_outputs` and `conclusion` `issues: write` |
 | Data sources | Issue payload; upstream snapshot `fc41075` (`UPSTREAM.md`); repo issues or `issues_index.json` |
 | Logs | Actions runs and gh-aw artifacts (90 days); exports on `data/runs`; reviewed logs in `evals/golden/runs/` |
-| Evaluations | `evals/golden/` (29 cases, 9 full runs, `runs.md`), canaries, `evals/tests/`, `golden-rerun.yml` |
+| Evaluations | `evals/golden/` (29 cases, 10 full runs, `runs.md`), canaries, `evals/tests/`, `golden-rerun.yml` |
 | Responsible Person | Anson (`@ansonpoh`): code owner |
 
 ## 9. AI-use statement

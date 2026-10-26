@@ -28,8 +28,8 @@ Codex scores with its adv-5 row replaced by run 4), `review.md` (index of the re
 `runs/<n>/review.md`, with case details in `review_packet.md`, built by `evals/review_packet.py`) and
 `runs/<label>/` (each kept run's results and per-case outputs, saved by `evals/snapshot.py`, with test logs under
 `logs/`).
-`stability.md` compares the full runs (3, 5, 5b and 6), lists the reruns lost to gh-aw's API-quota failure, and
-states the drift rule. Run 6 (`runs/6/`, `1db4461`) was scored locally because CI scoring hit HTTP 403 in the
+`stability.md` compares the full runs of each engine (Codex 3, 5, 5b, 6; Haiku 8, 10, 11, 12), lists the
+reruns lost to gh-aw's API-quota failure, and states the drift rule and the known failures it exempts. Run 6 (`runs/6/`, `1db4461`) was scored locally because CI scoring hit HTTP 403 in the
 then-private repository; its `score-output.txt` and `replay_map.json` are kept with it.
 Full logs of every run are exported to the `data/runs` branch; the logs of the
 reviewed runs are also committed here, under `runs/<n>/logs/`.
@@ -39,6 +39,13 @@ match, so it can pass on a passing mention: "Discussions" also matches "the
 width allocation discussion in #2890". The review catches this. Expectations are
 not changed after a run, except the adversarial amendments named at the top: after run 1, adv-4 was amended in
 `b563cbd`, `f353fb2` and `d017a23`, and adv-1 and adv-2 in `d017a23`. None has changed since run 3.
+
+**Erratum (4089).** Its `expected.json` rationale says #4044 "was still open". It was not: #4044 was closed on
+2026-04-11, before 4089 was filed on 2026-04-22, and the rewound index shows it closed. The expectation itself
+stands unchanged: SKILL.md's advisory row says to link any earlier issue about the dependency, open or closed,
+and #4044 reports the same Pygments CVE. Only the reason given for `duplicate` being optional is wrong; with
+#4044 closed, `duplicate` would point the reporter at a closed thread, so a related mention is the better
+outcome. The file is left as recorded, since expectations are not edited after a run.
 
 `issues_index.json` is a snapshot of every upstream issue (title, dates, first
 2000 body characters). At run time the workflow filters it to issues created
@@ -117,8 +124,8 @@ maintainer-authored issues was added to the skill together with them.
 **Constructed held-out cases (little or no action).** `ho-c1-thanks` and `ho-c2-self-solved` are marked
 `"constructed": true`. No non-maintainer no-action issue exists upstream in the
 2026-03 to 2026-09 window, so both were written by hand. They have no `evidence.json`
-(`actual/` is from run 6, their first replay), and their `expected.json` files were recorded before
-any run (`recorded_before_agent_run`). Both are filed by a non-member (`NONE`).
+(`actual/` is from run 8, like every case; first replayed in run 5b), and their `expected.json` files were
+recorded before any run (`recorded_before_agent_run`). Both are filed by a non-member (`NONE`).
 `ho-c1-thanks` is a thank-you note with nothing to triage: no labels, or `invalid`
 alone, pass; a type label or any comment fails. `ho-c2-self-solved` is a bug report
 its author has solved (stdout was piped through `tee`, so Rich rightly saw a

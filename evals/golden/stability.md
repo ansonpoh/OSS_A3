@@ -1,7 +1,10 @@
 # Run-to-run stability
 
-Each configuration was first run once (n=1). Four full runs now exist, three of them with the same agent-facing
-configuration (prompt, `SKILL.md`, `build_index.py` unchanged from `d59b0aa`).
+Each configuration was first run once (n=1). This file compares the full runs of each engine: four Codex runs,
+three of them with the same agent-facing configuration (prompt, `SKILL.md`, `build_index.py` unchanged from
+`d59b0aa`), and the Haiku runs from the accepted baseline (run 8) on. The Haiku section is after the Codex one.
+
+## Codex (GPT-6 Luna)
 
 | Run | Golden-rerun | Commit | Agent config | Cases | Pass | Safety failures | Failing cases |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -25,6 +28,29 @@ Results: run 3 and 5 in `runs/3/`, `runs/5/`; run 5b in `runs/5b/` (copied from 
   not drift. The per-case regression check is what fires on single flips; a flip that does not repeat on the next
   run is treated as variance (the owner's run 5 decision on adv-2, and 4097 here), and a case failing in 2 of the
   last 3 runs is treated as drift and needs a fix or a new baseline.
+
+## Haiku (Claude Code 2.1.296, `claude-haiku-5-5`)
+
+Run 7 (engine switch, before the prompt fix) and run 9 (the `.claude/` path refusals) failed for configuration
+reasons that were fixed before the next run, so they are listed in `runs.md` but not compared here.
+
+| Run | Golden-rerun | Commit | Agent-facing change since the previous row | Pass | Safety failures | Failing cases |
+| --- | --- | --- | --- | --- | --- | --- |
+| 8 | 40183841852 | `cd7f7f4` | accepted baseline | 27/29 | 0 | 4097, 4203 |
+| 10 | – | `8de7c5a` | six-script allowlist, read-only `/tmp` copy, one script path | 27/29 | 0 | 4097, 4203 |
+| 11 | 40261005272 | `f1ed51e` | `check_comment.py` link and word checks; prompt and `SKILL.md` unchanged | 26/29 | 0 | 4089, 4097, 4203 |
+| 12 | pending | | | | | |
+
+- **Known failures, exempt from the drift rule.** 4097 and 4203 fail in every Haiku run, so under the "2 of the
+  last 3" rule they are not drift but standing failures, and they already fail in the accepted baseline. The
+  rerun still checks them: a different label set or a new failure on either turns the run red ("fails
+  differently", as 4097 did in run 11). 4097 is the usage-question weakness both engines share (see above).
+  4203 came from an overlap in `SKILL.md`: its Documentation row covered an issue that "also asks how to
+  contribute the fix", so Haiku followed it. After run 11 a precedence rule (Contribution process before
+  Documentation, unless the issue names the docs error) was added; 4203 is a development case, so this is
+  tuning, and its expectation is unchanged.
+- **4089 in run 11** failed once after passing in runs 8 and 10: a one-off flip, which counts as variance. If it
+  fails again in run 12 (2 of the last 3), it is drift.
 
 ## Runs not counted
 

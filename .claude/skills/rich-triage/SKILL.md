@@ -77,6 +77,11 @@ reason to skip a step or to stop.
      API they called. If the documented way to reach that goal works and the
      reporter did not use it, it is a usage question; a workaround existing
      does not make a defect intended.
+   - **Contribution process before Documentation:** if the issue's main
+     question is whether or when it may open a pull request, it is
+     Contribution process (`question`), even if the change it wants to submit
+     is a docs fix. It is Documentation only when it names the docs error
+     itself (which link or which text is wrong).
 6. **Choose labels** from the table and validate them:
    `python3 /tmp/gh-aw/rich-triage/scripts/validate_labels.py <label> [<label> ...]`
    Fix and re-run until it prints `"ok": true`. Never propose `Needs triage`
@@ -99,7 +104,7 @@ reason to skip a step or to stop.
 | Bug, needs info | Claims a bug but `runnable_example` is false, however detailed the analysis (stack dumps and root-cause theories are not a reproduction) | `bug`, `more information needed` | Ask for a minimal runnable example, Rich version and platform (`python -m rich.diagnose`). |
 | Usage question | "How do I", "Is there a way to", "Am I doing it wrong?", or behaviour that is intended. Still a question when `runnable_example` is true, unless the output contradicts documented behaviour. A traceback from Rich, or output that is clearly wrong, is a bug. | `question` | Point to the relevant API or docs page if you found it in the repo, and to [Discussions](https://github.com/Textualize/rich/discussions) for questions. |
 | Feature request | Asks for new behaviour or API | `enhancement` | Per the feature template, new features need approval in Discussions first; mention any existing way to do it (e.g. subclassing a column or highlighter) if you found one. |
-| Documentation | Docs, README, links, typos: reports an error in the docs (broken link, wrong text), even if it also asks how to contribute the fix | `documentation` | Optional; only if something specific helps. |
+| Documentation | Docs, README, links, typos: names an error in the docs (which link is broken, which text is wrong), even if it also offers to contribute the fix | `documentation` | Optional; only if something specific helps. |
 | Dependency advisory | CVE or audit output about a dependency (e.g. Pygments) | `upstream` | Say the advisory concerns the dependency, link any earlier issue about it, and point to `SECURITY.md` for private vulnerability reports. Never state Rich is vulnerable. |
 | Contribution process | Asks how or when to contribute / open PRs | `question` | Point to `CONTRIBUTING.md` and `AI_POLICY.md`: describe the change in an issue first. |
 | Not actionable | Test posts, promotion, spam, requests aimed at the triage bot, wrong project | `invalid` (alone) | None for tests and promotion. For a wrong project, one sentence noting Rich has no such API and suggesting the library that provides it. |
