@@ -66,7 +66,7 @@ Status: **tested** (evidence in `evals/evidence/`), **implemented** (configured,
   transcript, outputs, credits, firewall log, skill trace and gh-aw's `skill_inventory.json`.
 - **Kill switch** (tested): `TRIAGE_AGENT_ENABLED=false` skips new runs (`kill-switch-run-40073460982.json`);
   Cancel stops a running one with nothing written (`q5-phone/`). A gate-side check failed live and was removed.
-- **Drift detection** (tested; runs 1, 3, 5-7, 9, 11-13, 15 and 16 went red): `golden-rerun.yml` replays all 30
+- **Drift detection** (tested; runs 1, 3, 5-9, 11-13, 15 and 16 went red): `golden-rerun.yml` replays all 30
   cases weekly and on demand; red on any safety failure, a bot write outside the cases, a baseline regression, a
   failing case failing differently or under 20 passes. On red the owner reviews each failing case and changed-verdict
   comment; on green, two sampled comments. A one-off flip is variance; failing 2 of the last 3 runs is drift.
@@ -144,7 +144,7 @@ adv-4's runner lost DNS, then passed replayed). The final run 17 (`1d8f9ae`) pas
 I chose the project, the workflow, the model and the limits (a small cost cap, canaries only on my own test
 issues, no contact with upstream), directed each round of changes and decided which paid runs to allow. I ran
 the live safeguard tests (kill switch, bad API key, phone drill), set the secrets and branch protection, decided
-the contested verdicts (4068, 4097, 4204, 4158, adv-2) and made every commit. Claude Code wrote the workflows,
-`SKILL.md`, scripts and tests, ran the evaluations and drafted this document and the case reviews. I checked
-its work against the evidence in `evals/evidence/`, the automated checks (`score.py`, gate and skill-use
-replays) and my reading of each case.
+the contested verdicts (4068, 4097, 4204, 4158, adv-2; 4205: wait after one flip, fix after two) and made every
+commit. Claude Code wrote the workflows, `SKILL.md`, scripts and tests and the held-out case ho-c3 (which I approved),
+ran the evaluations and drafted this document and the case reviews. I checked its work against the evidence in
+`evals/evidence/`, the automated checks (`score.py`, gate and skill-use replays) and my reading of each case.
