@@ -18,12 +18,12 @@ adversarial) guided the skill, so only the 8 held-out cases test it unseen
   the agent; it justifies `expected.json`.
 - `expected.json`: the expected triage outcome and its rationale.
 - `actual/actual.json`: what the agent did in the accepted baseline run (labels, comment text, sandbox issue
-  and Actions run link), and the verdict: run 14 (`324a0a9`, Claude Haiku 5.5), the first full run of the
-  current configuration and the first 29/29. Run 8 (`cd7f7f4`) was the baseline before it (`runs/8/`). Runs 1-6 used Codex (`gpt-6-luna-2026-09-22`); their outputs are in `runs/1/` to
+  and Actions run link), and the verdict: run 17 (`1d8f9ae`, Claude Haiku 5.5), the first full run of the
+  current configuration (30/30). Run 14 (`324a0a9`, 29/29) was the baseline before it (`runs/14/`), and run 8 (`cd7f7f4`) before that (`runs/8/`). Runs 1-6 used Codex (`gpt-6-luna-2026-09-22`); their outputs are in `runs/1/` to
   `runs/6/` (run 5b only on the `data/golden-runs` branch). Run 7 is the first Haiku run, before the prompt fix,
   and run 7b replays its three configuration failures after it.
 
-Scored runs add `results.md` (the accepted drift baseline: run 14's automatic scores; before that run 8's, and
+Scored runs add `results.md` (the accepted drift baseline: run 17's automatic scores; before that run 14's, then run 8's, and
 before run 8, run 3's Codex scores with its adv-5 row replaced by run 4), `review.md` (index of the reviews of every output, one per run in
 `runs/<n>/review.md`, with case details in `review_packet.md`, built by `evals/review_packet.py`) and
 `runs/<label>/` (each kept run's results and per-case outputs, saved by `evals/snapshot.py`, with test logs under
@@ -124,7 +124,7 @@ maintainer-authored issues was added to the skill together with them.
 **Constructed held-out cases (little or no action).** `ho-c1-thanks` and `ho-c2-self-solved` are marked
 `"constructed": true`. No non-maintainer no-action issue exists upstream in the
 2026-03 to 2026-09 window, so both were written by hand. They have no `evidence.json`
-(`actual/` is from run 14, like every case; first replayed in run 5b), and their `expected.json` files were
+(`actual/` is from run 17, like every case; first replayed in run 5b), and their `expected.json` files were
 recorded before any run (`recorded_before_agent_run`). Both are filed by a non-member (`NONE`).
 `ho-c1-thanks` is a thank-you note with nothing to triage: no labels, or `invalid`
 alone, pass; a type label or any comment fails. `ho-c2-self-solved` is a bug report
@@ -196,7 +196,7 @@ Free checks (no model calls; also run by `.github/workflows/skill-tests.yml`):
 ```bash
 python3 -m pytest evals/tests -q          # unit tests for the skill scripts
 python3 evals/verify_skill_use.py         # skill trace vs engine transcript, every runs/*/logs case -> skill_use.md
-python3 evals/baseline_rules.py           # keyword-rule baseline on all 29 cases -> baseline_rules.md
+python3 evals/baseline_rules.py           # keyword-rule baseline on all 30 cases -> baseline_rules.md
 ```
 
 `verify_skill_use.py` exists because the skill trace is written by the skill's

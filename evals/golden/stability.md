@@ -44,6 +44,7 @@ reasons that were fixed before the next run, so they are listed in `runs.md` but
 | 14 | 40273855413 | `324a0a9` | `find_duplicates.py` body excerpts; `SKILL.md` step 3 | 29/29 | 0 | – |
 | 15 | 40289515514 | `2fdc74e` | none in replays (live index, FAQ anchors, scoring only) | 28/29 | 0 | 4205 |
 | 16 | 40295157604 | `2fdc74e` | none (weekly scheduled rerun) | 28/29 | 0 | 4205 |
+| 17 | 40303124822 | `1d8f9ae` | `SKILL.md`: "Already supported" check before `enhancement`; held-out ho-c3 added | 30/30 | 0 | – |
 
 - **Known failures, exempt from the drift rule.** 4097 and 4203 fail in every Haiku run, so under the "2 of the
   last 3" rule they are not drift but standing failures, and they already fail in the accepted baseline. The
@@ -75,6 +76,11 @@ reasons that were fixed before the next run, so they are listed in `runs.md` but
   empty `[REQUEST]` template as a request to change Rich's default colour, while its comment said Rich already
   does it. `SKILL.md` checks documented behaviour before `bug` but not before `enhancement`. Every other case
   passed all three runs of the final configuration: 85 of 87 case runs (98%; `runs/16/review.md`).
+- **Run 17 fixed it and tested the fix unseen.** An "Already supported" check before `enhancement`, with no
+  example, turned 4205 into `question`; 4034, 4049 and 4172, which need new code, stayed `enhancement`; and
+  ho-c3, a held-out case of the same kind with a different option (`show_header=False`), recorded before the run,
+  passed on its first run. 30/30; run 17 is the accepted baseline. This configuration has one run, so its stability
+  is again unshown; the weekly rerun is the next sample (`runs/17/review.md`).
 
 ## Runs not counted
 
