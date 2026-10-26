@@ -10,8 +10,8 @@ configuration (prompt, `SKILL.md`, `build_index.py` unchanged from `d59b0aa`).
 | 5b | 40154700943 | `09a223a` | `d59b0aa` | 29 | 28 | 0 | 4068 |
 | 6 | 40169903521 | `1db4461` | `d59b0aa` | 29 | 28 | 0 | 4097 |
 
-Results: run 3 and 5 in `runs/3/`, `runs/5/`; run 5b in branch `data/golden-runs`
-(`evals/golden-runs/2026-10-25-40154700943/`); run 6 in `runs/6/`.
+Results: run 3 and 5 in `runs/3/`, `runs/5/`; run 5b in `runs/5b/` (copied from branch `data/golden-runs`,
+`evals/golden-runs/2026-10-25-40154700943/`); run 6 in `runs/6/`.
 
 ## What it shows
 
