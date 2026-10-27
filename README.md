@@ -11,7 +11,7 @@ write-up.**
 | Workflow source and compiled lock file | `.github/workflows/rich-triage.md`, `rich-triage.lock.yml` |
 | Triage procedure and scripts | `.claude/skills/rich-triage/` |
 | Policy gate (re-checks every proposed write) | `.github/triage/policy_gate.py` |
-| Safeguard canaries (owner-only) | `.github/workflows/cap-test.md`, `budget-test.md`, `labels-test.md`, `turns-test.md` |
+| Safeguard canaries (owner-only) | `.github/workflows/cap-test.md`, `budget-test.md`, `labels-test.md`, `turns-test.md`, `timeout-test.md` |
 | Repository facts for agents | `AGENTS.md` |
 | Contributor rules, AI use, the bot | `CONTRIBUTING.md` (last section) |
 | Golden set, actual outputs, results | `evals/golden/` (`README.md`, `results.md`, `review.md`) |
@@ -27,6 +27,7 @@ gh aw compile cap-test --action-mode action --action-tag v0.93.0
 gh aw compile budget-test --action-mode action --action-tag v0.93.0
 gh aw compile labels-test --action-mode action --action-tag v0.93.0
 gh aw compile turns-test --action-mode action --action-tag v0.93.0
+gh aw compile timeout-test --action-mode action --action-tag v0.93.0
 ```
 
 ## Reproducing the evaluation

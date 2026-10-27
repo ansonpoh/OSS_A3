@@ -31,6 +31,15 @@ def test_turns_test_has_a_three_turn_cap_and_the_triage_credit_cap():
         re.search(r"^max-ai-credits: (\d+)\b", triage, re.M).group(1)
 
 
+def test_timeout_test_has_a_one_minute_timeout_and_the_triage_turn_and_credit_caps():
+    text = open(os.path.join(WF, "timeout-test.md"), encoding="utf-8").read()
+    triage = open(os.path.join(WF, "rich-triage.md"), encoding="utf-8").read()
+    assert re.search(r"^timeout-minutes: 1\b", text, re.M)
+    for key in ("max-turns", "max-ai-credits"):
+        assert re.search(r"^" + key + r": (\d+)\b", text, re.M).group(1) == \
+            re.search(r"^" + key + r": (\d+)\b", triage, re.M).group(1)
+
+
 def test_policy_gate_is_in_threat_detection():
     block = frontmatter_block("rich-triage.md", "safe-outputs")
     assert "threat-detection:" in block and ".github/triage/policy_gate.py" in block
@@ -53,7 +62,7 @@ def test_budget_test_has_a_one_credit_cap():
 
 
 def test_canaries_run_only_on_owner_labels():
-    for label in ("cap-test", "budget-test", "labels-test", "turns-test"):
+    for label in ("cap-test", "budget-test", "labels-test", "turns-test", "timeout-test"):
         name = label + ".md"
         text = open(os.path.join(WF, name), encoding="utf-8").read()
         assert f"names: [{label}]" in text and "roles: [admin]" in text
