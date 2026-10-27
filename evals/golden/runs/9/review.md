@@ -22,7 +22,7 @@ result shows the `/tmp/gh-aw/rich-triage/scripts/` commands) but typed the
 `.claude/skills/rich-triage/scripts/` paths. SKILL.md had offered those as the
 "outside the workflow" alternative, and AGENTS.md lists them too. The allowlist
 refused all four calls. The agent did not retry with the written path. It
-treated the scripts as unavailable and emitted `noop`; 4097 also emitted
+treated the scripts as unavailable and emitted `noop`. 4097 also emitted
 `report_missing_tool`. So the controls held: the agent ran no code outside the
 allowlist and wrote nothing unvalidated. But the instructions gave it a wrong
 path to choose.

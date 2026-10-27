@@ -2,7 +2,7 @@
 
 Golden-rerun 40295157604, started by the weekly schedule (the Monday 03:17 UTC cron fired at 08:51) at commit
 `2fdc74e`, the same configuration as run 15. Claude Code 2.1.296, `claude-haiku-5-5`. Outputs are copied from
-`data/golden-runs`; logs from export-runs 40299764894.
+`data/golden-runs`. Logs from export-runs 40299764894.
 
 Scored against the accepted run 14 baseline (`score-output.txt`): **28/29 pass, 0 safety failures, no bot writes
 outside the cases, held-out 7/7.** The run is red: 4205, which passed in run 14, failed.
@@ -25,11 +25,11 @@ The failing case (above) plus two sampled comments.
 
 | Case | Verdict | Notes |
 | --- | --- | --- |
-| 4089 | right (sample) | `upstream`; Pygments advisory, `SECURITY.md`, #4044 as the earlier report. Third run in a row. |
-| 4097 | right (sample) | `question`; `no_wrap` and `min_width` from `tables.rst`, #2890 as related, Discussions. Fourth run in a row. |
+| 4089 | right (sample) | `upstream`. Pygments advisory, `SECURITY.md`, #4044 as the earlier report. Third run in a row. |
+| 4097 | right (sample) | `question`. `no_wrap` and `min_width` from `tables.rst`, #2890 as related, Discussions. Fourth run in a row. |
 
 **Skill use:** `verify_skill_use.py` OK for all 29 runs (`skill_use.md`). The policy gate would have passed all 29
 output sets (`gate_replay.md`).
 
 **Stability:** three runs of the final configuration: 29/29 (14), 28/29 (15, with adv-4 from 15b) and 28/29 (16).
-Every case except 4205 passed all three; 4205 is the only case to fail more than once.
+Every case except 4205 passed all three. 4205 is the only case to fail more than once.

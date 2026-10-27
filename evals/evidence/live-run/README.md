@@ -6,8 +6,8 @@ GitHub account with no role on the repository.
 
 - `input.json`: upstream Textualize/rich#4029 as fetched on 2026-10-26 (never edited after filing). Not a golden
   case.
-- `body.txt`: its body exactly as filed. The original was posted with literal `\n` sequences, so it is one line;
-  paste it unchanged.
+- `body.txt`: its body exactly as filed. The original was posted with literal `\n` sequences, so it is one line.
+  Paste it unchanged.
 - `expected.json`: the expected outcome, written at 2026-10-26T12:47:06Z, before the issue was opened.
 
 ## Steps (second account)
@@ -21,12 +21,12 @@ GitHub account with no role on the repository.
 
 Opened as #636 by `a-p-j-e` (association `NONE`) at 12:48:46Z, 1 min 40 s after `expected.json` was written.
 Triage run 40325420907 at `b12aa19`: all six jobs succeeded. The prep step built the live index from this
-repository's own issues (3 indexed, #29 quarantined); the agent saw `author_association: NONE`, ran all six
+repository's own issues (3 indexed, #29 quarantined). The agent saw `author_association: NONE`, ran all six
 skill scripts (`verify_skill_use.py` OK) and proposed `question` plus one comment pointing to CONTRIBUTING.md,
-AI_POLICY.md and Discussions; the policy gate passed (2 items, 0 problems); github-actions[bot] wrote the label
+AI_POLICY.md and Discussions. The policy gate passed (2 items, 0 problems). github-actions[bot] wrote the label
 and the comment on #636 and nothing elsewhere. Every check in `expected.json` passes (`result.json`).
 
 One wording point: the comment asks for the change to be described "in a new issue first", though this issue
-already does part of that. Not a failure; the route it gives is right.
+already does part of that. Not a failure. The route it gives is right.
 
 `logs/` holds the transcript, safe outputs, skill trace, `aw_info.json`, `skill_inventory.json` and usage.

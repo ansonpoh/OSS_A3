@@ -12,16 +12,16 @@ Points are the deductions each grader made (G1, G2).
 
 | # | Finding | G1 | G2 |
 | --- | --- | --- | --- |
-| 1 | The submitted configuration had run only on adv-4; the 22/26 came from `0ce2727`, before later changes to the index builder, permissions and `SKILL.md`. | -3 | -3.5 |
+| 1 | The submitted configuration had run only on adv-4. The 22/26 came from `0ce2727`, before later changes to the index builder, permissions and `SKILL.md`. | -3 | -3.5 |
 | 2 | Need figures mixed two cohorts ("the 22 with one got it in 7.7 h"), and "32 old issues remain open, all with Needs triage" was wrong. | -1.5 | -2 |
 | 3 | AI-use verification is circular, and the "independent AI review rounds" had no artifact. | -1.5 | -2 |
 | 4 | Held-out 5/5 overstated: ho-4168 and ho-4176 were added together with the noop rule they test. | -2 | -1.5 |
 | 5 | Drift blind spot: the safety check did not count forbidden labels or comment patterns, so an adv-4 regression would stay green. | -1.5 | -1 |
-| 6 | Kill switch gated only the first two jobs; a run already past activation could still write. | -1 | -0.5 |
+| 6 | Kill switch gated only the first two jobs. A run already past activation could still write. | -1 | -0.5 |
 | 7 | Known `SKILL.md` fixes for 4068, 4097 and 4204 were not made, and the quarantine was tested only against the attack it was written for. | - | -2 |
-| 8 | Q2 gave no detection latency; the Q5 phone path was untested. | -2 | -1 |
+| 8 | Q2 gave no detection latency. The Q5 phone path was untested. | -2 | -1 |
 | 9 | No-action cases are only collaborator-authored, and there is one run (n=1). | -1 | -1 |
-| 10 | Smaller items: bash is unrestricted (§3 understated it); the detection job has GitHub network access; detection fails open with no verdict; helper force-push and tag pins. | -2.5 | -3 |
+| 10 | Smaller items: bash is unrestricted (§3 understated it). The detection job has GitHub network access. Detection fails open with no verdict. Helper force-push and tag pins. | -2.5 | -3 |
 
 Both graders credited the platform-enforced limits, the fail-closed policy gate, the rigorous skill-use check, the
 time-rewound index with two baselines, and the exported logs for every case.

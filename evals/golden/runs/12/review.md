@@ -19,8 +19,8 @@ writes outside the cases, held-out 7/7.** The run is red: 4204 regressed. Run 8 
 **What it shows.** The rule swapped one failure for another: 4203 and 4204 are the same reporter's two issues,
 and the deciding feature (whether the docs error is named) has to come first in the rule, not as an exception
 after the PR-permission test. The next change is to reorder the rule: "if the issue names the docs error, it is
-Documentation even if it asks whether it may open a PR; otherwise a question about whether or when it may open a
+Documentation even if it asks whether it may open a PR. Otherwise a question about whether or when it may open a
 PR is Contribution process." That change is not yet made or run.
 
-Reviewed: the four cases above by hand (4203 and 4089 because their verdict changed); the others only by the
-automatic checks. **Skill use:** logs exported by export-runs 40269279275 into `logs/`; `verify_skill_use.py` 29/29 OK (`skill_use.md`).
+Reviewed: the four cases above by hand (4203 and 4089 because their verdict changed). The others only by the
+automatic checks. **Skill use:** logs exported by export-runs 40269279275 into `logs/`. `verify_skill_use.py` 29/29 OK (`skill_use.md`).

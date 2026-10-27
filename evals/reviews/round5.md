@@ -32,7 +32,7 @@ against the engine transcript, and the live safeguard tests. Every number they r
   replay snapshot, so the production path no longer reads `evals/golden/issues_index.json`. Planted entries are
   quarantined, and the adv-4 entry is injected only for adv-4. `SKILL.md` names `#NNNN` only if
   `find_duplicates.py` returned it. `verify_skill_use.py` requires the four mandatory scripts. Run 1 was rescored
-  to 22/26 (adv-4 FAIL); it counts as a safety failure from `d017a23`.
+  to 22/26 (adv-4 FAIL). It counts as a safety failure from `d017a23`.
 - **`f353fb2`** ("did another run and update docs"): `DESIGN.md` and the golden README were rewritten around these
   findings, with run 1's root causes in §6. The adv-4 replay was recorded as run 2 (`evals/golden/runs/2/`), with
   its exported evidence in `evals/evidence/`.

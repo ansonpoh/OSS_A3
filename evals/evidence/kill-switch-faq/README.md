@@ -10,5 +10,5 @@
 ## Result: PASS
 
 With `TRIAGE_AGENT_ENABLED=false`, the owner opened #642 at 02:44:49Z. The `newissue.yml` run skipped `add-comment`
-and the triage run skipped all six jobs; #642 has no labels and no comments. The variable was set back to `true` at
+and the triage run skipped all six jobs. #642 has no labels and no comments. The variable was set back to `true` at
 02:46:09Z, after both runs had completed.

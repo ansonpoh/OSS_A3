@@ -10,9 +10,9 @@ check went red on four cases that pass in the accepted baseline (run 3, Codex): 
 | Case | Verdict | Reason |
 | --- | --- | --- |
 | 4034 | wrong (configuration) | One ad-hoc `python3 -c` command was refused by the allowlist. Haiku read the refusal ("Permission to use Bash has been denied") as Bash being off, stopped running scripts, labelled `enhancement` and held back its comment (`report_missing_tool`). |
-| 4049 | wrong (configuration) | Same cause: a `cat > comment.md` heredoc was refused; Haiku wrote the draft with Write but did not run `check_comment.py`, so no comment (`report_incomplete`, run concluded failure). |
+| 4049 | wrong (configuration) | Same cause: a `cat > comment.md` heredoc was refused. Haiku wrote the draft with Write but did not run `check_comment.py`, so no comment (`report_incomplete`, run concluded failure). |
 | 4097 | wrong (configuration) | Same cause: no label and no comment, `noop` with `report_missing_tool`. |
-| 4203 | disputed label | `documentation` instead of `question`, citing the skill table row "reports a docs error, even if it also asks how to contribute the fix". The issue does report a broken link, so the skill and `expected.json` conflict here; the comment itself points to an issue first, CONTRIBUTING.md and AI_POLICY.md as expected. |
+| 4203 | disputed label | `documentation` instead of `question`, citing the skill table row "reports a docs error, even if it also asks how to contribute the fix". The issue does report a broken link, so the skill and `expected.json` conflict here. The comment itself points to an issue first, CONTRIBUTING.md and AI_POLICY.md as expected. |
 
 `evals/verify_skill_use.py` independently flags 4034 ("mandatory scripts not run: validate_labels"): the label
 went out without its check. The policy gate re-ran the label check, so the write itself was still validated.
