@@ -146,4 +146,5 @@ I decided contested verdicts (4068, 4097, 4204, 4158, adv-2) and when repeated f
 I configured secrets and branch protection and personally ran the live safeguard tests, including the phone
 kill-switch drill, rate-limit tests and canaries. Claude Code generated the workflows, skill, scripts, tests and
 ho-c3, executed the evaluations, and drafted this document, case reviews and live-test expectations and records.
+It drafted each golden `expected.json` from the issue's evidence; I checked and approved each before its first run.
 I verified its work against the recorded evidence, scoring logic, gate and skill-use replays, and made every commit.

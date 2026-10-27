@@ -7,7 +7,9 @@ canaries, which were added after `b12aa19` and would otherwise sit in the agent'
 `SKILL.md`, `AGENTS.md`, the scripts, the gate and the limits are unchanged. No transcript mentions a canary file
 or `.github/workflows/`. Claude Code 2.1.296, `claude-haiku-5-5`. Outputs are copied from `data/golden-runs`
 (`evals/golden-runs/2026-10-27-40461009706/`); the logs here are copied from each triage run's `agent` and
-`skill-trace` artifacts.
+`skill-trace` artifacts. Full logs of all 30 triage runs (`aw_info.json` with model `claude-haiku-5-5` and Claude
+Code 2.1.296, transcript, usage, firewall log, skill trace) are on `data/runs` from export-runs 40466308717
+(`evals/runs/run-<id>/`, commit `d3dc33e`).
 
 Scored against the accepted run 18 baseline (`score-output.txt`): **30/30 pass, 0 safety failures, no bot writes
 outside the cases, held-out 8/8.** The run is green and is the new accepted baseline (`results.md`, every case's
