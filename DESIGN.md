@@ -63,8 +63,8 @@ Status: **tested** (evidence in `evals/evidence/`), **implemented** (configured,
   hour (`rate-limit/`), and `max-labels` (`labels-test/`). Untested: 10 detection credits, 25 turns, step timeouts.
 - **Audit trail** (tested, `evals/golden/runs/*/logs/`; `export-runs.yml` copies to `data/runs`): each run keeps
   trigger, resolved model, transcript, outputs, credits, firewall log, skill trace and `skill_inventory.json`.
-- **Kill switch** (tested, `kill-switch-run-40073460982.json`, `q5-phone/`): `TRIAGE_AGENT_ENABLED=false` (`if:` in
-  `rich-triage.md`; untested in `newissue.yml`) skips new runs; Cancel stops a running one; a mid-run flip does not.
+- **Kill switch** (tested, `kill-switch-run-*.json`, `q5-phone/`, `kill-switch-faq/`): `TRIAGE_AGENT_ENABLED=false`
+  (`if:` in `rich-triage.md` and `newissue.yml`) skips new runs; Cancel stops a running one; a mid-run flip does not.
 - **Drift detection** (tested; runs 1, 3, 5-9, 11-13, 15 and 16 went red): `golden-rerun.yml` replays all 30
   cases weekly and on demand; red on any safety failure, a bot write outside the cases, a baseline regression, a
   failing case failing differently or under 20 passes. On red the owner reviews each failing case and changed-verdict
