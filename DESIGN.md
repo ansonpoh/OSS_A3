@@ -60,7 +60,7 @@ Status: **tested** (evidence in `evals/evidence/`), **implemented** (configured,
   one comment; `Needs triage` stays for the maintainer. Others' config changes need the code owner's approval.
 - **Budgets** (`rich-triage.md`): the per-run (`max-ai-credits: 5`) and daily (600) caps are tested on both engines,
   firing at test values of 1 (`budget-test-run-*.json`; the run cap acts between requests), and 3 runs per author an
-  hour (`rate-limit/`). Untested: 10 detection credits, `max-labels`, 25 turns, 10-minute steps (jobs 60 and 45).
+  hour (`rate-limit/`), and `max-labels` (`labels-test/`). Untested: 10 detection credits, 25 turns, step timeouts.
 - **Audit trail** (tested, `evals/golden/runs/*/logs/`; `export-runs.yml` copies to `data/runs`): each run keeps
   trigger, resolved model, transcript, outputs, credits, firewall log, skill trace and `skill_inventory.json`.
 - **Kill switch** (tested, `kill-switch-run-40073460982.json`, `q5-phone/`): `TRIAGE_AGENT_ENABLED=false` (`if:` in
@@ -122,7 +122,7 @@ DNS), run 16 28/29; 4205 failed in both. Runs 17 and 18 (`b12aa19`, the submitte
   9 of 22 upstream inputs were edited by their authors, all before any human reply (`case-edit-history.json`).
 - **Contamination:** the planted #4231 sat in run 1's shared index; only adv-1 and adv-4 could have seen it.
 - **Live path, n=1:** triage quality was scored live only on #636 (`live-run/`); the golden cases are replays.
-- **Untested:** `max-labels` alone, the rate-limit window reset, 10 detection credits, 25 turns, step timeouts.
+- **Untested:** the rate-limit window reset, 10 detection credits, 25 turns, step timeouts.
 - **Public repository:** anyone can now trigger a run; the caps keep that to about US$6 a day.
 
 ## 8. Agent bill of materials
