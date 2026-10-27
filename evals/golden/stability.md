@@ -45,22 +45,23 @@ reasons that were fixed before the next run, so they are listed in `runs.md` but
 | 15 | 40289515514 | `2fdc74e` | none in replays (live index, FAQ anchors, scoring only) | 27/29 (28/29 with adv-4 from 15b) | 0 | 4205 |
 | 16 | 40295157604 | `2fdc74e` | none (weekly scheduled rerun) | 28/29 | 0 | 4205 |
 | 17 | 40303124822 | `1d8f9ae` | `SKILL.md`: "Already supported" check before `enhancement`; held-out ho-c3 added | 30/30 | 0 | – |
-| 18 | 40317806200 | `b12aa19` | none (one `AGENTS.md` structure-table row; the submitted commit) | 30/30 | 0 | – |
+| 18 | 40317806200 | `b12aa19` | none (one `AGENTS.md` structure-table row; the submitted agent configuration) | 30/30 | 0 | – |
 
-- **Known failures, exempt from the drift rule.** 4097 and 4203 fail in every Haiku run, so under the "2 of the
-  last 3" rule they are not drift but standing failures, and they already fail in the accepted baseline. The
-  rerun still checks them: a different label set or a new failure on either turns the run red ("fails
-  differently", as 4097 did in run 11). 4097 is the usage-question weakness both engines share (see above).
+- **Known failures, exempt from the drift rule (runs 7 to 12).** 4097 failed in every Haiku run up to run 12 and
+  4203 up to run 11, so under the "2 of the last 3" rule they were not drift but standing failures, and they
+  already failed in the then-accepted baseline (run 8). The rerun still checked them: a different label set or a
+  new failure on either turned the run red ("fails differently", as 4097 did in run 11). 4097 was the
+  usage-question weakness both engines shared (see above).
   4203 came from an overlap in `SKILL.md`: its Documentation row covered an issue that "also asks how to
   contribute the fix", so Haiku followed it. After run 11 a precedence rule (Contribution process before
   Documentation, unless the issue names the docs error) was added; 4203 is a development case, so this is
   tuning, and its expectation is unchanged. In run 12, 4203 passed but 4204 (the same reporter's follow-up,
   which names the broken link and asks whether it may open a PR) regressed to `question`: the rule tests PR
-  permission first and the named-error exception second. 4204 is not exempt; the rule needs reordering
+  permission first and the named-error exception second. 4204 was not exempt; the rule needed reordering
   (`runs/12/review.md`).
 - **Run 13 fixed both.** With the named docs error checked first and a rule that the reporter's own "Am I doing it
   wrong?" decides `question`, 4097, 4203 and 4204 all passed. The 4097 and 4203 exemption above no longer applies
-  from run 13 on; one run does not yet show the fix is stable.
+  from run 13 on; both have passed in every run since (13 to 18).
 - **4089 is now drift.** It failed in runs 11 and 13 and passed in 12: 2 of the last 3. The causes differ: in run 11
   the agent read #4044 and judged it unrelated; in run 13 it could not read #4044 at all, because the index is one
   1.1 MB line, and the skill says to read a candidate before citing it. The fix is mechanical
@@ -83,7 +84,7 @@ reasons that were fixed before the next run, so they are listed in `runs.md` but
   passed on its first run. ho-c3 was written with the fix by the same author, so it is a check, not unseen
   evidence. 30/30; run 17 is the accepted baseline. This configuration has one run, so its stability
   is again unshown; the weekly rerun is the next sample (`runs/17/review.md`).
-- **Run 18 repeated it at the submitted commit: 30/30.** Across runs 17 and 18 the final configuration passes 60
+- **Run 18 repeated it with the submitted agent configuration: 30/30.** Across runs 17 and 18 the final configuration passes 60
   of 60 case runs. The only changed output is ho-c1 (`invalid` in 17, `noop` in 18; its expectation accepts both).
   Two runs is still a small sample (`runs/18/review.md`).
 

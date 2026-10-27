@@ -1,6 +1,7 @@
-# Run 18: the submitted commit
+# Run 18: the submitted configuration
 
-Golden-rerun 40317806200 at commit `b12aa19`, the commit submitted for marking. Since run 17 (`1d8f9ae`) the only
+Golden-rerun 40317806200 at commit `b12aa19`, whose agent configuration is the one submitted for marking (later
+commits add only evaluation records and documentation, none of which the agent reads). Since run 17 (`1d8f9ae`) the only
 file the agent reads that changed is `AGENTS.md`, which gained one row in its project-structure table
 (`.github/triage/`, `bcf6c66`). The prompt, `SKILL.md`, the scripts, the gate and the limits are unchanged; the
 FAQ bot workflow (`newissue.yml`) and `score.py` also changed (`e0c1c3b`), but neither is part of the agent. Claude

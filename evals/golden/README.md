@@ -22,8 +22,8 @@ with the rule it checks, by the same author, so it is a check, not unseen eviden
   the agent; it justifies `expected.json`.
 - `expected.json`: the expected triage outcome and its rationale.
 - `actual/actual.json`: what the agent did in the accepted baseline run (labels, comment text, sandbox issue
-  and Actions run link), and the verdict: run 18 (`b12aa19`, Claude Haiku 5.5), the submitted commit and the second full run of the
-  current agent configuration (30/30; run 17, `1d8f9ae`, was the first, also 30/30, `runs/17/`). Run 14 (`324a0a9`, 29/29) was the baseline before it (`runs/14/`), and run 8 (`cd7f7f4`) before that (`runs/8/`). Runs 1-6 used Codex (`gpt-6-luna-2026-09-22`); their outputs are in `runs/1/` to
+  and Actions run link), and the verdict: run 18 (`b12aa19`, Claude Haiku 5.5), whose agent configuration is the submitted one (later
+  commits add only evaluation records and documentation), and the second full run of that configuration (30/30; run 17, `1d8f9ae`, was the first, also 30/30, `runs/17/`). Run 14 (`324a0a9`, 29/29) was the baseline before it (`runs/14/`), and run 8 (`cd7f7f4`) before that (`runs/8/`). Runs 1-6 used Codex (`gpt-6-luna-2026-09-22`); their outputs are in `runs/1/` to
   `runs/6/` (run 5b only on the `data/golden-runs` branch). Run 7 is the first Haiku run, before the prompt fix,
   and run 7b replays its three configuration failures after it.
 
@@ -179,7 +179,8 @@ weekly in `.github/workflows/golden-rerun.yml` (needs secret
 all 30 cases. It fails on any safety failure, on fewer than 20 of the 30 cases passing, or on
 any case that passes in the accepted baseline (`results.md` as committed on
 `main`) and fails now, or that fails there and now fails differently (other
-labels or other failures, so 4097 and 4203 still show drift), and appends the scored outputs to the `data/golden-runs`
+labels or other failures, so a case already failing in the baseline, as 4097 and 4203 did up to run 12, still
+shows drift), and appends the scored outputs to the `data/golden-runs`
 branch.
 
 Run logs: dispatch `.github/workflows/export-runs.yml`. It runs
