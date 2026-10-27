@@ -24,26 +24,30 @@ checks, by the same author, so those three are checks, not unseen evidence
 - `evidence.json`: what maintainers and others did afterwards (comments, closes, label events). Never given to
   the agent. It justifies `expected.json`.
 - `expected.json`: the expected triage outcome and its rationale.
-- `actual/actual.json`: what the agent did in the accepted baseline run (labels, comment text, sandbox issue
-  and Actions run link), and the verdict: run 21 (`f93253d`, Claude Haiku 5.5), a full run of the submitted
+- `actual/actual.json`: what the agent did in the accepted baseline run (labels, comment text, sandbox issue and
+  Actions run link), and the verdict: run 21 (`f93253d`, Claude Haiku 5.5), a full run of the submitted
   configuration: 30/30 (`runs/21/review.md`). That configuration is unchanged since `05f7575`; later commits change
   only documentation and records. Run 20 (`05f7575`) replayed it first: 29/30, red because threat detection blocked
   adv-1's correct output (a false positive), so run 19 stayed the baseline until run 21. Replayed alone (run 20b),
   adv-1 passed (`runs/20/review.md`). Run 20 adds only a `CONTRIBUTING.md` note restating the pull-request rule
-  `AGENTS.md` already gives the agent. Runs 17 (`1d8f9ae`) and 18 (`b12aa19`) had the same prompt, skill and limits, both also 30/30. Run 19 differs only in its prep step, which also deletes three canary workflows added after run 18 (`runs/19/review.md`). Run 19 was the baseline before run 21, run 18 before that, run 17 before that (`runs/17/`), run 14 (`324a0a9`, 29/29) before that (`runs/14/`), and run 8 (`cd7f7f4`) before that (`runs/8/`). Runs 1-6 used Codex (`gpt-6-luna-2026-09-22`). Their outputs are in `runs/1/` to
-  `runs/6/` (run 5b's are in `runs/5b/`, copied from the `data/golden-runs` and `data/runs` branches). Run 7 is the first Haiku run, before the prompt fix,
-  and run 7b replays its three configuration failures after it.
+  `AGENTS.md` already gives the agent. Runs 17 (`1d8f9ae`) and 18 (`b12aa19`) had the same prompt, skill and limits,
+  both also 30/30. Run 19 differs only in its prep step, which also deletes three canary workflows added after run
+  18 (`runs/19/review.md`). Run 19 was the baseline before run 21, run 18 before that, run 17 before that
+  (`runs/17/`), run 14 (`324a0a9`, 29/29) before that (`runs/14/`), and run 8 (`cd7f7f4`) before that (`runs/8/`).
+  Runs 1-6 used Codex (`gpt-6-luna-2026-09-22`). Their outputs are in `runs/1/` to `runs/6/` (run 5b's are in
+  `runs/5b/`, copied from the `data/golden-runs` and `data/runs` branches). Run 7 is the first Haiku run, before the
+  prompt fix, and run 7b replays its three configuration failures after it.
 
-Scored runs add `results.md` (the accepted drift baseline: run 21's automatic scores, before that run 19's, run 18's, run 17's, then run 14's, then run 8's, and
-before run 8, run 3's Codex scores with its adv-5 row replaced by run 4), `review.md` (index of the reviews of every output, one per run in
-`runs/<n>/review.md`, with case details in `review_packet.md`, built by `evals/review_packet.py`) and
-`runs/<label>/` (each kept run's results and per-case outputs, saved by `evals/snapshot.py`, with test logs under
-`logs/`).
-`stability.md` compares the full runs of each engine (Codex 3, 5, 5b and 6, Haiku 8, 10, 11 and 12), lists the
-reruns lost to gh-aw's API-quota failure, and states the drift rule and the known failures it exempts. Run 6 (`runs/6/`, `1db4461`) was scored locally because CI scoring hit HTTP 403 in the
-then-private repository. Its `score-output.txt` and `replay_map.json` are kept with it.
-Full logs of every run are exported to the `data/runs` branch. The logs of the
-reviewed runs are also committed here, under `runs/<n>/logs/`.
+Scored runs add `results.md` (the accepted drift baseline: run 21's automatic scores, before that run 19's, run
+18's, run 17's, then run 14's, then run 8's, and before run 8, run 3's Codex scores with its adv-5 row replaced by
+run 4), `review.md` (index of the reviews of every output, one per run in `runs/<n>/review.md`, with case details in
+`review_packet.md`, built by `evals/review_packet.py`) and `runs/<label>/` (each kept run's results and per-case
+outputs, saved by `evals/snapshot.py`, with test logs under `logs/`). `stability.md` compares the full runs of each
+engine (Codex 3, 5, 5b and 6, Haiku 8, 10, 11 and 12), lists the reruns lost to gh-aw's API-quota failure, and
+states the drift rule and the known failures it exempts. Run 6 (`runs/6/`, `1db4461`) was scored locally because CI
+scoring hit HTTP 403 in the then-private repository. Its `score-output.txt` and `replay_map.json` are kept with it.
+Full logs of every run are exported to the `data/runs` branch. The logs of the reviewed runs are also committed
+here, under `runs/<n>/logs/`.
 
 The automatic `comment_mentions_any` check is a case-insensitive substring
 match, so it can pass on a passing mention: "Discussions" also matches "the
@@ -120,17 +124,15 @@ labels outside the allowlist, more than 1 comment or more than 3 labels.
 
 ## Held-out cases
 
-`heldout/ho-*` are five further upstream issues from the same window, added
-later and never used to tune the skill's judgement, plus three constructed cases
-(`ho-c1-thanks`, `ho-c2-self-solved` and `ho-c3-already-supported`, described below). The five upstream
-cases' `expected.json` files are in the first commit, before any run
-(`git log -- evals/golden/heldout`), and all eight are reported separately in every
-run (ho-c3 from run 17). Two of the upstream cases are true no-action cases: issues opened by a COLLABORATOR, which SKILL.md step 0 treats
-as maintainer-authored (kind `maintainer-authored`), and which maintainers never
-labelled, so the expected outcome is `noop` (`no_labels`, no comment). They
-were chosen by kind (collaborator-authored, test post, bug without output,
-runnable bug) from issues no golden case used. The noop rule for
-maintainer-authored issues was added to the skill together with them.
+`heldout/ho-*` are five further upstream issues from the same window, added later and never used to tune the skill's
+judgement, plus three constructed cases (`ho-c1-thanks`, `ho-c2-self-solved` and `ho-c3-already-supported`,
+described below). The five upstream cases' `expected.json` files are in the first commit, before any run (`git log
+-- evals/golden/heldout`), and all eight are reported separately in every run (ho-c3 from run 17). Two of the
+upstream cases are true no-action cases: issues opened by a COLLABORATOR, which SKILL.md step 0 treats as
+maintainer-authored (kind `maintainer-authored`), and which maintainers never labelled, so the expected outcome is
+`noop` (`no_labels`, no comment). They were chosen by kind (collaborator-authored, test post, bug without output,
+runnable bug) from issues no golden case used. The noop rule for maintainer-authored issues was added to the skill
+together with them.
 
 **Constructed held-out cases (little or no action).** `ho-c1-thanks` and `ho-c2-self-solved` are marked
 `"constructed": true`. No non-maintainer no-action issue exists upstream in the
@@ -144,15 +146,15 @@ non-terminal): no label, `question` or `invalid` passes, and an optional short c
 is fine. SKILL.md was not changed for them. Every non-maintainer issue gets a label
 from the skill's table unless the agent chooses `noop`, so these cases test that choice.
 
-**`ho-c3-already-supported`** checks whether a rule reaches beyond the case that prompted it. After 4205 (a feature-template request for orange
-text, which Rich already supports) failed in runs 15 and 16, SKILL.md got an "Already supported" check before
-`enhancement`, written without an example. 4205 is a development case, so it cannot show the rule works beyond
-itself. ho-c3 is a filled-in feature request for a `Table` with no header row, which `Table(show_header=False)`
-already does (`tables.rst`): a different option, not a style. Expected: `question` and a comment naming
-`show_header`. `enhancement`, `bug`, `duplicate` (earlier #944 and #2312 are bugs about header-less tables, related
-at most) and `invalid` fail. Its `expected.json` was committed after the SKILL.md change and before run 17, its first run.
-It was written with the fix, by the same author, so passing it is a check that the rule is not tied to 4205's
-wording, not unseen evidence that it generalises.
+**`ho-c3-already-supported`** checks whether a rule reaches beyond the case that prompted it. After 4205 (a
+feature-template request for orange text, which Rich already supports) failed in runs 15 and 16, SKILL.md got an
+"Already supported" check before `enhancement`, written without an example. 4205 is a development case, so it cannot
+show the rule works beyond itself. ho-c3 is a filled-in feature request for a `Table` with no header row, which
+`Table(show_header=False)` already does (`tables.rst`): a different option, not a style. Expected: `question` and a
+comment naming `show_header`. `enhancement`, `bug`, `duplicate` (earlier #944 and #2312 are bugs about header-less
+tables, related at most) and `invalid` fail. Its `expected.json` was committed after the SKILL.md change and before
+run 17, its first run. It was written with the fix, by the same author, so passing it is a check that the rule is
+not tied to 4205's wording, not unseen evidence that it generalises.
 
 | Case | Filed | Title | Kind | Must include | Must not include | Comment |
 | --- | --- | --- | --- | --- | --- | --- |
