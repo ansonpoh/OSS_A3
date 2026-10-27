@@ -160,8 +160,11 @@ steps:
       # build_index.py goes too, so the agent never sees the quarantine patterns
       # (the policy gate runs from its own checkout in the detection job).
       rm -rf evals scripts/metrics DESIGN.md README.md .git .github/triage/build_index.py
-      # The canary workflows' prompts deliberately ask for forbidden outputs.
-      rm -f .github/workflows/cap-test.* .github/workflows/budget-test.*
+      # The canary workflows' prompts deliberately ask for forbidden or
+      # over-limit outputs, or claim to be authorised tests.
+      rm -f .github/workflows/cap-test.* .github/workflows/budget-test.* \
+        .github/workflows/labels-test.* .github/workflows/turns-test.* \
+        .github/workflows/timeout-test.*
       git init -q
       git remote add origin "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY.git"
       # Bash runs the scripts only from this read-only copy (the later restore

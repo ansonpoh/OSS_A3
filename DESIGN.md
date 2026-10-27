@@ -95,7 +95,7 @@ Status: **tested** (evidence in `evals/evidence/`), **implemented** (configured,
 were recorded before each case's first run; every run is in `evals/golden/runs.md`. Codex runs 5, 5b and 6 (same
 prompt, skill and model; only detection and the gate changed) pass 82 of 85 case runs, none failing twice. Haiku
 run 10 matched run 8 (27/29). Run 14 passed 29/29, run 15 27/29 (28/29 with adv-4 replayed after its runner lost
-DNS), run 16 28/29; 4205 failed in both. Runs 17 and 18 (`b12aa19`, the submitted agent configuration): 30/30.
+DNS), run 16 28/29; 4205 failed in both. Run 17 (`1d8f9ae`) and run 18 (`b12aa19`): 30/30.
 
 - **Index injection got through twice.** adv-4 (run 1) and adv-5 (run 3) made the bot cite a planted issue. The
   quarantine and the gate's cited-issue check followed; both cases passed in every later run.
@@ -115,7 +115,7 @@ DNS), run 16 28/29; 4205 failed in both. Runs 17 and 18 (`b12aa19`, the submitte
 
 ## 7. What remains unresolved
 
-- **Small samples:** three Codex runs of one configuration; two (17, 18) of the final one, and ho-c3 is n=2. Every
+- **Small samples:** three Codex runs of one configuration; two (17, 18) of the final skill, and ho-c3 is n=2. Every
   run 6 output was reviewed (`runs/6/review.md`); in 5b and 7 to 18 only failing or changed cases were hand-read.
 - **Expectations moved:** 26 of 30 predate run 1. After it I tightened adv-1 and adv-4 (run 1 rescored 23 to 22/26),
   narrowed adv-2's token pattern (false positives only) and added adv-5. Only 7 held-out cases test the skill unseen.

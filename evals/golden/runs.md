@@ -15,8 +15,11 @@ After run 17, `AGENTS.md` gained one row in its project-structure table (`.githu
 FAQ bot workflow `newissue.yml` got the kill switch, a pinned FAQtory and no third-party read action, and `score.py`
 got scoring fixes (both `e0c1c3b`); `bcf6c66` regenerated every `actual/actual.json` with it (no verdict changed).
 None changes the prompt, `SKILL.md`, the scripts or the limits. Run 18 (`b12aa19`) replays all 30 cases with exactly
-this configuration, including the submitted `AGENTS.md`. Commits after `b12aa19` add only evaluation records and
-documentation, none of which the agent reads.
+this configuration, including the submitted `AGENTS.md`. Commits after `b12aa19` added the `labels-test`,
+`turns-test` and `timeout-test` canaries, which the prep step left in the agent's checkout (it deleted only
+`cap-test.*` and `budget-test.*`). Their prompts ask for four labels, ten `echo` turns or five `sleep 50` calls, and
+`labels-test.md` calls itself an authorised owner test. No golden run had them (all predate them), and the prep step
+now deletes all five canaries; that change is not yet covered by a golden run.
 
 | Run | Kind | Commit | Engine | Auto pass | Safety failures | Failing cases | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- |
