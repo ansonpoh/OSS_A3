@@ -59,8 +59,8 @@ Status: **tested** (evidence in `evals/evidence/`), **implemented** (configured,
 - **Human approval** (implemented, `.github/CODEOWNERS`, `branch-protection-main.json`): the bot only adds labels and
   one comment; `Needs triage` stays for the maintainer. Others' config changes need the code owner's approval.
 - **Budgets** (`rich-triage.md`): the per-run (`max-ai-credits: 5`) and daily (600) caps are tested on both engines,
-  firing at test values of 1 (`budget-test-run-*.json`; the run cap acts between requests). Implemented, untested:
-  10 detection credits, `max-labels`, 3 runs per author an hour, 25 turns, 10-minute steps (jobs 60 and 45).
+  firing at test values of 1 (`budget-test-run-*.json`; the run cap acts between requests), and 3 runs per author an
+  hour (`rate-limit/`). Untested: 10 detection credits, `max-labels`, 25 turns, 10-minute steps (jobs 60 and 45).
 - **Audit trail** (tested, `evals/golden/runs/*/logs/`; `export-runs.yml` copies to `data/runs`): each run keeps
   trigger, resolved model, transcript, outputs, credits, firewall log, skill trace and `skill_inventory.json`.
 - **Kill switch** (tested, `kill-switch-run-40073460982.json`, `q5-phone/`): `TRIAGE_AGENT_ENABLED=false` (`if:` in
@@ -80,7 +80,7 @@ Status: **tested** (evidence in `evals/evidence/`), **implemented** (configured,
   on four cases at once, three traced to one prompt gap (fixed, run 7b) and run 8 became the new baseline. The model
   ID is fixed and each run records it; the weekly rerun e-mails the owner on red (it caught 4205 in run 16).
 - **Q3. 300 issues in one week.** About 43 a day at about 1.2 credits each is about 52, under the 600 daily cap; a
-  non-writer's fourth issue in an hour is skipped (untested). The real limit is gh-aw's daily-credit check: it scans
+  non-writer's fourth issue in an hour is skipped (tested, #640). The real limit is gh-aw's daily-credit check: it scans
   earlier runs via the API; issues 5 s apart used up the hourly quota and failed closed (no write); retry: proposed.
 - **Q4. A tool or MCP server returns malicious instructions.** The agent has no token and no network, so the most
   it can do is propose ≤3 labels and one comment on the triggering issue, which detection and the gate re-check.
@@ -103,17 +103,17 @@ DNS), run 16 28/29; 4205 failed in both. Runs 17 and 18 (`b12aa19`, the submitte
   switch flip (`kill-switch-midrun-run-40166155938.json`). The check was removed; Cancel is the in-flight stop.
 - **The engine switch broke three cases.** In run 7 Haiku read one allowlist refusal as "Bash is off" and skipped
   the label and comment checks (4034, 4049, 4097; `verify_skill_use.py` flagged 4034). One prompt line fixed it.
-- **The hardening broke three cases first.** In run 9 three agents ran the scripts from `.claude/`, which SKILL.md
-  still named; the allowlist refused them and they stopped with `noop`. Naming one path fixed it in run 10.
+- **Hardening broke three cases (run 9):** SKILL.md named `.claude/` scripts the allowlist refused; fixed in run 10.
 - **Rule fixes, one regression:** usage questions got `bug` (4097) and 4203 got `documentation` in every Haiku run.
   A first precedence rule fixed 4203 but broke 4204 (run 12); reordered, plus a "reporter's own question" rule, all
   three passed in run 13. 4089 failed there: the agent could not read #4044 in the one-line index (fixed, run 14).
 - **The weekly rerun caught drift.** 4205 (an empty template asking for orange text) got `enhancement` in runs 15
   and 16. An "Already supported" check fixed it in run 17; 4034, 4049, 4172 stayed `enhancement`. ho-c3
   (`show_header=False`) passed too, but it was written with the fix by the same author: a check, not unseen evidence.
+- **The live path held** (`live-run/`): #636 from a roleless account got `question` and one comment through the gate.
 - **Platform side effects:** gh-aw opened and commented on tracker issue #28 until `report-as-issue: false`.
 
-## 7. Unresolved
+## 7. What remains unresolved
 
 - **Small samples:** three Codex runs of one configuration; two (17, 18) of the final one, and ho-c3 is n=2. Every
   run 6 output was reviewed (`runs/6/review.md`); in 5b and 7 to 18 only failing or changed cases were hand-read.
@@ -121,8 +121,8 @@ DNS), run 16 28/29; 4205 failed in both. Runs 17 and 18 (`b12aa19`, the submitte
   narrowed adv-2's token pattern (false positives only) and added adv-5. Only 7 held-out cases test the skill unseen.
   9 of 22 upstream inputs were edited by their authors, all before any human reply (`case-edit-history.json`).
 - **Contamination:** the planted #4231 sat in run 1's shared index; only adv-1 and adv-4 could have seen it.
-- **Live path, n=1:** one issue from a second, roleless account (#636, upstream #4029) passed end to end: `question`,
-  one comment, live index, gate (`evals/evidence/live-run/`). `max-labels` and the rate limit stay untested.
+- **Live path, n=1:** triage quality was scored live only on #636 (`live-run/`); the golden cases are replays.
+- **Untested:** `max-labels` alone, the rate-limit window reset, 10 detection credits, 25 turns, step timeouts.
 - **Public repository:** anyone can now trigger a run; the caps keep that to about US$6 a day.
 
 ## 8. Agent bill of materials

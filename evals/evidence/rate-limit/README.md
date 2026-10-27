@@ -30,6 +30,27 @@ For each issue: the run ID, `gh run view RUN_ID --json jobs,conclusion,createdAt
 `rate-limit-run-RUN_ID.json`, the `check_rate_limit` log lines (`Total recent runs in last 60 minutes: N`) and the
 issue's labels and comments with their authors. `result.json` compares these with `expected.json`.
 
-## Result
+## Result: PASS
 
-Not yet run.
+`expected.json` was committed in `9e54d4d` and pushed at 02:08:05Z, before issue 1. Issues #637 to #640 were
+opened by `a-p-j-e` (association `NONE`) on 2026-10-27 between 02:10:08Z and 02:13:11Z; #641 by the owner at
+02:13:41Z. The daily guardrail read 231.60/600, so it did not interfere.
+
+| Issue | Run | Rate-limit log | Jobs | Bot writes |
+| --- | --- | --- | --- | --- |
+| #637 | 40436858595 | 0 recent runs, passed | all six success | `question`, one comment |
+| #638 | 40436963703 | 1 recent run, passed | all six success | `question`, one comment |
+| #639 | 40437060408 | 2 recent runs, passed | all six success | `question`, one comment |
+| #640 | 40437155990 | 3 recent runs, **exceeded** | only pre_activation ran | none (FAQtory comment only) |
+| #641 (owner) | 40437204536 | ignored role `admin`, check skipped | all six success | none: agent `noop` (owner-authored) |
+
+Agent credits for the three triaged issues: 1.23, 0.75 and 0.60; the skipped run used none. Every check in
+`expected.json` passes (`result.json`).
+
+One finding: on a limit hit gh-aw also tries to cancel the run, which fails (`Resource not accessible by
+integration`) because `pre_activation` has only `actions: read`. The skip does not depend on it (`activated` is
+false), but the run shows as a success with skipped jobs rather than as cancelled.
+
+Not covered: the window reset after 60 minutes, and whether a skipped run counts toward later windows.
+
+Files: `rate-limit-run-RUN_ID.json` (jobs and timings), `pre_activation-RUN_ID.log` (the rate-limit step's output).
