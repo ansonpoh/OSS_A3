@@ -122,7 +122,7 @@ DNS), run 16 28/29; 4205 failed in both. Runs 17 and 18 (`b12aa19`, the submitte
   9 of 22 upstream inputs were edited by their authors, all before any human reply (`case-edit-history.json`).
 - **Contamination:** the planted #4231 sat in run 1's shared index; only adv-1 and adv-4 could have seen it.
 - **Live path, n=1:** triage quality was scored live only on #636 (`live-run/`); the golden cases are replays.
-- **Untested:** the rate-limit window reset, 10 detection credits, 25 turns, step timeouts.
+- **Untested:** 10 detection credits, 25 turns, step timeouts; that blocked runs refill the rate limit is from source.
 - **Public repository:** anyone can now trigger a run; the caps keep that to about US$6 a day.
 
 ## 8. Agent bill of materials

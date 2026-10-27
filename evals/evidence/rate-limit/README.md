@@ -51,6 +51,10 @@ One finding: on a limit hit gh-aw also tries to cancel the run, which fails (`Re
 integration`) because `pre_activation` has only `actions: read`. The skip does not depend on it (`activated` is
 false), but the run shows as a success with skipped jobs rather than as cancelled.
 
-Not covered: the window reset after 60 minutes, and whether a skipped run counts toward later windows.
+Window reset (`expected-window-reset.json`): #643 from `a-p-j-e` at 04:11:04Z, about two hours after #637, logged 0
+recent runs and was triaged (run 40448328239: `duplicate` and `question`, one comment naming #637).
+
+Skipped runs count: per gh-aw v0.93.0's `check_rate_limit.cjs` (read, not observed), only cancelled runs and runs
+under 15 s are left out. #640's run lasted 34 s and was not cancelled, so a blocked author's runs keep the window full.
 
 Files: `rate-limit-run-RUN_ID.json` (jobs and timings), `pre_activation-RUN_ID.log` (the rate-limit step's output).
