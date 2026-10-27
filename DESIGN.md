@@ -141,10 +141,9 @@ DNS), run 16 28/29; 4205 failed in both. Runs 17 and 18 (`b12aa19`, the submitte
 
 ## 9. AI-use statement
 
-I chose the project, the workflow, the model and the limits (a small cost cap, canaries only on my own test
-issues, no contact with upstream), directed each round of changes and decided which paid runs to allow. I ran
-the live safeguard tests (kill switch, bad API key, phone drill, rate limit, canaries), set the secrets and branch
-protection, decided the contested verdicts (4068, 4097, 4204, 4158, adv-2; 4205: wait after one flip, fix after two)
-and made every commit. Claude Code wrote the workflows, `SKILL.md`, scripts, tests and the held-out case ho-c3,
-ran the evaluations and drafted this document, the case reviews and each live test's expected outcome
-and record. I checked its work against `evals/evidence/`, `score.py`, the gate and skill-use replays and each case.
+I chose the project, triage workflow, model and operating limits, directed each revision and authorised paid runs.
+I decided contested verdicts (4068, 4097, 4204, 4158, adv-2) and when repeated failures warranted changes (4205).
+I configured secrets and branch protection and personally ran the live safeguard tests, including the phone
+kill-switch drill, rate-limit tests and canaries. Claude Code generated the workflows, skill, scripts, tests and
+ho-c3, executed the evaluations, and drafted this document, case reviews and live-test expectations and records.
+I verified its work against the recorded evidence, scoring logic, gate and skill-use replays, and made every commit.
