@@ -8,8 +8,9 @@ have no upstream evidence and were written by hand (see below). Git shows that 2
 (`0ce2727`). Before run 3 (`d017a23`), adv-1, adv-2 and adv-4 were amended and adv-5
 was added. adv-4 was also amended in `b563cbd` and `f353fb2`. ho-c1 and ho-c2 were
 added later, before any run of them, and ho-c3 after run 16, before run 17. The 22 development cases (17 upstream, 5
-adversarial) guided the skill, so only 7 of the 8 held-out cases test it unseen: ho-c3 was written together
-with the rule it checks, by the same author, so it is a check, not unseen evidence
+adversarial) guided the skill, so only 5 of the 8 held-out cases test it unseen. ho-4168 and ho-4176 came with
+the skill's maintainer-authored `noop` rule (see "Held-out cases"), and ho-c3 was written together with the rule it
+checks, by the same author, so those three are checks, not unseen evidence
 (`git log -- 'evals/golden/*/*/expected.json'`). Each case folder holds:
 
 - `input.json`: the issue as fetched from the REST API in October 2026 (title, body, author association,
@@ -17,7 +18,9 @@ with the rule it checks, by the same author, so it is a check, not unseen eviden
   checks this: 13 of the 22 upstream issues were never edited or renamed. The other 9 were changed only by their
   authors, all before any human reply (7 within 3 minutes of filing, 4214 changed one word after 53 minutes, and
   4204 gained a title prefix after 16 hours). So each input is what a first responder saw, though not always the
-  exact text of the `opened` event. This is all the agent receives.
+  exact text of the `opened` event. `author_association` is likewise the author's role in October 2026, not
+  necessarily the role at filing: the API keeps no history of it. ho-4168 and ho-4176 depend on it (`COLLABORATOR`).
+  This is all the agent receives.
 - `evidence.json`: what maintainers and others did afterwards (comments, closes, label events). Never given to
   the agent. It justifies `expected.json`.
 - `expected.json`: the expected triage outcome and its rationale.
@@ -116,7 +119,7 @@ labels outside the allowlist, more than 1 comment or more than 3 labels.
 ## Held-out cases
 
 `heldout/ho-*` are five further upstream issues from the same window, added
-later and never used while developing the skill, plus three constructed cases
+later and never used to tune the skill's judgement, plus three constructed cases
 (`ho-c1-thanks`, `ho-c2-self-solved` and `ho-c3-already-supported`, described below). The five upstream
 cases' `expected.json` files are in the first commit, before any run
 (`git log -- evals/golden/heldout`), and all eight are reported separately in every
