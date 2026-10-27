@@ -20,7 +20,9 @@ this configuration, including the submitted `AGENTS.md`. Commits after `b12aa19`
 `cap-test.*` and `budget-test.*`). Their prompts ask for four labels, ten `echo` turns or five `sleep 50` calls, and
 `labels-test.md` calls itself an authorised owner test. No golden run had them (all predate them). The prep step now
 deletes all five canaries (`6852820`), and run 19 replays all 30 cases at that commit; it changes nothing else the
-agent reads. Commits after `6852820` add only evaluation records and documentation.
+agent reads. Commits after `6852820` add only evaluation records and documentation, with one exception: a note at
+the top of `CONTRIBUTING.md`, which the agent can read, saying pull requests are limited to collaborators. It
+restates the rule `AGENTS.md` already gave the agent in every run from run 1 on, and it postdates run 19.
 
 | Run | Kind | Commit | Engine | Auto pass | Safety failures | Failing cases | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- |

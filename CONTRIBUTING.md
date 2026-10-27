@@ -6,6 +6,11 @@ For new features or if there is any doubt in how to fix a bug, you might want
 to open an issue prior to starting work, or email willmcgugan+rich@gmail.com
 to discuss it first.
 
+*Sandbox note:* pull requests are currently limited to collaborators, so the
+paragraph above does not apply to outside contributors. Describe the bug fix or
+change in an issue first; the pull request sections below apply once a
+maintainer has agreed to it.
+
 See also [AI_POLICY.md](https://github.com/Textualize/rich/blob/master/AI_POLICY.md) if you will be using AI.
 
 ## Prerequisites

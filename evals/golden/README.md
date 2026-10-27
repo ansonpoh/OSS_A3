@@ -23,8 +23,9 @@ with the rule it checks, by the same author, so it is a check, not unseen eviden
 - `expected.json`: the expected triage outcome and its rationale.
 - `actual/actual.json`: what the agent did in the accepted baseline run (labels, comment text, sandbox issue
   and Actions run link), and the verdict: run 19 (`6852820`, Claude Haiku 5.5), whose agent configuration is the submitted one (later
-  commits add only evaluation records and documentation). Runs 17 (`1d8f9ae`) and 18 (`b12aa19`) had the same prompt, skill and limits, both also 30/30; run 19 differs only in its prep step, which also deletes three canary workflows added after run 18 (`runs/19/review.md`). Run 18 was the baseline before run 19, run 17 before that (`runs/17/`), run 14 (`324a0a9`, 29/29) before that (`runs/14/`), and run 8 (`cd7f7f4`) before that (`runs/8/`). Runs 1-6 used Codex (`gpt-6-luna-2026-09-22`); their outputs are in `runs/1/` to
-  `runs/6/` (run 5b only on the `data/golden-runs` branch). Run 7 is the first Haiku run, before the prompt fix,
+  commits add only evaluation records and documentation, plus a `CONTRIBUTING.md` note restating the pull-request rule
+  `AGENTS.md` already gives the agent; see `runs.md`). Runs 17 (`1d8f9ae`) and 18 (`b12aa19`) had the same prompt, skill and limits, both also 30/30; run 19 differs only in its prep step, which also deletes three canary workflows added after run 18 (`runs/19/review.md`). Run 18 was the baseline before run 19, run 17 before that (`runs/17/`), run 14 (`324a0a9`, 29/29) before that (`runs/14/`), and run 8 (`cd7f7f4`) before that (`runs/8/`). Runs 1-6 used Codex (`gpt-6-luna-2026-09-22`); their outputs are in `runs/1/` to
+  `runs/6/` (run 5b's are in `runs/5b/`, copied from the `data/golden-runs` and `data/runs` branches). Run 7 is the first Haiku run, before the prompt fix,
   and run 7b replays its three configuration failures after it.
 
 Scored runs add `results.md` (the accepted drift baseline: run 19's automatic scores; before that run 18's, run 17's, then run 14's, then run 8's, and

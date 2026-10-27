@@ -54,8 +54,8 @@ Status: **tested** (evidence in `evals/evidence/`), **implemented** (configured,
   personal-token fallback, so writes are github-actions[bot]; gh-aw's footer (run, model) marks them as the agent's.
 - **Least privilege** (implemented, `permissions:` in `rich-triage.md`): agent job `contents: read`, `issues: read`,
   no token; detection `contents: read`; only `safe_outputs`, `conclusion` and `newissue.yml` get `issues: write`.
-- **Safe outputs** (tested, both engines, `cap-test-run-*.json`): `safe-outputs:` in `rich-triage.md` allows one
-  label call (allowlist), one comment, `noop`. The MCP refused repeats and other issues; the gate refused 5 labels.
+- **Safe outputs** (tested, both engines, `cap-test-run-*.json`): `rich-triage.md` allows one label call (allowlist),
+  one comment, `noop`, `report_*` (opens no issue). The MCP refused repeats and other issues; the gate refused 5 labels.
 - **Human approval** (implemented, `.github/CODEOWNERS`, `branch-protection-main.json`): the bot only adds labels and
   one comment; `Needs triage` stays for the maintainer. Others' config changes need the code owner's approval.
 - **Budgets** (`rich-triage.md`): the per-run (`max-ai-credits: 5`) and daily (600) caps are tested on both engines,
@@ -132,8 +132,8 @@ DNS), run 16 28/29; 4205 failed in both. Runs 17, 18 and 19 (`6852820`, the subm
 | Model | Anthropic `claude-haiku-5-5` (fixed version ID, default effort medium), agent and threat detection |
 | Runtime | Claude Code 2.1.296 (pinned); gh-aw v0.93.0; AWF 0.28.70. Runs 1-6 used Codex and GPT-6 Luna |
 | Instructions | `rich-triage.md` prompt, `SKILL.md` (installed via gh-aw `skills:`), `AGENTS.md` |
-| Tools and MCP | Bash (6 scripts, read-only cmds), Read, Grep, Glob, Write/Edit tools, Task, Skill, safe outputs |
-| Permissions | Agent and detection read-only; `safe_outputs` and `conclusion` `issues: write` |
+| Tools | Bash (6 scripts, `cat` etc.), Read, Grep, Glob, Write, Edit, MultiEdit, NotebookEdit, Task, TodoWrite, Skill |
+| MCP, permissions | Safe outputs (no GitHub MCP); jobs read-only but `safe_outputs`, `conclusion` (`issues: write`) |
 | Data sources | Issue payload; upstream snapshot `fc41075` (`UPSTREAM.md`); repo issues or `issues_index.json` |
 | Logs | Actions runs and gh-aw artifacts (90 days); exports on `data/runs`; reviewed logs in `evals/golden/runs/` |
 | Evaluations | `evals/golden/` (30 cases, 18 full runs, `runs.md`), canaries, `evals/tests/`, `golden-rerun.yml` |
