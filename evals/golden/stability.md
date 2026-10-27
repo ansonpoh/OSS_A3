@@ -45,7 +45,8 @@ reasons that were fixed before the next run, so they are listed in `runs.md` but
 | 15 | 40289515514 | `2fdc74e` | none in replays (live index, FAQ anchors, scoring only) | 27/29 (28/29 with adv-4 from 15b) | 0 | 4205 |
 | 16 | 40295157604 | `2fdc74e` | none (weekly scheduled rerun) | 28/29 | 0 | 4205 |
 | 17 | 40303124822 | `1d8f9ae` | `SKILL.md`: "Already supported" check before `enhancement`; held-out ho-c3 added | 30/30 | 0 | – |
-| 18 | 40317806200 | `b12aa19` | none (one `AGENTS.md` structure-table row; the submitted agent configuration) | 30/30 | 0 | – |
+| 18 | 40317806200 | `b12aa19` | none (one `AGENTS.md` structure-table row) | 30/30 | 0 | – |
+| 19 | 40461009706 | `6852820` | prep step also deletes three canary workflows (the submitted agent configuration) | 30/30 | 0 | – |
 
 - **Known failures, exempt from the drift rule (runs 7 to 12).** 4097 failed in every Haiku run up to run 12 and
   4203 up to run 11, so under the "2 of the last 3" rule they were not drift but standing failures, and they
@@ -84,9 +85,12 @@ reasons that were fixed before the next run, so they are listed in `runs.md` but
   passed on its first run. ho-c3 was written with the fix by the same author, so it is a check, not unseen
   evidence. 30/30; run 17 is the accepted baseline. This configuration has one run, so its stability
   is again unshown; the weekly rerun is the next sample (`runs/17/review.md`).
-- **Run 18 repeated it with the submitted agent configuration: 30/30.** Across runs 17 and 18 the final configuration passes 60
+- **Run 18 repeated it: 30/30.** Across runs 17 and 18 the final skill and prompt pass 60
   of 60 case runs. The only changed output is ho-c1 (`invalid` in 17, `noop` in 18; its expectation accepts both).
   Two runs is still a small sample (`runs/18/review.md`).
+- **Run 19, the submitted agent configuration: 30/30.** Its only change is the prep step deleting three more canary
+  workflows. Across runs 17 to 19 the final skill and prompt pass 90 of 90 case runs; ho-c1 changed back to
+  `invalid` (accepted). Three runs is still a small sample (`runs/19/review.md`).
 
 ## Runs not counted
 
