@@ -143,8 +143,8 @@ DNS), run 16 28/29; 4205 failed in both. Runs 17 and 18 (`b12aa19`, the submitte
 
 I chose the project, the workflow, the model and the limits (a small cost cap, canaries only on my own test
 issues, no contact with upstream), directed each round of changes and decided which paid runs to allow. I ran
-the live safeguard tests (kill switch, bad API key, phone drill), set the secrets and branch protection, decided
-the contested verdicts (4068, 4097, 4204, 4158, adv-2; 4205: wait after one flip, fix after two) and made every
-commit. Claude Code wrote the workflows, `SKILL.md`, scripts and tests and the held-out case ho-c3 (which I approved),
-ran the evaluations and drafted this document and the case reviews. I checked its work against the evidence in
-`evals/evidence/`, the automated checks (`score.py`, gate and skill-use replays) and my reading of each case.
+the live safeguard tests (kill switch, bad API key, phone drill, rate limit, canaries), set the secrets and branch
+protection, decided the contested verdicts (4068, 4097, 4204, 4158, adv-2; 4205: wait after one flip, fix after two)
+and made every commit. Claude Code wrote the workflows, `SKILL.md`, scripts, tests and the held-out case ho-c3,
+ran the evaluations and drafted this document, the case reviews and each live test's expected outcome
+and record. I checked its work against `evals/evidence/`, `score.py`, the gate and skill-use replays and each case.
