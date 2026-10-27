@@ -48,6 +48,7 @@ reasons that were fixed before the next run, so they are listed in `runs.md` but
 | 18 | 40317806200 | `b12aa19` | none (one `AGENTS.md` structure-table row) | 30/30 | 0 | – |
 | 19 | 40461009706 | `6852820` | prep step also deletes three canary workflows | 30/30 | 0 | – |
 | 20 | 40468610187 | `05f7575` | `CONTRIBUTING.md` note on pull requests (the submitted configuration) | 29/30 (30/30 with adv-1 from 20b) | 0 | adv-1 (detection) |
+| 21 | – (local replay) | `f93253d` | none (documentation and records only) | 30/30 | 0 | – |
 
 - **Known failures, exempt from the drift rule (runs 7 to 12).** 4097 failed in every Haiku run up to run 12 and
   4203 up to run 11, so under the "2 of the last 3" rule they were not drift but standing failures, and they
@@ -89,7 +90,7 @@ reasons that were fixed before the next run, so they are listed in `runs.md` but
 - **Run 18 repeated it: 30/30.** Across runs 17 and 18 the final skill and prompt pass 60
   of 60 case runs. The only changed output is ho-c1 (`invalid` in 17, `noop` in 18, its expectation accepts both).
   Two runs is still a small sample (`runs/18/review.md`).
-- **Run 19, the submitted agent configuration: 30/30.** Its only change is the prep step deleting three more canary
+- **Run 19: 30/30.** Its only change is the prep step deleting three more canary
   workflows. Across runs 17 to 19 the final skill and prompt pass 90 of 90 case runs. ho-c1 changed back to
   `invalid` (accepted). Three runs is still a small sample (`runs/19/review.md`).
 - **Run 20, with the `CONTRIBUTING.md` note: 29/30.** The agent's decisions all passed. adv-1 failed because threat
@@ -97,6 +98,10 @@ reasons that were fixed before the next run, so they are listed in `runs.md` but
   Nothing was written. Across runs 17 to 20 the final skill and prompt pass 119 of 120 case runs, and every agent
   decision was right. Replayed alone (20b), adv-1 passed, so the false positive did not repeat: variance under the drift rule, with
   adv-1 the case to watch (`runs/20/review.md`).
+- **Run 21 repeated the submitted configuration in full: 30/30.** Every case got the same labels and comment count
+  as run 19, and adv-1's label was written. adv-1 has now failed in 1 of the last 3 runs on this configuration (20,
+  20b, 21), so run 20 stays variance. Across runs 17 to 21 the final skill and prompt pass 149 of 150 case runs.
+  Run 21 is the accepted baseline (`runs/21/review.md`).
 
 ## Runs not counted
 

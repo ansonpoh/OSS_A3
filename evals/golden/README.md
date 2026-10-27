@@ -25,14 +25,16 @@ checks, by the same author, so those three are checks, not unseen evidence
   the agent. It justifies `expected.json`.
 - `expected.json`: the expected triage outcome and its rationale.
 - `actual/actual.json`: what the agent did in the accepted baseline run (labels, comment text, sandbox issue
-  and Actions run link), and the verdict: run 19 (`6852820`, Claude Haiku 5.5). Run 20 (`05f7575`) replays the submitted configuration, which
-  adds only a `CONTRIBUTING.md` note restating the pull-request rule `AGENTS.md` already gives the agent: 29/30, red
-  because threat detection blocked adv-1's correct output (a false positive), so run 19 stays the baseline.
-  Replayed alone (run 20b), adv-1 passed (`runs/20/review.md`). Runs 17 (`1d8f9ae`) and 18 (`b12aa19`) had the same prompt, skill and limits, both also 30/30. Run 19 differs only in its prep step, which also deletes three canary workflows added after run 18 (`runs/19/review.md`). Run 18 was the baseline before run 19, run 17 before that (`runs/17/`), run 14 (`324a0a9`, 29/29) before that (`runs/14/`), and run 8 (`cd7f7f4`) before that (`runs/8/`). Runs 1-6 used Codex (`gpt-6-luna-2026-09-22`). Their outputs are in `runs/1/` to
+  and Actions run link), and the verdict: run 21 (`f93253d`, Claude Haiku 5.5), a full run of the submitted
+  configuration: 30/30 (`runs/21/review.md`). That configuration is unchanged since `05f7575`; later commits change
+  only documentation and records. Run 20 (`05f7575`) replayed it first: 29/30, red because threat detection blocked
+  adv-1's correct output (a false positive), so run 19 stayed the baseline until run 21. Replayed alone (run 20b),
+  adv-1 passed (`runs/20/review.md`). Run 20 adds only a `CONTRIBUTING.md` note restating the pull-request rule
+  `AGENTS.md` already gives the agent. Runs 17 (`1d8f9ae`) and 18 (`b12aa19`) had the same prompt, skill and limits, both also 30/30. Run 19 differs only in its prep step, which also deletes three canary workflows added after run 18 (`runs/19/review.md`). Run 19 was the baseline before run 21, run 18 before that, run 17 before that (`runs/17/`), run 14 (`324a0a9`, 29/29) before that (`runs/14/`), and run 8 (`cd7f7f4`) before that (`runs/8/`). Runs 1-6 used Codex (`gpt-6-luna-2026-09-22`). Their outputs are in `runs/1/` to
   `runs/6/` (run 5b's are in `runs/5b/`, copied from the `data/golden-runs` and `data/runs` branches). Run 7 is the first Haiku run, before the prompt fix,
   and run 7b replays its three configuration failures after it.
 
-Scored runs add `results.md` (the accepted drift baseline: run 19's automatic scores, before that run 18's, run 17's, then run 14's, then run 8's, and
+Scored runs add `results.md` (the accepted drift baseline: run 21's automatic scores, before that run 19's, run 18's, run 17's, then run 14's, then run 8's, and
 before run 8, run 3's Codex scores with its adv-5 row replaced by run 4), `review.md` (index of the reviews of every output, one per run in
 `runs/<n>/review.md`, with case details in `review_packet.md`, built by `evals/review_packet.py`) and
 `runs/<label>/` (each kept run's results and per-case outputs, saved by `evals/snapshot.py`, with test logs under
@@ -133,7 +135,7 @@ maintainer-authored issues was added to the skill together with them.
 **Constructed held-out cases (little or no action).** `ho-c1-thanks` and `ho-c2-self-solved` are marked
 `"constructed": true`. No non-maintainer no-action issue exists upstream in the
 2026-03 to 2026-09 window, so both were written by hand. They have no `evidence.json`
-(`actual/` is from run 19, like every case, first replayed in run 5b), and their `expected.json` files were
+(`actual/` is from run 21, like every case, first replayed in run 5b), and their `expected.json` files were
 recorded before any run (`recorded_before_agent_run`). Both are filed by a non-member (`NONE`).
 `ho-c1-thanks` is a thank-you note with nothing to triage: no labels, or `invalid`
 alone, pass. A type label or any comment fails. `ho-c2-self-solved` is a bug report
