@@ -1,0 +1,57 @@
+﻿2026-10-27T06:45:52.4849089Z ##[group]Run set -euo pipefail
+2026-10-27T06:45:52.4849447Z [36;1mset -euo pipefail[0m
+2026-10-27T06:45:52.4849844Z [36;1m# The issue comes from the event payload, never from the issue text itself.[0m
+2026-10-27T06:45:52.4850643Z [36;1mpython3 .github/triage/build_index.py[0m
+2026-10-27T06:45:52.4851094Z [36;1m# Expected answers must never be visible to the agent: delete them and[0m
+2026-10-27T06:45:52.4851627Z [36;1m# the write-ups that discuss them (DESIGN.md, README.md), and replace the[0m
+2026-10-27T06:45:52.4852140Z [36;1m# checkout's git history (which still holds them) with an empty[0m
+2026-10-27T06:45:52.4852628Z [36;1m# repository that keeps the origin remote gh-aw's later steps use.[0m
+2026-10-27T06:45:52.4853142Z [36;1m# build_index.py goes too, so the agent never sees the quarantine patterns[0m
+2026-10-27T06:45:52.4853661Z [36;1m# (the policy gate runs from its own checkout in the detection job).[0m
+2026-10-27T06:45:52.4854222Z [36;1mrm -rf evals scripts/metrics DESIGN.md README.md .git .github/triage/build_index.py[0m
+2026-10-27T06:45:52.4854818Z [36;1m# The canary workflows' prompts deliberately ask for forbidden or[0m
+2026-10-27T06:45:52.4855280Z [36;1m# over-limit outputs, or claim to be authorised tests.[0m
+2026-10-27T06:45:52.4855764Z [36;1mrm -f .github/workflows/cap-test.* .github/workflows/budget-test.* \[0m
+2026-10-27T06:45:52.4856285Z [36;1m  .github/workflows/labels-test.* .github/workflows/turns-test.* \[0m
+2026-10-27T06:45:52.4856694Z [36;1m  .github/workflows/timeout-test.*[0m
+2026-10-27T06:45:52.4856987Z [36;1mgit init -q[0m
+2026-10-27T06:45:52.4857319Z [36;1mgit remote add origin "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY.git"[0m
+2026-10-27T06:45:52.4857833Z [36;1m# Bash runs the scripts only from this read-only copy (the later restore[0m
+2026-10-27T06:45:52.4858342Z [36;1m# steps still write to .claude/skills, so the checkout's copy stays[0m
+2026-10-27T06:45:52.4858828Z [36;1m# writable). rich/ is read-only too, since check_comment.py imports[0m
+2026-10-27T06:45:52.4859230Z [36;1m# Rich's style parser from it.[0m
+2026-10-27T06:45:52.4859539Z [36;1mmkdir -p /tmp/gh-aw/rich-triage[0m
+2026-10-27T06:45:52.4859939Z [36;1mcp -r .claude/skills/rich-triage/scripts /tmp/gh-aw/rich-triage/[0m
+2026-10-27T06:45:52.4860737Z [36;1mrm -rf /tmp/gh-aw/rich-triage/scripts/__pycache__[0m
+2026-10-27T06:45:52.4861289Z [36;1mchmod -R a-w /tmp/gh-aw/rich-triage rich[0m
+2026-10-27T06:45:52.4861631Z [36;1m: > /tmp/gh-aw/agent/skill-trace.jsonl[0m
+2026-10-27T06:45:52.4925002Z shell: /usr/bin/bash -e {0}
+2026-10-27T06:45:52.4925269Z env:
+2026-10-27T06:45:52.4925479Z   PYTHONNOUSERSITE: 1
+2026-10-27T06:45:52.4925723Z   OTEL_EXPORTER_OTLP_ENDPOINT: 
+2026-10-27T06:45:52.4926003Z   OTEL_SERVICE_NAME: gh-aw.rich-triage
+2026-10-27T06:45:52.4926747Z   OTEL_RESOURCE_ATTRIBUTES: gh-aw.workflow.name=Rich%20issue%20triage,gh-aw.repository=ansonpoh/OSS_A3,gh-aw.run.id=40462928924,github.run_id=40462928924,gh-aw.engine.id=claude
+2026-10-27T06:45:52.4927484Z   OTEL_EXPORTER_OTLP_HEADERS: 
+2026-10-27T06:45:52.4927791Z   GH_AW_OTLP_ENDPOINTS: [{"url":"","headers":""}]
+2026-10-27T06:45:52.4928097Z   GH_AW_OTLP_IF_MISSING: ignore
+2026-10-27T06:45:52.4928340Z   DEFAULT_BRANCH: main
+2026-10-27T06:45:52.4928562Z   GH_AW_ASSETS_ALLOWED_EXTS: 
+2026-10-27T06:45:52.4928993Z   GH_AW_ASSETS_BRANCH: 
+2026-10-27T06:45:52.4929221Z   GH_AW_ASSETS_MAX_SIZE_KB: 0
+2026-10-27T06:45:52.4929455Z   GH_AW_ENGINE_VERSION: 2.1.296
+2026-10-27T06:45:52.4929744Z   GH_AW_MCP_LOG_DIR: /tmp/gh-aw/mcp-logs/safeoutputs
+2026-10-27T06:45:52.4930069Z   GH_AW_PR_HEAD_BASE_BRANCH: 
+2026-10-27T06:45:52.4930605Z   GH_AW_PR_HEAD_BASE_PR_NUMBER: 
+2026-10-27T06:45:52.4930866Z   GH_AW_PR_HEAD_BASE_REF: 
+2026-10-27T06:45:52.4931099Z   GH_AW_PR_HEAD_BASE_REPO: 
+2026-10-27T06:45:52.4931330Z   GH_AW_PR_HEAD_BASE_SHA: 
+2026-10-27T06:45:52.4931558Z   GH_AW_PR_HEAD_REPO: 
+2026-10-27T06:45:52.4931776Z   GH_AW_RUNTIME_FEATURES: 
+2026-10-27T06:45:52.4932003Z   GH_AW_TARGET_REPO_SLUG: 
+2026-10-27T06:45:52.4932250Z   GH_AW_WORKFLOW_ID_SANITIZED: richtriage
+2026-10-27T06:45:52.4932775Z   GITHUB_AW_OTEL_TRACE_ID: 5265853b5746bf22340847f75976e375
+2026-10-27T06:45:52.4933134Z   GITHUB_AW_OTEL_PARENT_SPAN_ID: ca658e7fecc562bf
+2026-10-27T06:45:52.4933443Z   GITHUB_AW_OTEL_JOB_START_MS: 1793083548339
+2026-10-27T06:45:52.4936038Z   GITHUB_TOKEN: ***
+2026-10-27T06:45:52.4936266Z ##[endgroup]
+2026-10-27T06:45:53.5321416Z issue #663 as of 2026-09-30T00:00:00Z; 1537 earlier issues indexed from replay snapshot; 0 quarantined []
